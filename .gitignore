@@ -1,0 +1,6 @@
+src/test/
+
+logs/
+tmp/
+tmp_debug/
+src/main/kotlin/jp/nephy/glados/Main.kt
