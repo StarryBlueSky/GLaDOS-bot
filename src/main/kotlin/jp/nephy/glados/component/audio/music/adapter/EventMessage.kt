@@ -7,7 +7,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackState
 import jp.nephy.glados.GLaDOS
-import jp.nephy.glados.component.Color
+import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.audio.music.*
 import jp.nephy.glados.component.audio.music.PlayerEmoji
 import jp.nephy.glados.component.helper.EmbedBuilder
