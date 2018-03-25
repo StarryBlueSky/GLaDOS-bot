@@ -6,7 +6,6 @@ import net.dv8tion.jda.core.entities.Guild
 data class GLaDOSConfig(
         val token: String,
         val clientId: String,
-        val webPort: Int,
 
         val guilds: List<GuildConfig>
 ) {
