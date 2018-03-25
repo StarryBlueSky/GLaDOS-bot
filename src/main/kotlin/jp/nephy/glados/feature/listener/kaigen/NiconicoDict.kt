@@ -2,11 +2,13 @@ package jp.nephy.glados.feature.listener.kaigen
 
 import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.Color
+import jp.nephy.glados.component.helper.deleteQueue
 import jp.nephy.glados.component.helper.embedMention
 import jp.nephy.glados.feature.ListenerFeature
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent
 import org.jsoup.Jsoup
 import java.net.URL
+import java.util.concurrent.TimeUnit
 
 
 class NiconicoDict(bot: GLaDOS): ListenerFeature(bot) {
@@ -75,6 +77,6 @@ class NiconicoDict(bot: GLaDOS): ListenerFeature(bot) {
                 timestamp()
                 color(Color.Niconico)
             }
-        }.queue()
+        }.deleteQueue(60, TimeUnit.SECONDS)
     }
 }
