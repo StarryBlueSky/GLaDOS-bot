@@ -9,6 +9,8 @@ data class GuildOption(
         val useFindVideoURL: Boolean = false,
         val useNiconicoDict: Boolean = false,
 
+        val ignoreUserIds: List<Long> = emptyList(),
+
         val clientToken: String? = null,
         val steamGameRoles: List<SteamGameRoleConfig> = emptyList()
 )

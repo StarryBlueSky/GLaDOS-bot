@@ -49,14 +49,8 @@ dependencies {
         exclude group: "com.google.guava"
     }
 
+    /* Steam */
     compile "com.lukaspradel:steam-web-api:1.2"
-
-    /* Web App */
-    compile "org.jetbrains.kotlinx:kotlinx-html-jvm:$kotlinx_html_version"
-    compile "io.ktor:ktor-html-builder:$ktor_version"
-    compile "io.ktor:ktor-server-core:$ktor_version"
-    compile "io.ktor:ktor-server-jetty:$ktor_version"
-    compile "io.ktor:ktor-websockets:$ktor_version"
 
     /* Script Engine */
     compile "org.jetbrains.kotlin:kotlin-script-util:$kotlin_version"

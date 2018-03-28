@@ -101,6 +101,6 @@ class FeatureHelper(private val bot: GLaDOS) {
             msg.setIcon(iconUrl ?: iconUrlNew)
         }
 
-        SlackApi("https://hooks.slack.com/services/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").call(msg)
+        SlackApi(bot.secret.slackIncomingUrl).call(msg)
     }
 }

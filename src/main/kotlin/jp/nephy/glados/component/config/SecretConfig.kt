@@ -1,6 +1,7 @@
 package jp.nephy.glados.component.config
 
 data class SecretConfig(
+        val slackIncomingUrl: String,
         val niconicoLoginEmail: String,
         val niconicoLoginPassword: String,
         val soundCloudClientId: String,

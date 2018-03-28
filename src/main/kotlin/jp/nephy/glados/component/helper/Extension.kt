@@ -108,12 +108,6 @@ inline fun <reified T> enumuratePackage(packageName: String): Set<Class<T>> {
     }
 }
 
-fun <T> MutableMap<T, Int>.inc(key: T): Int {
-    val new = get(key)?.inc() ?: 1
-    set(key, new)
-    return new
-}
-
 fun <T> List<T>.joinToStringIndexed(separator: String, operation: (Int, T) -> String): String {
     return mapIndexed { index, t -> operation(index, t) }.joinToString(separator)
 }
