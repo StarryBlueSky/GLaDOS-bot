@@ -111,25 +111,25 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
     private val nextUserRequestTrack: AudioTrack?
         get() = userRequestQueue.removeAtOrNull(0).apply {
             if (isRepeatPlaylistEnabled && this != null) {
-                userRequestQueue.add(this)
+                userRequestQueue.add(this.makeClone())
             }
         }
     private val nextAutoPlaylistTrack: AudioTrack?
         get() = autoPlaylistQueue.removeAtOrNull(0).apply {
             if (this != null) {
-                autoPlaylistQueue.add(this)
+                autoPlaylistQueue.add(this.makeClone())
             }
         }
     private val nextSoundCloudTrack: AudioTrack?
         get() = soundCloudQueue.removeAtOrNull(0).apply {
             if (isRepeatPlaylistEnabled && this != null) {
-                soundCloudQueue.add(this)
+                soundCloudQueue.add(this.makeClone())
             }
         }
     private val nextNicoRankingTrack: AudioTrack?
         get() = nicoRankingQueue.removeAtOrNull(0).apply {
             if (isRepeatPlaylistEnabled && this != null) {
-                nicoRankingQueue.add(this)
+                nicoRankingQueue.add(this.makeClone())
             }
         }
 
@@ -203,7 +203,7 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
     }
     fun volumeDown(amount: Int): Int {
         player.volume -= amount
-        return volume.apply { 
+        return volume.apply {
             bot.logger.info { "MusicPlayer: ボリューム -> $this" }
         }
     }
