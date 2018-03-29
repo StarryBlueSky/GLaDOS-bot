@@ -55,7 +55,7 @@ class EventMessage(private val bot: GLaDOS, private val guildPlayer: GuildPlayer
                     append("${info.description!!.replace("<.+?>".toRegex(), "").take(100)}...")
                 }
             }
-            footer("${track.position.toMilliSecondString()} / ${track.duration.toMilliSecondString()}")
+            footer("${track.position.toMilliSecondString()} / ${track.duration.toMilliSecondString()} | ボリューム: ${guildPlayer.controls.volume}%")
 
             when {
                 info?.thumbnailUrl != null -> thumbnail(info.thumbnailUrl!!)
@@ -110,8 +110,9 @@ class EventMessage(private val bot: GLaDOS, private val guildPlayer: GuildPlayer
         if (guildPlayer.config.textChannel.bot == null) {
             return
         }
+        lastNowPlayingMessage?.delete()?.queue()
 
-        bot.jda.getTextChannelById(guildPlayer.config.textChannel.bot).embedMessage { buildEmbed(this, track) }.deleteQueue(track.remaining, cacheManager = bot.messageCacheManager) {
+        bot.jda.getTextChannelById(guildPlayer.config.textChannel.bot).embedMessage { buildEmbed(this, track) }.queue {
             lastNowPlayingMessage = it
             currentTrack = track
             PlayerEmoji.values().forEach { e ->
