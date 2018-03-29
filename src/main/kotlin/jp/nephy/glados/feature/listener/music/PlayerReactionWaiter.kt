@@ -1,11 +1,11 @@
 package jp.nephy.glados.feature.listener.music
 
 import jp.nephy.glados.GLaDOS
-import jp.nephy.glados.component.helper.Color
-import jp.nephy.glados.component.audio.music.*
+import jp.nephy.glados.component.audio.music.PlayerEmoji
 import jp.nephy.glados.component.helper.*
 import jp.nephy.glados.feature.ListenerFeature
 import jp.nephy.glados.feature.command.Nico
+import jp.nephy.glados.feature.command.Queue
 import jp.nephy.glados.feature.command.SoundCloud
 import net.dv8tion.jda.core.Permission
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent
@@ -37,46 +37,7 @@ class PlayerReactionWaiter(bot: GLaDOS): ListenerFeature(bot) {
 
         when (emoji) {
             PlayerEmoji.Info -> {
-                event.channel.embedMention(event.member) {
-                    author("♪ 再生中のトラックとキュー")
-                    blankField()
-
-                    val playing = guildPlayer.controls.currentTrack
-                    val queue = guildPlayer.controls.queue
-                    var ms = playing?.remaining ?: 0
-
-                    if (playing != null) {
-                        title(playing.info.title, playing.info.uri)
-                        descriptionBuilder {
-                            if (playing.type != TrackType.UserRequest) {
-                                appendln("このトラックは自動再生です。ユーザがリクエストしたトラックではありません。")
-                                appendln("曲をリクエストすると このトラックの再生は中断されます。")
-                            }
-                            appendln("by ${playing.info.author}")
-                            append("再生位置: ${playing.position.toMilliSecondString()} / ${playing.duration.toMilliSecondString()}")
-                        }
-
-                        if (playing.youtubedl.info?.thumbnailUrl != null) {
-                            thumbnail(playing.youtubedl.info?.thumbnailUrl!!)
-                        }
-                    } else {
-                        title("再生中のトラックはありません。")
-                    }
-                    field("キューに入っているトラック") {
-                        "総トラック数: ${queue.size}, 総再生時間: ${queue.sumBy { it.duration }.toMilliSecondString()}"
-                    }
-                    queue.take(20).forEachIndexed { i, it ->
-                        field("#${(i + 1).toString().padEnd(queue.size.charLength)}: ${it.info.title}") {
-                            "長さ: ${it.duration.toMilliSecondString()} / 再生までおよそ ${ms.toMilliSecondString()}"
-                        }
-                        ms += it.duration
-                    }
-                    if (queue.size > 20) {
-                        field("...") { "#20以降のトラックは省略されました。" }
-                    }
-                    color(Color.Good)
-                    timestamp()
-                }
+                Queue.respondQueue(event.channel, event.member, guildPlayer)
             }
             PlayerEmoji.TogglePlayState -> {
                 event.channel.embedMention(event.member) {
@@ -316,10 +277,10 @@ class PlayerReactionWaiter(bot: GLaDOS): ListenerFeature(bot) {
                 }
             }
             PlayerEmoji.SoundCloud -> {
-                return SoundCloud.prompt(bot, event.guild, event.channel, event.member)
+                return SoundCloud.respondPrompt(bot, event.guild, event.channel, event.member)
             }
             PlayerEmoji.NicoRanking -> {
-                return Nico.prompt(bot, event.guild, event.channel, event.member)
+                return Nico.respondPrompt(bot, event.guild, event.channel, event.member)
             }
         }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
     }

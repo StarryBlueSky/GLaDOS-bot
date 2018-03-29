@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 
 class Nico(bot: GLaDOS): CommandFeature(bot) {
     companion object {
-        fun prompt(bot: GLaDOS, guild: Guild, textChannel: TextChannel, member: Member) {
+        fun respondPrompt(bot: GLaDOS, guild: Guild, textChannel: TextChannel, member: Member) {
             PromptBuilder.build(bot.eventWaiter, textChannel, member) {
                 emojiPrompt<RankingType, RankingType>(
                         title = "ニコニコ動画のランキングを再生します",
@@ -69,6 +69,6 @@ class Nico(bot: GLaDOS): CommandFeature(bot) {
     }
 
     override fun executeCommand(event: CommandEvent) {
-        Nico.prompt(bot, event.guild, event.textChannel, event.member)
+        Nico.respondPrompt(bot, event.guild, event.textChannel, event.member)
     }
 }

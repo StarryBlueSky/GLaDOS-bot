@@ -2,9 +2,9 @@ package jp.nephy.glados.feature.command
 
 import com.jagrosh.jdautilities.command.CommandEvent
 import jp.nephy.glados.GLaDOS
-import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.api.soundcloud.param.ChartType
 import jp.nephy.glados.component.api.soundcloud.param.Genre
+import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.deleteQueue
 import jp.nephy.glados.component.helper.embedMention
 import jp.nephy.glados.component.helper.prompt.PromptBuilder
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 
 class SoundCloud(bot: GLaDOS): CommandFeature(bot) {
     companion object {
-        fun prompt(bot: GLaDOS, guild: Guild, textChannel: TextChannel, member: Member) {
+        fun respondPrompt(bot: GLaDOS, guild: Guild, textChannel: TextChannel, member: Member) {
             PromptBuilder.build(bot.eventWaiter, textChannel, member) {
                 emojiPrompt<ChartType, ChartType>(
                         title = "SoundCloudのチャート TOP50を再生します",
@@ -60,6 +60,6 @@ class SoundCloud(bot: GLaDOS): CommandFeature(bot) {
     }
 
     override fun executeCommand(event: CommandEvent) {
-        SoundCloud.prompt(bot, event.guild, event.textChannel, event.member)
+        SoundCloud.respondPrompt(bot, event.guild, event.textChannel, event.member)
     }
 }
