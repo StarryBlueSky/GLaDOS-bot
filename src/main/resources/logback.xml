@@ -16,9 +16,6 @@
             <outputPatternAsHeader>false</outputPatternAsHeader>
             <pattern>[%-5level] [%d{HH:mm:ss.SSS}] [%thread] %m%n</pattern>
         </encoder>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>DEBUG</level>
-        </filter>
     </appender>
     <appender name="ERROR_FILE" class="ch.qos.logback.core.FileAppender">
         <file>logs/error_${timestamp}.log</file>
