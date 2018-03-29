@@ -5,7 +5,6 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import jp.nephy.glados.GLaDOS
-import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.api.niconico.model.SearchResult
 import jp.nephy.glados.component.audio.music.*
 import jp.nephy.glados.component.helper.*
@@ -47,17 +46,35 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                 }
 
                 override fun onLoadPlaylist(playlist: AudioPlaylist) {
-                    event.embedMention {
-                        author("プレイリストが見つかりました")
-                        title("プレイリスト \"${playlist.name}\" (${playlist.tracks.size}曲, ${playlist.tracks.totalDuration.toMilliSecondString()}) を再生キューに追加します")
-                        playlist.tracks.forEachIndexed { i, audioTrack ->
-                            field("\n#${(i + 1).toString().padEnd(playlist.tracks.size.charLength)}") { audioTrack.info.title }
-                        }
-                        color(Color.Good)
-                        timestamp()
-                    }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+                    if (playlist.selectedTrack != null) {
+                        event.embedMention {
+                            author("トラックが見つかりました")
+                            title("\"${playlist.selectedTrack.info.title}\" (${playlist.selectedTrack.info.length.toMilliSecondString()}) を再生キューに追加します")
+                            description {
+                                if (guildPlayer.controls.isEmptyQueue || guildPlayer.controls.currentTrack == playlist.selectedTrack) {
+                                    "まもなく再生されます。"
+                                } else {
+                                    "再生まであと${guildPlayer.controls.queue.size + 1}曲 (およそ${guildPlayer.controls.totalDuration.toMilliSecondString()})"
+                                }
+                            }
+                            color(Color.Good)
+                            timestamp()
+                        }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
 
-                    guildPlayer.controls.addAll(playlist.tracks)
+                        guildPlayer.controls.add(playlist.selectedTrack)
+                    } else {
+                        event.embedMention {
+                            author("プレイリストが見つかりました")
+                            title("プレイリスト \"${playlist.name}\" (${playlist.tracks.size}曲, ${playlist.tracks.totalDuration.toMilliSecondString()}) を再生キューに追加します")
+                            playlist.tracks.forEachIndexed { i, audioTrack ->
+                                field("\n#${(i + 1).toString().padEnd(playlist.tracks.size.charLength)}") { audioTrack.info.title }
+                            }
+                            color(Color.Good)
+                            timestamp()
+                        }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+
+                        guildPlayer.controls.addAll(playlist.tracks)
+                    }
                 }
 
                 override fun onNoResult(guildPlayer: GuildPlayer) {
@@ -88,7 +105,8 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                         listPrompt(
                                 result.data, result.data.first(), { "${it.title} (${it.lengthSeconds}秒)" }, { "${it.description.take(20)}..." },
                                 author = "ニコニコ動画で${result.meta.totalCount}件の動画が見つかりました",
-                                title = "\"${event.args}\" の検索結果です"
+                                title = "\"${event.args}\" の検索結果です",
+                                timeoutSec = 30
                         ) { selected, _, _ ->
                             guildPlayer.loadTrack("http://www.nicovideo.jp/watch/${selected.contentId}", TrackType.UserRequest, object: PlayerLoadResultHandler {
                                 override fun onLoadTrack(track: AudioTrack) {
@@ -141,7 +159,8 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                         listPrompt(
                                 result, result.first(), { it.snippet.title }, { "${it.snippet.description.orEmpty().take(20)}..." },
                                 author = "YouTubeで${result.size}件の動画が見つかりました",
-                                title = "\"${event.args}\" の検索結果です"
+                                title = "\"${event.args}\" の検索結果です",
+                                timeoutSec = 30
                         ) { selected, _, _ ->
                             guildPlayer.loadTrack("https://www.youtube.com/watch?v=${selected.id.videoId}", TrackType.UserRequest, object: PlayerLoadResultHandler {
                                 override fun onLoadTrack(track: AudioTrack) {
