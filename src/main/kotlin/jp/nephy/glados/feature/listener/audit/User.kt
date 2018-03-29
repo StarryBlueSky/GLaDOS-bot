@@ -9,7 +9,8 @@ import jp.nephy.glados.feature.ListenerFeature
 import net.dv8tion.jda.client.events.relationship.UserBlockedEvent
 import net.dv8tion.jda.client.events.relationship.UserUnblockedEvent
 import net.dv8tion.jda.core.OnlineStatus
-import net.dv8tion.jda.core.events.user.*
+import net.dv8tion.jda.core.events.user.UserTypingEvent
+import net.dv8tion.jda.core.events.user.update.*
 import java.util.*
 
 
@@ -22,22 +23,29 @@ class User(bot: GLaDOS): ListenerFeature(bot) {
         bot.logger.debug { "[#${event.channel.name}] ${event.member.fullName}:\n[現在入力中です...]" }
     }
 
-    override fun onUserNameUpdate(event: UserNameUpdateEvent) {
+    override fun onUserUpdateName(event: UserUpdateNameEvent) {
         if (event.user.isSelf) {
             return
         }
 
-        bot.logger.info { "${event.user.displayName}: ユーザ名を変更しました. 元のユーザ名: @${event.oldName}#${event.oldDiscriminator}" }
+        bot.logger.info { "${event.user.displayName}: ユーザ名を変更しました. 元のユーザ名: @${event.oldName}#${event.entity.discriminator}" }
+    }
+    override fun onUserUpdateDiscriminator(event: UserUpdateDiscriminatorEvent) {
+        if (event.user.isSelf) {
+            return
+        }
+
+        bot.logger.info { "${event.user.displayName}: 識別子を変更しました. 元のユーザ名: @${event.entity.name}#${event.oldDiscriminator}" }
     }
 
     private val statusCache = mutableMapOf<Long, Long>()
-    override fun onUserOnlineStatusUpdate(event: UserOnlineStatusUpdateEvent) {
+    override fun onUserUpdateOnlineStatus(event: UserUpdateOnlineStatusEvent) {
         if (event.user.idLong == 192713931876204545) {
             return
         }
 
-        val previous = event.previousOnlineStatus
-        val current = event.currentOnlineStatus
+        val previous = event.oldOnlineStatus
+        val current = event.newOnlineStatus
         if (previous == OnlineStatus.OFFLINE) {
             statusCache[event.user.idLong] = Date().time
         }
@@ -88,13 +96,13 @@ class User(bot: GLaDOS): ListenerFeature(bot) {
     }
 
     private val gameCache = mutableMapOf<Long, Long>()
-    override fun onUserGameUpdate(event: UserGameUpdateEvent) {
+    override fun onUserUpdateGame(event: UserUpdateGameEvent) {
         if (event.user.isBot) {
             return
         }
 
-        val previous = event.previousGame
-        val current = event.currentGame
+        val previous = event.oldGame
+        val current = event.newGame
 
         val text = if (previous?.name == null && current?.name != null) {
             gameCache[event.user.idLong] = Date().time
@@ -127,8 +135,8 @@ class User(bot: GLaDOS): ListenerFeature(bot) {
         }
     }
 
-    override fun onUserAvatarUpdate(event: UserAvatarUpdateEvent) {
-        bot.logger.info { "${event.user.displayName}: アイコンを変更しました. 元のアイコン: ${event.previousAvatarUrl}, 現在のアイコン: ${event.user.avatarUrl}" }
+    override fun onUserUpdateAvatar(event: UserUpdateAvatarEvent) {
+        bot.logger.info { "${event.user.displayName}: アイコンを変更しました. 元のアイコン: ${event.oldAvatarUrl}, 現在のアイコン: ${event.user.avatarUrl}" }
     }
 
     override fun onUserBlocked(event: UserBlockedEvent) {
