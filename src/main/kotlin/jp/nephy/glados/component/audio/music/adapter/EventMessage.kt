@@ -7,13 +7,9 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackState
 import jp.nephy.glados.GLaDOS
-import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.audio.music.*
 import jp.nephy.glados.component.audio.music.PlayerEmoji
-import jp.nephy.glados.component.helper.EmbedBuilder
-import jp.nephy.glados.component.helper.deleteQueue
-import jp.nephy.glados.component.helper.embedMessage
-import jp.nephy.glados.component.helper.toMilliSecondString
+import jp.nephy.glados.component.helper.*
 import net.dv8tion.jda.core.entities.Message
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
@@ -43,7 +39,7 @@ class EventMessage(private val bot: GLaDOS, private val guildPlayer: GuildPlayer
         val nico = track.nicoCache
         val nicoRanking = track.nicoRankingCache
         return builder.apply {
-            title(track.info.title, track.info.uri)
+            title(track.info.title ?: track.info.identifier, track.info.uri)
             descriptionBuilder {
                 appendln("by ${track.info.author}")
                 if (soundCloud != null) {
