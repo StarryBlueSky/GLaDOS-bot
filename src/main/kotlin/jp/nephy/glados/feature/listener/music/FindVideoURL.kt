@@ -40,7 +40,7 @@ class FindVideoURL(bot: GLaDOS): ListenerFeature(bot) {
                                             author("動画URLを検出しました")
                                             title("\"${track.info.title}\" (${track.info.length.toMilliSecondString()}) を再生キューに追加します")
                                             description {
-                                                if (guildPlayer.controls.isEmptyQueue || guildPlayer.controls.currentTrack == track) {
+                                                if ((guildPlayer.controls.isEmptyQueue && ! guildPlayer.controls.isPlaying) || guildPlayer.controls.currentTrack == track) {
                                                     "まもなく再生されます。"
                                                 } else {
                                                     "再生まであと${guildPlayer.controls.queue.size + 1}曲 (およそ${guildPlayer.controls.totalDuration.toMilliSecondString()})"
@@ -59,7 +59,7 @@ class FindVideoURL(bot: GLaDOS): ListenerFeature(bot) {
                                             title("プレイリスト \"${playlist.name}\" (${playlist.tracks.size}曲, ${playlist.tracks.totalDuration.toMilliSecondString()}) を再生キューに追加します")
 
                                             description {
-                                                if (guildPlayer.controls.isEmptyQueue) {
+                                                if ((guildPlayer.controls.isEmptyQueue && ! guildPlayer.controls.isPlaying) || guildPlayer.controls.currentTrack == playlist.tracks.firstOrNull()) {
                                                     "まもなく再生されます。"
                                                 } else {
                                                     "再生まであと${guildPlayer.controls.queue.size + 1}曲 (およそ${guildPlayer.controls.totalDuration.toMilliSecondString()})"

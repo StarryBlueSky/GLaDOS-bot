@@ -30,7 +30,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                         author("トラックが見つかりました")
                         title("\"${track.info.title}\" (${track.info.length.toMilliSecondString()}) を再生キューに追加します")
                         description {
-                            if (guildPlayer.controls.isEmptyQueue || guildPlayer.controls.currentTrack == track) {
+                            if ((guildPlayer.controls.isEmptyQueue && ! guildPlayer.controls.isPlaying) || guildPlayer.controls.currentTrack == track) {
                                 "まもなく再生されます。"
                             } else {
                                 "再生まであと${guildPlayer.controls.queue.size + 1}曲 (およそ${guildPlayer.controls.totalDuration.toMilliSecondString()})"
@@ -51,7 +51,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                             author("トラックが見つかりました")
                             title("\"${playlist.selectedTrack.info.title}\" (${playlist.selectedTrack.info.length.toMilliSecondString()}) を再生キューに追加します")
                             description {
-                                if (guildPlayer.controls.isEmptyQueue || guildPlayer.controls.currentTrack == playlist.selectedTrack) {
+                                if ((guildPlayer.controls.isEmptyQueue && ! guildPlayer.controls.isPlaying) || guildPlayer.controls.currentTrack == playlist.selectedTrack) {
                                     "まもなく再生されます。"
                                 } else {
                                     "再生まであと${guildPlayer.controls.queue.size + 1}曲 (およそ${guildPlayer.controls.totalDuration.toMilliSecondString()})"
@@ -116,7 +116,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                                         author("トラックが見つかりました")
                                         title("\"${track.info.title}\" (${track.info.length.toMilliSecondString()}) を再生キューに追加します")
                                         description {
-                                            if (guildPlayer.controls.isEmptyQueue || guildPlayer.controls.currentTrack == track) {
+                                            if ((guildPlayer.controls.isEmptyQueue && ! guildPlayer.controls.isPlaying) || guildPlayer.controls.currentTrack == track) {
                                                 "まもなく再生されます。"
                                             } else {
                                                 "再生まであと${guildPlayer.controls.queue.size + 1}曲 (およそ${guildPlayer.controls.totalDuration.toMilliSecondString()})"
@@ -170,7 +170,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                                         author("トラックが見つかりました")
                                         title("\"${track.info.title}\" (${track.info.length.toMilliSecondString()}) を再生キューに追加します")
                                         description {
-                                            if (guildPlayer.controls.isEmptyQueue || guildPlayer.controls.currentTrack == track) {
+                                            if ((guildPlayer.controls.isEmptyQueue && ! guildPlayer.controls.isPlaying) || guildPlayer.controls.currentTrack == track) {
                                                 "まもなく再生されます。"
                                             } else {
                                                 "再生まであと${guildPlayer.controls.queue.size + 1}曲 (およそ${guildPlayer.controls.totalDuration.toMilliSecondString()})"
