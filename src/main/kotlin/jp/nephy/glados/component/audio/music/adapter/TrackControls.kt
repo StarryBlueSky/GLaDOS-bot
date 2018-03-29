@@ -55,34 +55,38 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
     private fun replace(newTrack: AudioTrack) {
         val playing = currentTrack
         if (playing != null) {
-            val lastPosition = playing.position
-            val lastType = playing.type
-            val lastYoutubedl = playing.youtubedl
-            val lastSoundCloud = playing.soundCloudCache
-            val lastNicoCache = playing.nicoCache
-            val lastNicoRankingCache = playing.nicoRankingCache
-            val lastYoutubeCache = playing.youtubeCache
-            add(playing.makeClone().apply {
-                position = lastPosition
-                typeSetter = lastType
-                youtubedlSetter = lastYoutubedl
-                if (lastSoundCloud != null) {
-                    soundCloudCacheSetter = lastSoundCloud
-                }
-                if (lastNicoCache != null) {
-                    nicoCacheSetter = lastNicoCache
-                }
-                if (lastNicoRankingCache != null) {
-                    nicoRankingCacheSetter = lastNicoRankingCache
-                }
-                if (lastYoutubeCache != null) {
-                    youtubeCacheSetter = lastYoutubeCache
-                }
-            }, 0)
+            add(playing.makeCloneExactly(), 0)
         }
 
         guildPlayer.eventMessage.deleteLatestMessage()
         player.playTrack(newTrack)
+    }
+
+    private fun AudioTrack.makeCloneExactly(): AudioTrack {
+        val lastPosition = position
+        val lastType = type
+        val lastYoutubedl = youtubedl
+        val lastSoundCloud = soundCloudCache
+        val lastNicoCache = nicoCache
+        val lastNicoRankingCache = nicoRankingCache
+        val lastYoutubeCache = youtubeCache
+        return makeClone().apply {
+            position = lastPosition
+            typeSetter = lastType
+            youtubedlSetter = lastYoutubedl
+            if (lastSoundCloud != null) {
+                soundCloudCacheSetter = lastSoundCloud
+            }
+            if (lastNicoCache != null) {
+                nicoCacheSetter = lastNicoCache
+            }
+            if (lastNicoRankingCache != null) {
+                nicoRankingCacheSetter = lastNicoRankingCache
+            }
+            if (lastYoutubeCache != null) {
+                youtubeCacheSetter = lastYoutubeCache
+            }
+        }
     }
 
     private fun skip() {
@@ -111,25 +115,25 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
     private val nextUserRequestTrack: AudioTrack?
         get() = userRequestQueue.removeAtOrNull(0).apply {
             if (isRepeatPlaylistEnabled && this != null) {
-                userRequestQueue.add(this.makeClone())
+                userRequestQueue.add(makeCloneExactly())
             }
         }
     private val nextAutoPlaylistTrack: AudioTrack?
         get() = autoPlaylistQueue.removeAtOrNull(0).apply {
             if (this != null) {
-                autoPlaylistQueue.add(this.makeClone())
+                autoPlaylistQueue.add(makeCloneExactly())
             }
         }
     private val nextSoundCloudTrack: AudioTrack?
         get() = soundCloudQueue.removeAtOrNull(0).apply {
             if (isRepeatPlaylistEnabled && this != null) {
-                soundCloudQueue.add(this.makeClone())
+                soundCloudQueue.add(makeCloneExactly())
             }
         }
     private val nextNicoRankingTrack: AudioTrack?
         get() = nicoRankingQueue.removeAtOrNull(0).apply {
             if (isRepeatPlaylistEnabled && this != null) {
-                nicoRankingQueue.add(this.makeClone())
+                nicoRankingQueue.add(makeCloneExactly())
             }
         }
 
@@ -173,11 +177,15 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
         bot.logger.info { "MusicPlayer: 前方スキップ" }
     }
     fun seekBack(sec: Int) {
-        currentTrack?.position = sec - sec * 1000L
+        if (currentTrack != null) {
+            currentTrack!!.position -= sec * 1000L
+        }
         bot.logger.info { "MusicPlayer: 後方シーク (${sec}秒)" }
     }
     fun seekForward(sec: Int) {
-        currentTrack?.position = sec + sec * 1000L
+        if (currentTrack != null) {
+            currentTrack!!.position += sec * 1000L
+        }
         bot.logger.info { "MusicPlayer: 前方シーク (${sec}秒)" }
     }
 
@@ -185,7 +193,7 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
         get() = player.volume
     val isMuted: Boolean
         get() = player.volume == 0
-    private var previousVolume: Int = bot.parameter.defaultPlayerVolume
+    private var previousVolume = bot.parameter.defaultPlayerVolume
     fun mute() {
         previousVolume = volume
         player.volume = 0
@@ -267,7 +275,7 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
     override fun onTrackEnd(player: AudioPlayer, track: AudioTrack, endReason: AudioTrackEndReason) {
         if (endReason.mayStartNext) {
             if (isRepeatTrackEnabled) {
-                player.playTrack(track.makeClone())
+                player.playTrack(track.makeCloneExactly())
             } else {
                 skip()
             }
@@ -309,7 +317,6 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
         }
 
         player.stopTrack()
-
         bot.logger.info { "MusicPlayerの再生キューが空になりました." }
     }
 }
