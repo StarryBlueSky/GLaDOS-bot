@@ -53,12 +53,10 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
     }
 
     private fun replace(newTrack: AudioTrack) {
-        val playing = currentTrack
-        if (playing != null) {
-            add(playing.makeCloneExactly(), 0)
+        if (currentTrack != null) {
+            add(currentTrack!!.makeCloneExactly(), 0)
         }
 
-        guildPlayer.eventMessage.deleteLatestMessage()
         player.playTrack(newTrack)
     }
 
@@ -92,7 +90,6 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
     private fun skip() {
         val nextTrack = nextUserRequestTrack ?: return onQueueEmpty()
 
-        guildPlayer.eventMessage.deleteLatestMessage()
         player.playTrack(nextTrack)
     }
 
