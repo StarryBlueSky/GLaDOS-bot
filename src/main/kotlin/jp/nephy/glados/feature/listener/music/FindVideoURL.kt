@@ -38,7 +38,7 @@ class FindVideoURL(bot: GLaDOS): ListenerFeature(bot) {
                                     override fun onLoadTrack(track: AudioTrack) {
                                         event.channel.embedMention(event.member) {
                                             author("動画URLを検出しました")
-                                            title("\"${track.info.title}\" (${track.info.length.toMilliSecondString()}) を再生キューに追加します")
+                                            title("\"${track.info.effectiveTitle}\" (${track.info.length.toMilliSecondString()}) を再生キューに追加します")
                                             description {
                                                 if ((guildPlayer.controls.isEmptyQueue && ! guildPlayer.controls.isPlaying) || guildPlayer.controls.currentTrack == track) {
                                                     "まもなく再生されます。"
@@ -67,7 +67,7 @@ class FindVideoURL(bot: GLaDOS): ListenerFeature(bot) {
                                             }
 
                                             playlist.tracks.forEachIndexed { i, audioTrack ->
-                                                field("\n#${(i + 1).toString().padEnd(playlist.tracks.size.charLength)}") { audioTrack.info.title }
+                                                field("\n#${(i + 1).toString().padEnd(playlist.tracks.size.charLength)}") { audioTrack.info.effectiveTitle }
                                             }
                                             color(Color.Good)
                                             timestamp()
@@ -76,7 +76,7 @@ class FindVideoURL(bot: GLaDOS): ListenerFeature(bot) {
                                         guildPlayer.controls.addAll(playlist.tracks)
                                     }
 
-                                    override fun onNoResult(guildPlayer: GuildPlayer) {
+                                    override fun onNoResult() {
                                         event.channel.embedMention(event.member) {
                                             author("エラー")
                                             title("`${result.value}` の結果は見つかりませんでした。")
@@ -85,7 +85,7 @@ class FindVideoURL(bot: GLaDOS): ListenerFeature(bot) {
                                         }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
                                     }
 
-                                    override fun onFailed(exception: FriendlyException, guildPlayer: GuildPlayer) {
+                                    override fun onFailed(exception: FriendlyException) {
                                         event.channel.embedMention(event.member) {
                                             author("エラー")
                                             title("`${result.value}` の読み込みに失敗しました。")

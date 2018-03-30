@@ -31,7 +31,7 @@ class Queue(bot: GLaDOS): CommandFeature(bot) {
                 var ms = playing?.remaining ?: 0
 
                 if (playing != null) {
-                    title(playing.info.title, playing.info.uri)
+                    title(playing.info.effectiveTitle, playing.info.uri)
                     descriptionBuilder {
                         if (playing.type != TrackType.UserRequest) {
                             appendln("このトラックは自動再生です。ユーザがリクエストしたトラックではありません。")
@@ -51,7 +51,7 @@ class Queue(bot: GLaDOS): CommandFeature(bot) {
                     "総トラック数: ${queue.size}, 総再生時間: ${queue.sumBy { it.duration }.toMilliSecondString()}"
                 }
                 queue.take(20).forEachIndexed { i, it ->
-                    field("#${(i + 1).toString().padEnd(queue.size.charLength)}: ${it.info.title}") {
+                    field("#${(i + 1).toString().padEnd(queue.size.charLength)}: ${it.info.effectiveTitle}") {
                         "長さ: ${it.duration.toMilliSecondString()} / 再生までおよそ ${ms.toMilliSecondString()}"
                     }
                     ms += it.duration

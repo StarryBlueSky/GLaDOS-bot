@@ -1,6 +1,7 @@
 package jp.nephy.glados.component.audio.music
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo
 import jp.nephy.glados.component.api.niconico.model.SearchData
 import jp.nephy.glados.component.api.niconico.model.Video
 import jp.nephy.glados.component.api.soundcloud.model.Collection
@@ -12,6 +13,9 @@ val AudioTrack.remaining: Long
     get() = duration - position
 val List<AudioTrack>.totalDuration: Long
     get() = sumBy { it.duration }
+
+val AudioTrackInfo.effectiveTitle: String
+    get() = title ?: identifier
 
 private val trackTypeMap = mutableMapOf<AudioTrack, TrackType>()
 val AudioTrack.type: TrackType
