@@ -2,6 +2,7 @@ package jp.nephy.glados
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter
+import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory
 import jp.nephy.glados.component.MessageCacheManager
 import jp.nephy.glados.component.api.ApiClient
 import jp.nephy.glados.component.audio.music.PlayerManager
@@ -69,7 +70,7 @@ class GLaDOS(val config: GLaDOSConfig, val parameter: GLaDOSParameter, val secre
 
     val jda = JDABuilder(AccountType.BOT)
             .setToken(config.token)
-            //.setAudioSendFactory(NativeAudioSendFactory())
+            .setAudioSendFactory(NativeAudioSendFactory())
             .addEventListener(eventWaiter)
             .addEventListener(client)
             .apply {
