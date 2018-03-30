@@ -17,14 +17,20 @@ class PlayerReactionWaiter(bot: GLaDOS): ListenerFeature(bot) {
     private var clearVote = 0
 
     override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {
-        val guildPlayer = bot.playerManager.getGuildPlayer(event.guild)
-        if (event.user.isSelf || event.messageIdLong != guildPlayer.eventMessage.lastNowPlayingMessage?.idLong) {
+        if (event.user.isSelf) {
             return
         }
+        val message = bot.messageCacheManager.get(event.messageIdLong, remove = false) ?: return
+        if (! message.author.isSelf) {
+            return
+        }
+
+        val emoji = PlayerEmoji.fromEmoji(event.reactionEmote.name) ?: return
         if (event.guild.selfMember.hasPermission(Permission.MESSAGE_MANAGE)) {
             event.reaction.removeReaction(event.user).queue()
         }
 
+        val guildPlayer = bot.playerManager.getGuildPlayer(event.guild)
         if (! event.member.voiceState.inVoiceChannel() || event.member.voiceState.channel != guildPlayer.voiceChannel) {
             return event.channel.embedMention(event.member) {
                 title("私が再生しているボイスチャンネルに参加していないのでコマンドは実行できません。")
@@ -32,7 +38,6 @@ class PlayerReactionWaiter(bot: GLaDOS): ListenerFeature(bot) {
             }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
         }
 
-        val emoji = PlayerEmoji.fromEmoji(event.reactionEmote.name) ?: return
         val config = bot.config.getGuildConfig(event.guild)
 
         when (emoji) {
@@ -205,17 +210,17 @@ class PlayerReactionWaiter(bot: GLaDOS): ListenerFeature(bot) {
                 }
             }
             PlayerEmoji.VolumeDown -> {
-                guildPlayer.controls.volumeDown(10)
+                guildPlayer.controls.volumeDown(5)
                 event.channel.embedMention(event.member) {
-                    title("ボリュームを下げました。")
+                    title("ボリュームを下げました。(-5%)")
                     description { "ボリュームを ${guildPlayer.controls.volume}% に変更しました。" }
                     color(Color.Good)
                 }
             }
             PlayerEmoji.VolumeUp -> {
-                guildPlayer.controls.volumeUp(10)
+                guildPlayer.controls.volumeUp(5)
                 event.channel.embedMention(event.member) {
-                    title("ボリュームを上げました。")
+                    title("ボリュームを上げました。(+5%)")
                     description { "ボリュームを ${guildPlayer.controls.volume}% に変更しました。" }
                     color(Color.Good)
                 }
