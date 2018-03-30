@@ -12,6 +12,10 @@ import java.util.concurrent.TimeUnit
 
 class DetectServerMute(bot: GLaDOS): ListenerFeature(bot) {
     override fun onGuildVoiceGuildMute(event: GuildVoiceGuildMuteEvent) {
+        if (! bot.config.getGuildConfig(event.guild).option.disableServerMute) {
+            return
+        }
+
         if (event.member.user.isSelf && event.isGuildMuted) {
             val guildPlayer = bot.playerManager.getGuildPlayer(event.guild)
             if (guildPlayer.controls.isPlaying) {

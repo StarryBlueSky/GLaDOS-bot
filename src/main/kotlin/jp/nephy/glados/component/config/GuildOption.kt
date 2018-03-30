@@ -8,6 +8,7 @@ data class GuildOption(
         val useAutoPlaylist: Boolean = false,
         val useFindVideoURL: Boolean = false,
         val useNiconicoDict: Boolean = false,
+        val disableServerMute: Boolean = false,
 
         val ignoreUserIds: List<Long> = emptyList(),
 
