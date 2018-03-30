@@ -5,8 +5,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.audio.music.PlayerLoadResultHandler
 import jp.nephy.glados.component.audio.music.TrackType
+import jp.nephy.glados.component.audio.music.groupIdSetter
 import jp.nephy.glados.feature.ListenerFeature
 import net.dv8tion.jda.core.events.ReadyEvent
+import java.util.*
 
 
 class AutoPlaylist(bot: GLaDOS): ListenerFeature(bot) {
@@ -27,14 +29,19 @@ class AutoPlaylist(bot: GLaDOS): ListenerFeature(bot) {
                 return@forEach
             }
 
+            val groupId = Date().time
             playlist.forEach {
                 guildPlayer.loadTrack(it, TrackType.AutoPlaylist, object: PlayerLoadResultHandler {
                     override fun onLoadTrack(track: AudioTrack) {
+                        track.groupIdSetter = groupId
                         guildPlayer.controls.add(track)
                     }
 
                     override fun onLoadPlaylist(playlist: AudioPlaylist) {
                         playlist.tracks.shuffle()
+                        playlist.tracks.forEach {
+                            it.groupIdSetter = groupId
+                        }
                         guildPlayer.controls.addAll(playlist.tracks)
                     }
                 })
