@@ -23,12 +23,12 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
     }
 
     override fun executeCommand(event: CommandEvent) {
-        if (event.args.startsWith("http")) {
+        if (PlayableVideoURL.values().any { it.match(event.args) }) {
             guildPlayer.loadTrack(event.args, TrackType.UserRequest, object: PlayerLoadResultHandler {
                 override fun onLoadTrack(track: AudioTrack) {
                     event.embedMention {
                         author("トラックが見つかりました")
-                        title("\"${track.info.title}\" (${track.info.length.toMilliSecondString()}) を再生キューに追加します")
+                        title("\"${track.info.effectiveTitle}\" (${track.info.length.toMilliSecondString()}) を再生キューに追加します")
                         description {
                             if ((guildPlayer.controls.isEmptyQueue && ! guildPlayer.controls.isPlaying) || guildPlayer.controls.currentTrack == track) {
                                 "まもなく再生されます。"
@@ -42,14 +42,14 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
 
                     guildPlayer.controls.add(track)
 
-                    bot.logger.info { "${event.member.fullName}が `${track.info.title}` を再生キューに追加しました. (${track.sourceManager.sourceName})" }
+                    bot.logger.info { "${event.member.fullName}が `${track.info.effectiveTitle}` を再生キューに追加しました. (${track.sourceManager.sourceName})" }
                 }
 
                 override fun onLoadPlaylist(playlist: AudioPlaylist) {
                     if (playlist.selectedTrack != null) {
                         event.embedMention {
                             author("トラックが見つかりました")
-                            title("\"${playlist.selectedTrack.info.title}\" (${playlist.selectedTrack.info.length.toMilliSecondString()}) を再生キューに追加します")
+                            title("\"${playlist.selectedTrack.info.effectiveTitle}\" (${playlist.selectedTrack.info.length.toMilliSecondString()}) を再生キューに追加します")
                             description {
                                 if ((guildPlayer.controls.isEmptyQueue && ! guildPlayer.controls.isPlaying) || guildPlayer.controls.currentTrack == playlist.selectedTrack) {
                                     "まもなく再生されます。"
@@ -66,8 +66,11 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                         event.embedMention {
                             author("プレイリストが見つかりました")
                             title("プレイリスト \"${playlist.name}\" (${playlist.tracks.size}曲, ${playlist.tracks.totalDuration.toMilliSecondString()}) を再生キューに追加します")
-                            playlist.tracks.forEachIndexed { i, audioTrack ->
-                                field("\n#${(i + 1).toString().padEnd(playlist.tracks.size.charLength)}") { audioTrack.info.title }
+                            playlist.tracks.take(20).forEachIndexed { i, audioTrack ->
+                                field("#${(i + 1).toString().padEnd(playlist.tracks.size.charLength)}") { audioTrack.info.effectiveTitle }
+                            }
+                            if (playlist.tracks.size > 20) {
+                                field("...") { "#21以降のトラックは省略されました。" }
                             }
                             color(Color.Good)
                             timestamp()
@@ -77,7 +80,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                     }
                 }
 
-                override fun onNoResult(guildPlayer: GuildPlayer) {
+                override fun onNoResult() {
                     event.embedMention {
                         author("エラー")
                         title("`${event.args}` の結果は見つかりませんでした。")
@@ -86,7 +89,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                     }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
                 }
 
-                override fun onFailed(exception: FriendlyException, guildPlayer: GuildPlayer) {
+                override fun onFailed(exception: FriendlyException) {
                     event.embedMention {
                         author("エラー")
                         title("`${event.args}` の読み込みに失敗しました。")
@@ -97,15 +100,25 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                 }
             })
         } else {
-            // "ytsearch:${event.args}"
+            val (priority, word) = when {
+                event.args.startsWith("n:") -> {
+                    SearchPriority.Niconico to event.args.removePrefix("n:")
+                }
+                event.args.startsWith("y:") -> {
+                    // "ytsearch:${event.args}"
+                    SearchPriority.YouTube to event.args.removePrefix("y:")
+                }
+                else -> SearchPriority.Undefined to event.args
+            }
 
-            guildPlayer.searchTrack(event.args, handler = object: PlayerSearchResultHandler {
+            guildPlayer.searchTrack(word, priority, handler = object: PlayerSearchResultHandler {
                 override fun onFoundNiconicoResult(result: SearchResult) {
                     helper.promptBuilder(event.textChannel, event.member) {
                         listPrompt(
                                 result.data, result.data.first(), { "${it.title} (${it.lengthSeconds}秒)" }, { "${it.description.take(20)}..." },
                                 author = "ニコニコ動画で${result.meta.totalCount}件の動画が見つかりました",
-                                title = "\"${event.args}\" の検索結果です",
+                                title = "\"$word\" の検索結果です",
+                                color = Color.Niconico,
                                 timeoutSec = 30
                         ) { selected, _, _ ->
                             guildPlayer.loadTrack("http://www.nicovideo.jp/watch/${selected.contentId}", TrackType.UserRequest, object: PlayerLoadResultHandler {
@@ -114,7 +127,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
 
                                     event.embedMention {
                                         author("トラックが見つかりました")
-                                        title("\"${track.info.title}\" (${track.info.length.toMilliSecondString()}) を再生キューに追加します")
+                                        title("\"${track.info.effectiveTitle}\" (${track.info.length.toMilliSecondString()}) を再生キューに追加します")
                                         description {
                                             if ((guildPlayer.controls.isEmptyQueue && ! guildPlayer.controls.isPlaying) || guildPlayer.controls.currentTrack == track) {
                                                 "まもなく再生されます。"
@@ -128,22 +141,22 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
 
                                     guildPlayer.controls.add(track)
 
-                                    bot.logger.info { "${event.member.fullName}が `${track.info.title}` を再生キューに追加しました. (${track.sourceManager.sourceName})" }
+                                    bot.logger.info { "${event.member.fullName}が `${track.info.effectiveTitle}` を再生キューに追加しました. (${track.sourceManager.sourceName})" }
                                 }
 
-                                override fun onNoResult(guildPlayer: GuildPlayer) {
+                                override fun onNoResult() {
                                     event.embedMention {
                                         author("エラー")
-                                        title("`${event.args}` の結果は見つかりませんでした。")
+                                        title("`$word` の結果は見つかりませんでした。")
                                         color(Color.Bad)
                                         timestamp()
                                     }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
                                 }
 
-                                override fun onFailed(exception: FriendlyException, guildPlayer: GuildPlayer) {
+                                override fun onFailed(exception: FriendlyException) {
                                     event.embedMention {
                                         author("エラー")
-                                        title("`${event.args}` の読み込みに失敗しました。")
+                                        title("`$word` の読み込みに失敗しました。")
                                         description { exception.localizedMessage }
                                         color(Color.Bad)
                                         timestamp()
@@ -159,7 +172,8 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                         listPrompt(
                                 result, result.first(), { it.snippet.title }, { "${it.snippet.description.orEmpty().take(20)}..." },
                                 author = "YouTubeで${result.size}件の動画が見つかりました",
-                                title = "\"${event.args}\" の検索結果です",
+                                title = "\"$word\" の検索結果です",
+                                color = Color.YouTube,
                                 timeoutSec = 30
                         ) { selected, _, _ ->
                             guildPlayer.loadTrack("https://www.youtube.com/watch?v=${selected.id.videoId}", TrackType.UserRequest, object: PlayerLoadResultHandler {
@@ -168,7 +182,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
 
                                     event.embedMention {
                                         author("トラックが見つかりました")
-                                        title("\"${track.info.title}\" (${track.info.length.toMilliSecondString()}) を再生キューに追加します")
+                                        title("\"${track.info.effectiveTitle}\" (${track.info.length.toMilliSecondString()}) を再生キューに追加します")
                                         description {
                                             if ((guildPlayer.controls.isEmptyQueue && ! guildPlayer.controls.isPlaying) || guildPlayer.controls.currentTrack == track) {
                                                 "まもなく再生されます。"
@@ -182,22 +196,22 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
 
                                     guildPlayer.controls.add(track)
 
-                                    bot.logger.info { "${event.member.fullName}が `${track.info.title}` を再生キューに追加しました. (${track.sourceManager.sourceName})" }
+                                    bot.logger.info { "${event.member.fullName}が `${track.info.effectiveTitle}` を再生キューに追加しました. (${track.sourceManager.sourceName})" }
                                 }
 
-                                override fun onNoResult(guildPlayer: GuildPlayer) {
+                                override fun onNoResult() {
                                     event.embedMention {
                                         author("エラー")
-                                        title("`${event.args}` の結果は見つかりませんでした。")
+                                        title("`$word` の結果は見つかりませんでした。")
                                         color(Color.Bad)
                                         timestamp()
                                     }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
                                 }
 
-                                override fun onFailed(exception: FriendlyException, guildPlayer: GuildPlayer) {
+                                override fun onFailed(exception: FriendlyException) {
                                     event.embedMention {
                                         author("エラー")
-                                        title("`${event.args}` の読み込みに失敗しました。")
+                                        title("`$word` の読み込みに失敗しました。")
                                         description { exception.localizedMessage }
                                         color(Color.Bad)
                                         timestamp()
@@ -206,6 +220,15 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                             })
                         }
                     }
+                }
+
+                override fun onNoResult() {
+                    event.embedMention {
+                        author("エラー")
+                        title("`$word` の検索結果は見つかりませんでした。")
+                        color(Color.Bad)
+                        timestamp()
+                    }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
                 }
             })
         }

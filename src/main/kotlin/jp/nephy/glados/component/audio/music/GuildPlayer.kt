@@ -28,9 +28,7 @@ class GuildPlayer(private val bot: GLaDOS, val guild: Guild) {
     val connectionListener = ConnectionListenerImpl(bot)
     val sendingHandler = AudioSendHandlerImpl(player)
     val receivingHandler = AudioRecorder(bot, this)
-
     val controls = TrackControls(bot, this, player)
-    val eventMessage = EventMessage(bot, this)
 
     init {
         if (config.voiceChannel.general == null) {
@@ -42,19 +40,25 @@ class GuildPlayer(private val bot: GLaDOS, val guild: Guild) {
         // AudioSourceManagers.registerLocalSource(playerManager)
 
         player.addListener(controls)
-        player.addListener(eventMessage)
+        player.addListener(EventMessage(bot, this))
     }
 
-    fun searchTrack(query: String, limit: Int = 20, handler: PlayerSearchResultHandler) {
-        val nicoResult = bot.apiClient.niconico.search(query, limit = limit)
-        if (nicoResult.data.isNotEmpty()) {
-            return handler.onFoundNiconicoResult(nicoResult)
+    fun searchTrack(query: String, priority: SearchPriority, limit: Int = 20, handler: PlayerSearchResultHandler) {
+        if (priority == SearchPriority.Niconico || priority == SearchPriority.Undefined) {
+            val nicoResult = bot.apiClient.niconico.search(query, limit = limit)
+            if (nicoResult.data.isNotEmpty()) {
+                return handler.onFoundNiconicoResult(nicoResult)
+            }
         }
 
-        val youtubeResult = bot.apiClient.youtube.search(query, limit)
-        if (youtubeResult.isNotEmpty()) {
-            return handler.onFoundYouTubeResult(youtubeResult)
+        if (priority == SearchPriority.YouTube || priority == SearchPriority.Undefined) {
+            val youtubeResult = bot.apiClient.youtube.search(query, limit)
+            if (youtubeResult.isNotEmpty()) {
+                return handler.onFoundYouTubeResult(youtubeResult)
+            }
         }
+
+        handler.onNoResult()
     }
 
     fun loadTrack(identifier: String, trackType: TrackType, handler: PlayerLoadResultHandler) {
@@ -63,7 +67,7 @@ class GuildPlayer(private val bot: GLaDOS, val guild: Guild) {
                 track.typeSetter = trackType
 
                 handler.onLoadTrack(track)
-                bot.logger.info { "[${track.sourceManager.javaClass.simpleName}] トラック \"${track.info.title}\" by ${track.info.author} (${track.duration.toMilliSecondString()}) をキューに追加しました." }
+                bot.logger.info { "[${track.sourceManager.javaClass.simpleName}] トラック \"${track.info.effectiveTitle}\" by ${track.info.author} (${track.duration.toMilliSecondString()}) をキューに追加しました." }
             }
             override fun playlistLoaded(playlist: AudioPlaylist) {
                 if (playlist.tracks.isEmpty()) {
@@ -79,18 +83,18 @@ class GuildPlayer(private val bot: GLaDOS, val guild: Guild) {
                     buildString {
                         appendln("[${playlist.tracks.first().sourceManager.javaClass.simpleName}] プレイリスト \"${playlist.name}\" (${playlist.tracks.size}曲, ${playlist.tracks.sumBy { it.duration }.toMilliSecondString()}) をキューに追加しました.")
                         playlist.tracks.forEachIndexed { i, it ->
-                            appendln("#${(i + 1).toString().padEnd(playlist.tracks.size.toString().length)}: ${it.info.title} (${it.duration.toMilliSecondString()})")
+                            appendln("#${(i + 1).toString().padEnd(playlist.tracks.size.toString().length)}: ${it.info.effectiveTitle} (${it.duration.toMilliSecondString()})")
                         }
                     }
                 }
             }
 
             override fun noMatches() {
-                handler.onNoResult(this@GuildPlayer)
+                handler.onNoResult()
                 bot.logger.warn { "トラック \"$identifier\" は見つかりませんでした." }
             }
             override fun loadFailed(exception: FriendlyException) {
-                handler.onFailed(exception, this@GuildPlayer)
+                handler.onFailed(exception)
                 bot.logger.error { "トラック \"$identifier\" の読み込み中にエラーが発生しました." }
             }
         })
