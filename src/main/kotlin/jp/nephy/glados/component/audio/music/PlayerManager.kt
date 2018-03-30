@@ -13,9 +13,14 @@ class PlayerManager(private val bot: GLaDOS) {
                 GuildPlayer(bot, guild).apply {
                     guild.audioManager.isAutoReconnect = true
                     guild.audioManager.connectionListener = connectionListener
-                    guild.audioManager.sendingHandler = sendingHandler
-                    guild.audioManager.setReceivingHandler(receivingHandler)
-                    bot.logger.info { "${guild.name}のプレイヤーが生成されました." }
+                    guild.audioManager.sendingHandler = SilenceAudioSendHandler {
+                        // バグ対応: https://github.com/DV8FromTheWorld/JDA/issues/653
+                        guild.audioManager.sendingHandler = sendingHandler
+                        guild.audioManager.setReceivingHandler(receivingHandler)
+                        bot.logger.info { "[${voiceChannel.name} (${guild.name})] 無音の送信が終了しました." }
+                    }
+
+                    bot.logger.info { "[${voiceChannel.name} (${guild.name})] プレイヤーが生成されました." }
                 }
             }
         }
