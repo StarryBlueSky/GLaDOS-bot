@@ -1,7 +1,6 @@
 package jp.nephy.glados.feature.listener
 
 import jp.nephy.glados.GLaDOS
-import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.*
 import jp.nephy.glados.feature.ListenerFeature
 import jp.nephy.jsonkt.*
@@ -40,7 +39,8 @@ class GiveawayChecker(bot: GLaDOS): ListenerFeature(bot) {
             "imgur.com",
             "gamehag.net",
             "bananagiveaway.com",
-            "gamecode.win"
+            "gamecode.win",
+            "i.redd.it"
     )
 
     override fun onReady(event: ReadyEvent) {
