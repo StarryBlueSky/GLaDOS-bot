@@ -11,6 +11,7 @@ import jp.nephy.glados.component.audio.music.*
 import jp.nephy.glados.component.audio.music.PlayerEmoji
 import jp.nephy.glados.component.helper.*
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 
 class EventMessage(private val bot: GLaDOS, private val guildPlayer: GuildPlayer): AudioEventAdapter() {
@@ -93,16 +94,18 @@ class EventMessage(private val bot: GLaDOS, private val guildPlayer: GuildPlayer
         }
 
         bot.jda.getTextChannelById(guildPlayer.config.textChannel.bot).embedMessage { buildEmbed(this, track) }.queue {
-            PlayerEmoji.values().forEach { e ->
-                it.addReaction(e.emoji).queue()
-            }
+            thread {
+                PlayerEmoji.values().forEach { e ->
+                    it.addReaction(e.emoji).queue()
+                }
 
-            while (track.state == AudioTrackState.LOADING || track.state == AudioTrackState.SEEKING || track.state == AudioTrackState.PLAYING) {
-                Thread.sleep(bot.parameter.nowPlayingUpdateMs)
-                it.editMessage(buildEmbed(EmbedBuilder(), track).build()).queue()
-            }
+                while (track.state == AudioTrackState.LOADING || track.state == AudioTrackState.SEEKING || track.state == AudioTrackState.PLAYING) {
+                    Thread.sleep(bot.parameter.nowPlayingUpdateMs)
+                    it.editMessage(buildEmbed(EmbedBuilder(), track).build()).queue()
+                }
 
-            it.delete().queue()
+                it.delete().queue()
+            }
         }
     }
 
