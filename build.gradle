@@ -39,7 +39,7 @@ dependencies {
     compile "com.sedmelluq:jda-nas:1.0.6"
 
     /* Twitter */
-    compile "jp.nephy:penicillin:1.4.0"
+    compile "jp.nephy:penicillin:2.0.1"
 
     /* Google */
     compile "com.google.cloud:google-cloud:0.39.0-alpha"
