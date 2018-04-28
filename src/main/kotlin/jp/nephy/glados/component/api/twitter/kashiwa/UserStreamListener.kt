@@ -8,9 +8,12 @@ import jp.nephy.penicillin.request.streaming.UserStream
 import net.dv8tion.jda.core.entities.TextChannel
 
 class UserStreamListener(val bot: GLaDOS): UserStream.Listener {
+    companion object {
+        var hateCommandString = "hate"
+    }
+
     private val kashiwaGuild: List<GuildConfig> = bot.config.guilds.filter { it.textChannel.iHateSuchKashiwa != null }
     private val kashiwaChannel: List<TextChannel> = kashiwaGuild.map { bot.jda.getTextChannelById(it.textChannel.iHateSuchKashiwa!!) }
-    private val hateCommandString = "hate"
     private val client = bot.apiClient.twitter
     private val id = client.account.verifyCredentials().complete().result.id
 
