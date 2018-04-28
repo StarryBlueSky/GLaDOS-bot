@@ -67,6 +67,22 @@ class IHateSuchKashiwaWatcher(bot: GLaDOS): ListenerFeature(bot) {
             return
         }
 
+        val statusInfo = twitterUrl.matchEntire(event.message.contentDisplay)!!.destructured.toList()
+        val (screenName, statusId) = statusInfo[0] to statusInfo[1]
+        val twitter = bot.apiClient.twitter
+        twitter.user.show(screenName).queue {
+            val user = it.result
+            twitter.status.show(statusId.toLong()).queue {
+                val status = it.result
+                if (user.protected) {
+                    event.channel.embedMessage {
+                        title(user.name + " (@" + user.screenName + ")")
+                        description { status.fullText }
+                    }
+                }
+            }
+        }
+
         HateEmoji.values().forEach {
             event.message.addReaction(it.emoji).queue()
         }

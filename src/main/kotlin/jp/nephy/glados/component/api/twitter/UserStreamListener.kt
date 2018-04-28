@@ -1,45 +1,47 @@
 package jp.nephy.glados.component.api.twitter
 
+import com.google.gson.JsonObject
 import jp.nephy.penicillin.model.*
-import jp.nephy.penicillin.streaming.IUserStreamListener
+import jp.nephy.penicillin.request.streaming.UserStream
 
 
-class UserStreamListener: IUserStreamListener {
-    /* Status */
+class UserStreamListener: UserStream.Listener {
     override fun onStatus(status: Status) {}
     override fun onDirectMessage(message: DirectMessage) {}
 
+    override fun onAnyEvent(event: UserStreamEvent) {}
     /* Status event */
-    override fun onFavorite(event: StatusEvent) {}
-    override fun onUnfavorite(event: StatusEvent) {}
-    override fun onFavoritedRetweet(event: StatusEvent) {}
-    override fun onRetweetedRetweet(event: StatusEvent) {}
-    override fun onQuotedTweet(event: StatusEvent) {}
-
+    override fun onAnyStatusEvent(event: UserStreamStatusEvent) {}
+    override fun onFavorite(event: UserStreamStatusEvent) {}
+    override fun onUnfavorite(event: UserStreamStatusEvent) {}
+    override fun onFavoritedRetweet(event: UserStreamStatusEvent) {}
+    override fun onRetweetedRetweet(event: UserStreamStatusEvent) {}
+    override fun onQuotedTweet(event: UserStreamStatusEvent) {}
     /* List event */
-    override fun onListCreated(event: ListEvent) {}
-    override fun onListDestroyed(event: ListEvent) {}
-    override fun onListUpdated(event: ListEvent) {}
-    override fun onListMemberAdded(event: ListEvent) {}
-    override fun onListMemberRemoved(event: ListEvent) {}
-    override fun onListUserSubscribed(event: ListEvent) {}
-    override fun onListUserUnsubscribed(event: ListEvent) {}
-
+    override fun onAnyListEvent(event: UserStreamListEvent) {}
+    override fun onListCreated(event: UserStreamListEvent) {}
+    override fun onListDestroyed(event: UserStreamListEvent) {}
+    override fun onListUpdated(event: UserStreamListEvent) {}
+    override fun onListMemberAdded(event: UserStreamListEvent) {}
+    override fun onListMemberRemoved(event: UserStreamListEvent) {}
+    override fun onListUserSubscribed(event: UserStreamListEvent) {}
+    override fun onListUserUnsubscribed(event: UserStreamListEvent) {}
     /* User event */
-    override fun onFollow(event: UserEvent) {}
-    override fun onUnfollow(event: UserEvent) {}
-    override fun onBlock(event: UserEvent) {}
-    override fun onUnblock(event: UserEvent) {}
-    override fun onMute(event: UserEvent) {}
-    override fun onUnmute(event: UserEvent) {}
-    override fun onUserUpdate(event: UserEvent) {}
+    override fun onAnyUserEvent(event: UserStreamUserEvent) {}
+    override fun onFollow(event: UserStreamUserEvent) {}
+    override fun onUnfollow(event: UserStreamUserEvent) {}
+    override fun onBlock(event: UserStreamUserEvent) {}
+    override fun onUnblock(event: UserStreamUserEvent) {}
+    override fun onMute(event: UserStreamUserEvent) {}
+    override fun onUnmute(event: UserStreamUserEvent) {}
+    override fun onUserUpdate(event: UserStreamUserEvent) {}
 
     /* Misc */
-    override fun onFriends(friends: Friends) {}
-    override fun onDelete(delete: Delete) {}
-    override fun onScrubGeo(scrubGeo: ScrubGeo) {}
-    override fun onStatusWithheld(withheld: StatusWithheld) {}
-    override fun onLimit(limit: Limit) {}
+    override fun onFriends(friends: UserStreamFriends) {}
+    override fun onDelete(delete: StreamDelete) {}
+    override fun onScrubGeo(scrubGeo: UserStreamScrubGeo) {}
+    override fun onStatusWithheld(withheld: UserStreamStatusWithheld) {}
+    override fun onLimit(limit: UserStreamLimit) {}
 
-    override fun onUnknownData(data: String) {}
+    override fun onUnknownData(data: JsonObject) {}
 }
