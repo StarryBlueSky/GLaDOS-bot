@@ -2,6 +2,7 @@ package jp.nephy.glados.component.api.twitter.kashiwa
 
 import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.config.GuildConfig
+import jp.nephy.glados.component.helper.StringLinkedSingleCache
 import jp.nephy.glados.component.helper.embedMessage
 import jp.nephy.penicillin.model.*
 import jp.nephy.penicillin.request.streaming.UserStream
@@ -9,7 +10,7 @@ import net.dv8tion.jda.core.entities.TextChannel
 
 class UserStreamListener(val bot: GLaDOS): UserStream.Listener {
     companion object {
-        var hateCommandString = "hate"
+        var hateCommandString by StringLinkedSingleCache{ "hate" }
     }
 
     private val kashiwaGuild: List<GuildConfig> = bot.config.guilds.filter { it.textChannel.iHateSuchKashiwa != null }
