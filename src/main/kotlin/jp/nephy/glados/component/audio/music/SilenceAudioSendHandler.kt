@@ -7,16 +7,15 @@ class SilenceAudioSendHandler(private val onStop: () -> Unit): AudioSendHandler 
     private val startTime = Date().time
     private var canProvide = true
 
-    private val silenceData = arrayOf(0xF8.toByte(), 0xFF.toByte(), 0xFE.toByte())
+    private val silenceData = byteArrayOf(0xF8.toByte(), 0xFF.toByte(), 0xFE.toByte())
 
     override fun canProvide() = canProvide
     override fun provide20MsAudio(): ByteArray {
-        if (((Date().time - startTime) / 1000) > 3) {
+        if ((Date().time - startTime) > 3000) {
             canProvide = false
-
         }
 
-        return silenceData.toByteArray().apply {
+        return silenceData.apply {
             if (! canProvide) {
                 onStop()
             }

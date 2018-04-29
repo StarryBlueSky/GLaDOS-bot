@@ -14,7 +14,7 @@ class ConnectionListenerImpl: ConnectionListener {
 //        if (speaking) {
 //            logger.debug { "${user.displayName} がオーディオを送信しています." }
 //        } else {
-//            logger.debug { "${user.displayName} がオーディオを送信を終了しました." }
+//            logger.debug { "${user.displayName} がオーディオの送信を終了しました." }
 //        }
     }
 
