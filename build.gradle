@@ -1,7 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.31'
-    ext.ktor_version = '0.9.1'
-    ext.kotlinx_html_version = '0.6.9'
+    ext.kotlin_version = '1.2.40'
 
     repositories {
         mavenCentral()
@@ -23,9 +21,6 @@ repositories {
     mavenCentral()
     jcenter()
     maven { url "https://dl.bintray.com/sedmelluq/com.sedmelluq" }
-    maven { url "https://dl.bintray.com/kotlin/kotlinx" }
-    maven { url "https://dl.bintray.com/kotlin/kotlinx.html" }
-    maven { url "https://dl.bintray.com/kotlin/ktor" }
 }
 
 dependencies {
@@ -63,11 +58,11 @@ dependencies {
     compile "com.rometools:rome:1.9.0"
 
     /* Logging */
-    compile "io.github.microutils:kotlin-logging:1.4.8"
+    compile "io.github.microutils:kotlin-logging:1.4.9"
     compile "ch.qos.logback:logback-core:1.2.3"
     compile "ch.qos.logback:logback-classic:1.2.3"
     compile "net.gpedro.integrations.slack:slack-webhook:1.4.0"
-    compile "org.fusesource.jansi:jansi:1.16"
+    compile "org.fusesource.jansi:jansi:1.17.1"
 }
 
 compileKotlin {
