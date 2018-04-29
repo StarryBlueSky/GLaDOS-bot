@@ -6,6 +6,7 @@ import jp.nephy.glados.feature.ListenerFeature
 import jp.nephy.jsonkt.*
 import net.dv8tion.jda.core.entities.TextChannel
 import net.dv8tion.jda.core.events.ReadyEvent
+import net.dv8tion.jda.core.events.message.guild.GuildMessageDeleteEvent
 import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -40,7 +41,8 @@ class GiveawayChecker(bot: GLaDOS): ListenerFeature(bot) {
             "gamehag.net",
             "bananagiveaway.com",
             "gamecode.win",
-            "i.redd.it"
+            "redd.it",
+            "twitch.tv"
     )
 
     override fun onReady(event: ReadyEvent) {
@@ -94,7 +96,9 @@ class GiveawayChecker(bot: GLaDOS): ListenerFeature(bot) {
             if (created <= lastRedditGiveawayCreated) {
                 // 終了済みはメッセージを削除
                 if (tag == "Ended") {
-                    bot.messageCacheManager.delete { it.embeds.firstOrNull()?.description == redditUrl }
+                    channels.forEach { channel ->
+                        bot.messageCacheManager.delete { it.author.isSelf && it.textChannel.idLong == channel.idLong && it.embeds.firstOrNull()?.description == redditUrl }
+                    }
                 }
                 return@forEachIndexed
             }
@@ -123,7 +127,9 @@ class GiveawayChecker(bot: GLaDOS): ListenerFeature(bot) {
 
             // indiegala, HRKGameは最新の投稿がある場合 過去のメッセージを削除する
             if (arrayOf("indiegala.com", "hrkgame.com").contains(campaignDomain)) {
-                bot.messageCacheManager.delete { it.embeds.firstOrNull()?.footer?.text == campaignDomain }
+                channels.forEach { channel ->
+                    bot.messageCacheManager.delete { it.author.isSelf && it.textChannel.idLong == channel.idLong && it.embeds.firstOrNull()?.footer?.text == campaignDomain }
+                }
             }
 
             channels.forEach { channel ->
@@ -172,7 +178,9 @@ class GiveawayChecker(bot: GLaDOS): ListenerFeature(bot) {
             }
 
             // 過去のメッセージを削除する
-            bot.messageCacheManager.delete { it.embeds.firstOrNull()?.footer?.text == "giveaway.su" }
+            channels.forEach { channel ->
+                bot.messageCacheManager.delete { it.author.isSelf && it.textChannel.idLong == channel.idLong && it.embeds.firstOrNull()?.footer?.text == "giveaway.su" }
+            }
 
             channels.forEach { channel ->
                 channel.embedMessage {
@@ -188,5 +196,20 @@ class GiveawayChecker(bot: GLaDOS): ListenerFeature(bot) {
                 }.queue()
             }
         }
+    }
+
+    override fun onGuildMessageDelete(event: GuildMessageDeleteEvent) {
+        val message = bot.messageCacheManager.get(event.messageIdLong) ?: return
+        if (! message.author.isSelf) {
+            return
+        }
+
+        val config = bot.config.getGuildConfig(event.guild)
+        if (message.textChannel.idLong != config.textChannel.giveaway) {
+            return
+        }
+
+        val url = message.embeds.firstOrNull()?.description ?: return
+        bot.messageCacheManager.delete { it.author.isSelf && it.textChannel.idLong == config.textChannel.giveaway && it.embeds.firstOrNull()?.description == url }
     }
 }
