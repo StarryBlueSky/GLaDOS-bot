@@ -9,9 +9,9 @@ import net.dv8tion.jda.core.events.channel.priv.PrivateChannelDeleteEvent
 
 class PrivateChannel(bot: GLaDOS): ListenerFeature(bot) {
     override fun onPrivateChannelCreate(event: PrivateChannelCreateEvent) {
-        bot.logger.info { "${event.user.displayName} とのDMが開始されました." }
+        helper.slackLog(event) { "${event.user.displayName} とのDMが開始されました." }
     }
     override fun onPrivateChannelDelete(event: PrivateChannelDeleteEvent) {
-        bot.logger.info { "${event.user.displayName} とのDMを終了されました." }
+        helper.slackLog(event) { "${event.user.displayName} とのDMを終了されました." }
     }
 }

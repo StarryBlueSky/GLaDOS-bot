@@ -1,7 +1,6 @@
 package jp.nephy.glados.component.audio
 
 import jp.nephy.glados.GLaDOS
-import jp.nephy.glados.component.helper.displayName
 import net.dv8tion.jda.core.audio.hooks.ConnectionListener
 import net.dv8tion.jda.core.audio.hooks.ConnectionStatus
 import net.dv8tion.jda.core.entities.User
@@ -12,11 +11,11 @@ class ConnectionListenerImpl(private val bot: GLaDOS): ConnectionListener {
     }
 
     override fun onUserSpeaking(user: User, speaking: Boolean) {
-        if (speaking) {
-            bot.logger.debug { "${user.displayName} がオーディオを送信しています." }
-        } else {
-            bot.logger.debug { "${user.displayName} がオーディオを送信を終了しました." }
-        }
+//        if (speaking) {
+//            bot.logger.debug { "${user.displayName} がオーディオを送信しています." }
+//        } else {
+//            bot.logger.debug { "${user.displayName} がオーディオを送信を終了しました." }
+//        }
     }
 
     private var lastPing: Long = 0

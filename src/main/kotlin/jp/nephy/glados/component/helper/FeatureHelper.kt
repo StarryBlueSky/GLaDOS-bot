@@ -43,15 +43,15 @@ class FeatureHelper(private val bot: GLaDOS) {
     fun messageLog(event: Event, title: String? = null, color: Color = Color.Plain, message: () -> Any) {
         val guild = event.nullableGuild
         if (guild == null) {
-            bot.logger.warn { "${event.javaClass.simpleName} は guild フィールドを持っていないためMessageロガーは使用できません. 代わりにConsoleロガーを使用します." }
-            bot.logger.info(message)
+            bot.logger.warn { "${event.javaClass.simpleName} は guildフィールドを持っていないためMessageロガーは使用できません. 代わりにSlackロガーを使用します." }
+            slackLog(event, message = message)
             return
         }
 
         val config = bot.config.getGuildConfig(guild)
         if (config.textChannel.log == null) {
-            bot.logger.warn { "${guild.name} は logチャンネルが未定義のためMessageロガーは使用できません. 代わりにConsoleロガーを使用します." }
-            bot.logger.info(message)
+            bot.logger.warn { "${guild.name} は logチャンネルが未定義のためMessageロガーは使用できません. 代わりにSlackロガーを使用します." }
+            slackLog(event, message = message)
             return
         }
 
@@ -64,41 +64,37 @@ class FeatureHelper(private val bot: GLaDOS) {
             footer(guild.name, guild.iconUrl)
             timestamp()
         }.queue()
+        slackLog(event, message = message)
     }
 
     fun slackLog(event: Event, username: String? = null, channel: String? = null, iconUrl: String? = null, message: () -> Any) {
         val guild = event.nullableGuild
-        if (guild == null) {
-            bot.logger.warn { "${event.javaClass.simpleName} は guild フィールドを持っていないためSlackロガーは使用できません. 代わりにConsoleロガーを使用します." }
-            bot.logger.info { "$username: ${message()}" }
-            return
-        }
-        val config = bot.config.getGuildConfig(guild)
-
         val member = event.nullableMember
         val user = event.nullableUser
-        var iconUrlNew: String? = null
-        val usernameNonNull = username ?: if (member != null) {
-            iconUrlNew = member.user.effectiveAvatarUrl
-            if (config.isMain) {
-                member.fullNameWithoutGuild
-            } else {
-                member.fullName
+
+        val config = if (guild != null) {
+            bot.config.getGuildConfig(guild)
+        } else {
+            null
+        }
+
+        val usernameNonNull = username ?: when {
+            member != null -> when (config?.isMain) {
+                true -> member.fullNameWithoutGuild
+                else -> member.fullName
             }
-        } else {
-            iconUrlNew = user?.effectiveAvatarUrl
-            user?.displayName ?: throw IllegalStateException("適切なユーザ名を補完できませんでした. 手動で指定してください.")
+            user != null -> user.displayName
+            else -> "サーバログ"
+        }
+        val iconUrlNotNull = iconUrl ?: member?.user?.effectiveAvatarUrl ?: user?.effectiveAvatarUrl ?: ":desktop_computer:"
+        val channelNonNull = channel ?: when (config?.isMain) {
+            true -> "#discord"
+            false -> "#discord-other"
+            null -> "#discord-misc"
         }
 
-        val channelNonNull = channel ?: if (config.isMain) {
-            "#discord"
-        } else {
-            "#discord-other"
-        }
-
-        val msg = SlackMessage(channelNonNull, usernameNonNull, message().toString()).setLinkNames(false)
-        if (iconUrl ?: iconUrlNew != null) {
-            msg.setIcon(iconUrl ?: iconUrlNew)
+        val msg = SlackMessage(channelNonNull, usernameNonNull, message().toString()).setLinkNames(false).apply {
+            setIcon(iconUrl ?: iconUrlNotNull)
         }
 
         SlackApi(bot.secret.slackIncomingUrl).call(msg)

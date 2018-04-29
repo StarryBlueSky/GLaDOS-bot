@@ -33,26 +33,26 @@ class Role(bot: GLaDOS): ListenerFeature(bot) {
     }
 
     override fun onRoleUpdateColor(event: RoleUpdateColorEvent) {
-        bot.logger.info { "ロール `${event.role.name}` の色が ${event.oldColor} から ${event.role.color} に変更されました. (${event.guild.name})" }
+        helper.slackLog(event) { "ロール `${event.role.name}` の色が ${event.oldColor} から ${event.role.color} に変更されました. (${event.guild.name})" }
     }
     override fun onRoleUpdateMentionable(event: RoleUpdateMentionableEvent) {
         if (event.wasMentionable()) {
-            bot.logger.info { "ロール `${event.role.name}` がメンション不可能になりました. (${event.guild.name})" }
+            helper.slackLog(event) { "ロール `${event.role.name}` がメンション不可能になりました. (${event.guild.name})" }
         } else {
-            bot.logger.info { "ロール `${event.role.name}` がメンション可能になりました. (${event.guild.name})" }
+            helper.slackLog(event) { "ロール `${event.role.name}` がメンション可能になりました. (${event.guild.name})" }
         }
     }
     override fun onRoleUpdateHoisted(event: RoleUpdateHoistedEvent) {
         if (event.wasHoisted()) {
-            bot.logger.info { "ロール `${event.role.name}` がオンラインユーザに表示されなくなりました. (${event.guild.name})" }
+            helper.slackLog(event) { "ロール `${event.role.name}` がオンラインユーザに表示されなくなりました. (${event.guild.name})" }
         } else {
-            bot.logger.info { "ロール `${event.role.name}` がオンラインユーザに表示されるようになりました. (${event.guild.name})" }
+            helper.slackLog(event) { "ロール `${event.role.name}` がオンラインユーザに表示されるようになりました. (${event.guild.name})" }
         }
     }
     override fun onRoleUpdatePermissions(event: RoleUpdatePermissionsEvent) {
-        bot.logger.info { "ロール `${event.role.name}` の権限が変更されました. (${event.guild.name})" }
+        helper.slackLog(event) { "ロール `${event.role.name}` の権限が変更されました. (${event.guild.name})" }
     }
     override fun onRoleUpdatePosition(event: RoleUpdatePositionEvent) {
-        bot.logger.info { "ロール `${event.role.name}` の順序が変更されました. (${event.guild.name})" }
+        helper.slackLog(event) { "ロール `${event.role.name}` の順序が変更されました. (${event.guild.name})" }
     }
 }

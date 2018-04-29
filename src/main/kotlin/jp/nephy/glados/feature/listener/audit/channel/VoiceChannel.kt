@@ -23,15 +23,15 @@ class VoiceChannel(bot: GLaDOS): ListenerFeature(bot) {
     }
 
     override fun onVoiceChannelUpdateBitrate(event: VoiceChannelUpdateBitrateEvent) {
-        bot.logger.info { "ボイスチャンネル `${event.channel.name}` のビットレートが `${event.oldBitrate}kbps` から `${event.channel.bitrate}kbps` に変更されました. (${event.guild.name})" }
+        helper.slackLog(event) { "ボイスチャンネル `${event.channel.name}` のビットレートが `${event.oldBitrate}kbps` から `${event.channel.bitrate}kbps` に変更されました. (${event.guild.name})" }
     }
     override fun onVoiceChannelUpdatePermissions(event: VoiceChannelUpdatePermissionsEvent) {
-        bot.logger.info { "ボイスチャンネル `${event.channel.name}` の権限が変更されました. (${event.guild.name})" }
+        helper.slackLog(event) { "ボイスチャンネル `${event.channel.name}` の権限が変更されました. (${event.guild.name})" }
     }
     override fun onVoiceChannelUpdateUserLimit(event: VoiceChannelUpdateUserLimitEvent) {
-        bot.logger.info { "ボイスチャンネル `${event.channel.name}` の人数制限が `${event.oldUserLimit}` から `${event.channel.userLimit}` に変更されました. (${event.guild.name})" }
+        helper.slackLog(event) { "ボイスチャンネル `${event.channel.name}` の人数制限が `${event.oldUserLimit}` から `${event.channel.userLimit}` に変更されました. (${event.guild.name})" }
     }
     override fun onVoiceChannelUpdatePosition(event: VoiceChannelUpdatePositionEvent) {
-        bot.logger.info { "ボイスチャンネル `${event.channel.name}` の順序が変更されました. (${event.guild.name})" }
+        helper.slackLog(event) { "ボイスチャンネル `${event.channel.name}` の順序が変更されました. (${event.guild.name})" }
     }
 }

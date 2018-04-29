@@ -34,13 +34,13 @@ class TextChannel(bot: GLaDOS): ListenerFeature(bot) {
             return
         }
 
-        bot.logger.info { "テキストチャンネル `${event.channel.name}` のトピックが `${event.oldTopic}` から `${event.channel.topic}` に変更されました. (${event.guild.name})" }
+        helper.slackLog(event) { "テキストチャンネル `${event.channel.name}` のトピックが `${event.oldTopic}` から `${event.channel.topic}` に変更されました. (${event.guild.name})" }
     }
     override fun onTextChannelUpdatePermissions(event: TextChannelUpdatePermissionsEvent) {
-        bot.logger.info { "テキストチャンネル `${event.channel.name}` の権限が変更されました. (${event.guild.name})" }
+        helper.slackLog(event) { "テキストチャンネル `${event.channel.name}` の権限が変更されました. (${event.guild.name})" }
     }
 
     override fun onTextChannelUpdatePosition(event: TextChannelUpdatePositionEvent) {
-        bot.logger.info { "テキストチャンネル `${event.channel.name}` の順序が変更されました. (${event.guild.name})" }
+        helper.slackLog(event) { "テキストチャンネル `${event.channel.name}` の順序が変更されました. (${event.guild.name})" }
     }
 }

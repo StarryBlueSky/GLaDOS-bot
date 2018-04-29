@@ -22,9 +22,9 @@ class Category(bot: GLaDOS): ListenerFeature(bot) {
     }
 
     override fun onCategoryUpdatePermissions(event: CategoryUpdatePermissionsEvent) {
-        bot.logger.info { "カテゴリー `${event.category.name}` の権限が変更されました. (${event.guild.name})" }
+        helper.slackLog(event) { "カテゴリー `${event.category.name}` の権限が変更されました. (${event.guild.name})" }
     }
     override fun onCategoryUpdatePosition(event: CategoryUpdatePositionEvent) {
-        bot.logger.info { "カテゴリー `${event.category.name}` の順序が変更されました. (${event.guild.name})" }
+        helper.slackLog(event) { "カテゴリー `${event.category.name}` の順序が変更されました. (${event.guild.name})" }
     }
 }
