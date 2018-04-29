@@ -12,8 +12,6 @@ import net.dv8tion.jda.core.entities.TextChannel
 class KashiwaListener(private val channels: List<TextChannel>): UserStreamListener {
     companion object {
         var hateCommandString by StringLinkedSingleCache { "hate" }
-        private val hateCommand: Regex
-            get() = hateCommandString.toRegex()
     }
 
     private val account by lazy { GLaDOS.instance.apiClient.twitter.account.verifyCredentials().complete().result }
@@ -28,10 +26,13 @@ class KashiwaListener(private val channels: List<TextChannel>): UserStreamListen
 
     override fun onStatus(status: Status) {
         if (status.inReplyToUserId == account.id) {
-            logger.info { status.fullText }
-            if (hateCommand.containsMatchIn(status.fullText)) {
+            if (status.fullText.contains(hateCommandString)) {
+                logger.info { status.fullText }
                 channels.forEach {
-                    it.revealTweet(status.fullText)
+                    status.entities.urls.forEach { url ->
+                        logger.info { url.expandedUrl }
+                        it.revealTweet(url.expandedUrl)
+                    }
                 }
             }
         }

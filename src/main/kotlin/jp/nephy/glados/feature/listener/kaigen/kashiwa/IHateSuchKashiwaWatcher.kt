@@ -7,44 +7,46 @@ import jp.nephy.glados.component.helper.isSelf
 import jp.nephy.glados.feature.ListenerFeature
 import jp.nephy.glados.logger
 import net.dv8tion.jda.core.entities.TextChannel
+import net.dv8tion.jda.core.events.ReadyEvent
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.core.events.message.guild.GuildMessageUpdateEvent
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent
 import kotlin.concurrent.thread
 
 val twitterUrl = "(?:http(?:s)?://)?(?:m|mobile)?twitter\\.com/((?:\\w|_){1,16})/status/(\\d+)".toRegex()
-fun TextChannel.revealTweet(text: String) {
+fun TextChannel.revealTweet(text: String, onlyWhenProtected: Boolean = false) {
     val twitter = GLaDOS.instance.apiClient.twitter
     twitterUrl.findAll(text).forEach { matched ->
-        val (screenName, statusId) = matched.destructured
-        twitter.user.show(screenName = screenName).queue { user ->
-            if (user.result.protected) {
-                twitter.status.show(id = statusId.toLong()).queue { status ->
-                    embedMessage {
-                        author("${user.result.name} @${user.result.screenName}", "https://twitter.com/${user.result.screenName}", user.result.profileImageUrlHttps)
-                        descriptionBuilder {
-                            appendln(status.result.fullText)
-                            appendln()
-                            append(matched.value)
-                        }
-                        if (status.result.extendedEntities?.media.orEmpty().isNotEmpty()) {
-                            image(status.result.extendedEntities!!.media.first().mediaUrlHttps)
-                        }
+        val statusId = matched.groupValues.last().toLong()
+        twitter.status.show(id = statusId).queue { status ->
+            if (! onlyWhenProtected || status.result.user.protected) {
+                embedMessage {
+                    author("${status.result.user.name} @${status.result.user.screenName}", "https://twitter.com/${status.result.user.screenName}", status.result.user.profileImageUrlHttps)
+                    descriptionBuilder {
+                        appendln(status.result.fullText)
+                        appendln()
+                        append(matched.value)
+                    }
+                    if (status.result.extendedEntities?.media.orEmpty().isNotEmpty()) {
+                        image(status.result.extendedEntities !!.media.first().mediaUrlHttps)
+                    }
 
-                        color(Color.Twitter)
-                        footer("Twitter", "https://abs.twimg.com/icons/apple-touch-icon-192x192.png")
-                        timestamp()
-                    }.queue()
-                }
+                    color(Color.Twitter)
+                    footer("Twitter", "https://abs.twimg.com/icons/apple-touch-icon-192x192.png")
+                    timestamp()
+                }.queue()
             }
         }
     }
 }
 
 class IHateSuchKashiwaWatcher: ListenerFeature() {
-    init {
+    override fun onReady(event: ReadyEvent?) {
         thread(name = "KashiwaStream Keeper") {
-            val kashiwaChannels = GLaDOS.instance.config.guilds.filter { it.textChannel.iHateSuchKashiwa != null }.map { GLaDOS.instance.jda.getTextChannelById(it.textChannel.iHateSuchKashiwa !!) }
+            val kashiwaChannels = GLaDOS.instance.config.guilds.filter { it.textChannel.iHateSuchKashiwa != null }.mapNotNull { GLaDOS.instance.jda.getTextChannelById(it.textChannel.iHateSuchKashiwa!!) }
+            if (kashiwaChannels.isEmpty()) {
+                return@thread
+            }
 
             bot.apiClient.twitter.stream.userStream().listen(KashiwaListener(kashiwaChannels)).start(wait = true, autoReconnect = true)
         }
@@ -104,7 +106,7 @@ class IHateSuchKashiwaWatcher: ListenerFeature() {
             return
         }
 
-        event.channel.revealTweet(event.message.contentDisplay)
+        event.channel.revealTweet(event.message.contentDisplay, onlyWhenProtected = true)
 
         HateEmoji.values().forEach {
             event.message.addReaction(it.emoji).queue()
