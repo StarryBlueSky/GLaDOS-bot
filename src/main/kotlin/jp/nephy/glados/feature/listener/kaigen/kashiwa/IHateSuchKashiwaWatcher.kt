@@ -72,9 +72,9 @@ class IHateSuchKashiwaWatcher(bot: GLaDOS): ListenerFeature(bot) {
         val twitter = bot.apiClient.twitter
         twitter.user.show(screenName).queue {
             val user = it.result
-            twitter.status.show(statusId.toLong()).queue {
+            if (user.protected) {
+                twitter.status.show(statusId.toLong()).queue {
                 val status = it.result
-                if (user.protected) {
                     event.channel.embedMessage {
                         title(user.name + " (@" + user.screenName + ")")
                         description { status.fullText }
