@@ -1,10 +1,8 @@
 # GLaDOS-bot
-<div style="text-align: center;">
+<center>
     <img src="https://cdn.discordapp.com/avatars/292673941057568769/360959a4a7af21cdfe4dc30b6767c915.png?size=128" alt="GLaDOS#0316">
-</div>
-
-
-GLaDOS-Bot は かいげんDiscord等で稼働している Discord Botです。
+    <p>GLaDOS-Bot は かいげんDiscord等で稼働している Discord Botです。</p>
+</center>
 
 ## 実装済み機能
 
