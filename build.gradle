@@ -20,7 +20,6 @@ apply plugin: "com.sedmelluq.jdaction"
 repositories {
     mavenCentral()
     jcenter()
-    maven { url "https://dl.bintray.com/sedmelluq/com.sedmelluq" }
 }
 
 dependencies {
@@ -29,9 +28,9 @@ dependencies {
 
     /* Discord */
     compile "com.jagrosh:jda-utilities:2.1"
-    compile "net.dv8tion:JDA:3.6.0_354"
-    compile "com.sedmelluq:lavaplayer:1.2.58"
-    compile "com.sedmelluq:jda-nas:1.0.6"
+    compile "net.dv8tion:JDA:3.6.0_359"
+    compile "com.sedmelluq:lavaplayer:1.2.63"
+    compile "com.sedmelluq:jda-nas:1.0.5"
 
     /* Twitter */
     compile "jp.nephy:penicillin:2.0.1"
