@@ -49,7 +49,7 @@ class GLaDOS(val config: GLaDOSConfig, val parameter: GLaDOSParameter, val secre
     val logger = KotlinLogging.logger("GLaDOS")
     val apiClient = ApiClient(this)
     val playerManager = PlayerManager(this)
-    val messageCacheManager = MessageCacheManager(this)
+    val messageCacheManager = MessageCacheManager()
 
     val eventWaiter = EventWaiter()
     private val client = CommandClientBuilder()

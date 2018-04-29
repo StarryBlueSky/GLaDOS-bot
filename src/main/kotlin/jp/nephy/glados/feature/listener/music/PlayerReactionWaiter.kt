@@ -20,7 +20,7 @@ class PlayerReactionWaiter(bot: GLaDOS): ListenerFeature(bot) {
         if (event.user.isSelf) {
             return
         }
-        val message = bot.messageCacheManager.get(event.messageIdLong, remove = false) ?: return
+        val message = bot.messageCacheManager.get(event.messageIdLong) ?: return
         if (! message.author.isSelf) {
             return
         }

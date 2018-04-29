@@ -19,7 +19,7 @@ class IHateSuchKashiwaWatcher(bot: GLaDOS): ListenerFeature(bot) {
             return
         }
 
-        val message = bot.messageCacheManager.get(event.messageIdLong, remove = false) ?: return
+        val message = bot.messageCacheManager.get(event.messageIdLong) ?: return
         val match = twitterUrl.find(message.contentDisplay)
         if (match == null) {
             bot.logger.info { "Twitter URLパターンに一致しないメッセージです: ${message.contentDisplay}" }
