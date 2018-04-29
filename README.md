@@ -1,7 +1,7 @@
 # GLaDOS-bot
 <center>
     <img src="https://cdn.discordapp.com/avatars/292673941057568769/360959a4a7af21cdfe4dc30b6767c915.png?size=128" alt="GLaDOS#0316">
-    <p>GLaDOS-Bot は かいげんDiscord等で稼働している Discord Botです。</p>
+    <p>GLaDOS-Bot は <a href="https://nephy.jp/discord" target="_blank">かいげんDiscord</a> 等で稼働している Discord Botです。</p>
 </center>
 
 ## 実装済み機能
