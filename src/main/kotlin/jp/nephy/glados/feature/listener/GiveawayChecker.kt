@@ -3,6 +3,7 @@ package jp.nephy.glados.feature.listener
 import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.*
 import jp.nephy.glados.feature.ListenerFeature
+import jp.nephy.glados.logger
 import jp.nephy.jsonkt.*
 import net.dv8tion.jda.core.entities.TextChannel
 import net.dv8tion.jda.core.events.ReadyEvent
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 
-class GiveawayChecker(bot: GLaDOS): ListenerFeature(bot) {
+class GiveawayChecker: ListenerFeature() {
     private var lastRedditGiveawayCreated by FloatLinkedSingleCache { 0F }
     private var lastGiveawaySuId by IntLinkedSingleCache { 0 }
 
@@ -64,7 +65,7 @@ class GiveawayChecker(bot: GLaDOS): ListenerFeature(bot) {
                     checkReddit(channels)
                     checkGiveawaySu(channels)
                 } catch (e: Exception) {
-                    bot.logger.error(e) { "Giveawayのチェック中に例外が発生しました." }
+                    logger.error(e) { "Giveawayのチェック中に例外が発生しました." }
                 }
 
                 TimeUnit.MINUTES.sleep(1)

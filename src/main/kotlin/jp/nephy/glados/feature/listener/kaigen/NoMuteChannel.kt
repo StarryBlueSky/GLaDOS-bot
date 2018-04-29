@@ -14,7 +14,7 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceSelfMuteEvent
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class NoMuteChannel(bot: GLaDOS): ListenerFeature(bot) {
+class NoMuteChannel: ListenerFeature() {
     private val cooldowns = mutableMapOf<Long, Long>()
 
     override fun onGuildVoiceJoin(event: GuildVoiceJoinEvent) {
@@ -65,6 +65,7 @@ class NoMuteChannel(bot: GLaDOS): ListenerFeature(bot) {
     private fun Member.updateCooldown() {
         cooldowns[user.idLong] = Date().time
     }
+
     private fun Member.checkCooldown(): Boolean {
         val time = cooldowns[user.idLong] ?: return true
         return Date().time - time > 1000 * 10

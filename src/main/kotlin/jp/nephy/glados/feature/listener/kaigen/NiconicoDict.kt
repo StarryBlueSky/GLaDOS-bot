@@ -11,7 +11,7 @@ import java.net.URL
 import java.util.concurrent.TimeUnit
 
 
-class NiconicoDict(bot: GLaDOS): ListenerFeature(bot) {
+class NiconicoDict: ListenerFeature() {
     private val pattern = "^(.+?)(?:#)?とは$".toRegex()
     private val transportPattern = "location.replace\\('(.+?)'\\)".toRegex()
 
@@ -39,9 +39,9 @@ class NiconicoDict(bot: GLaDOS): ListenerFeature(bot) {
             var description: String? = ""
 
             doc.select("#article").first().children()
-                    .filter { it.attr("id") != "page-menu" && !arrayOf("div", "ul", "table").contains(it.tagName()) }
-                    .takeWhile { !arrayOf("関連動画", "関連項目", "記事編集").contains(it.text()) }
-                    .takeWhile { !it.attr("class").startsWith("adsense-") }
+                    .filter { it.attr("id") != "page-menu" && ! arrayOf("div", "ul", "table").contains(it.tagName()) }
+                    .takeWhile { ! arrayOf("関連動画", "関連項目", "記事編集").contains(it.text()) }
+                    .takeWhile { ! it.attr("class").startsWith("adsense-") }
                     .forEach {
                         when {
                             arrayOf("h1", "h2", "h3").contains(it.tagName()) -> {

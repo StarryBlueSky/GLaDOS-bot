@@ -7,11 +7,12 @@ import jp.nephy.glados.component.audio.music.PlayerLoadResultHandler
 import jp.nephy.glados.component.audio.music.TrackType
 import jp.nephy.glados.component.audio.music.groupIdSetter
 import jp.nephy.glados.feature.ListenerFeature
+import jp.nephy.glados.logger
 import net.dv8tion.jda.core.events.ReadyEvent
 import java.util.*
 
 
-class AutoPlaylist(bot: GLaDOS): ListenerFeature(bot) {
+class AutoPlaylist: ListenerFeature() {
     private val playlist = arrayOf(
             "https://www.youtube.com/playlist?list=PLYlndC1jl8s2G7DjwH3aMBDbG4JNxAwa4"
     )
@@ -24,7 +25,7 @@ class AutoPlaylist(bot: GLaDOS): ListenerFeature(bot) {
             }
 
             val guildPlayer = bot.playerManager.getGuildPlayer(it)
-            bot.logger.info { "ボイスチャンネル: ${guildPlayer.voiceChannel.name} (${it.name}) に接続しました." }
+            logger.info { "ボイスチャンネル: ${guildPlayer.voiceChannel.name} (${it.name}) に接続しました." }
             if (! config.option.useAutoPlaylist) {
                 return@forEach
             }
@@ -48,6 +49,6 @@ class AutoPlaylist(bot: GLaDOS): ListenerFeature(bot) {
             }
         }
 
-        bot.logger.info { "オートプレイリストの読み込みが完了しました." }
+        logger.info { "オートプレイリストの読み込みが完了しました." }
     }
 }

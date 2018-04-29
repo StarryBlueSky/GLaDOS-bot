@@ -1,12 +1,11 @@
 package jp.nephy.glados.feature.command
 
 import com.jagrosh.jdautilities.command.CommandEvent
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.feature.CommandFeature
 import java.time.temporal.ChronoUnit
 
 
-class Ping(bot: GLaDOS): CommandFeature(bot) {
+class Ping: CommandFeature() {
     init {
         name = "ping"
         help = "GLaDOSの遅延をチェックします。"

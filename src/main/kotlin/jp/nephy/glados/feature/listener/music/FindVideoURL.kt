@@ -8,11 +8,12 @@ import jp.nephy.glados.component.audio.music.*
 import jp.nephy.glados.component.helper.*
 import jp.nephy.glados.component.helper.prompt.YesNoEmoji
 import jp.nephy.glados.feature.ListenerFeature
+import jp.nephy.glados.logger
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent
 import java.util.concurrent.TimeUnit
 
 
-class FindVideoURL(bot: GLaDOS): ListenerFeature(bot) {
+class FindVideoURL: ListenerFeature() {
     private val playCommandSyntax = "^!(!)?play".toRegex()
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
@@ -21,7 +22,7 @@ class FindVideoURL(bot: GLaDOS): ListenerFeature(bot) {
             return
         }
 
-        PlayableVideoURL.values().forEach eachUrl@ { url ->
+        PlayableVideoURL.values().forEach eachUrl@{ url ->
             url.regexes.forEach {
                 val result = it.find(event.message.contentDisplay) ?: return@eachUrl
 
@@ -71,7 +72,7 @@ class FindVideoURL(bot: GLaDOS): ListenerFeature(bot) {
                                             }
                                             color(Color.Good)
                                             timestamp()
-                                        }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+                                        }.deleteQueue(30, TimeUnit.SECONDS)
 
                                         guildPlayer.controls.addAll(playlist.tracks)
                                     }
@@ -82,7 +83,7 @@ class FindVideoURL(bot: GLaDOS): ListenerFeature(bot) {
                                             title("`${result.value}` の結果は見つかりませんでした。")
                                             color(Color.Bad)
                                             timestamp()
-                                        }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
+                                        }.deleteQueue(60, TimeUnit.SECONDS)
                                     }
 
                                     override fun onFailed(exception: FriendlyException) {
@@ -92,18 +93,18 @@ class FindVideoURL(bot: GLaDOS): ListenerFeature(bot) {
                                             description { exception.localizedMessage }
                                             color(Color.Bad)
                                             timestamp()
-                                        }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
+                                        }.deleteQueue(60, TimeUnit.SECONDS)
                                     }
                                 })
                             }
                             else -> {
-                                bot.logger.info { "\"${result.value}\" の再生を提案しましたが ${event.member.fullNameWithoutGuild}は拒否しました." }
+                                logger.info { "\"${result.value}\" の再生を提案しましたが ${event.member.fullNameWithoutGuild}は拒否しました." }
                             }
                         }
                     }
                 }
-                bot.logger.info { "動画形式(${url.friendlyName})の文字列: ${result.value} を検出しました. [#${event.channel.name}] ${event.member.fullName}" }
-                return
+
+                return logger.info { "動画形式(${url.friendlyName})の文字列: ${result.value} を検出しました. [#${event.channel.name}] ${event.member.fullName}" }
             }
         }
     }

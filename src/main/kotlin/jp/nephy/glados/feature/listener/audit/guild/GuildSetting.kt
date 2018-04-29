@@ -1,16 +1,16 @@
 package jp.nephy.glados.feature.listener.audit.guild
 
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.fullNameWithoutGuild
 import jp.nephy.glados.feature.ListenerFeature
 import net.dv8tion.jda.core.events.guild.update.*
 
 
-class GuildSetting(bot: GLaDOS): ListenerFeature(bot) {
+class GuildSetting: ListenerFeature() {
     override fun onGuildUpdateRegion(event: GuildUpdateRegionEvent) {
         helper.messageLog(event, "サーバリージョン変更", Color.Good) { "サーバリージョンが `${event.oldRegion.name} (${event.oldRegionRaw})` から `${event.newRegion.name} (${event.newRegionRaw})` に変更されました。" }
     }
+
     override fun onGuildUpdateName(event: GuildUpdateNameEvent) {
         helper.messageLog(event, "サーバ名変更", Color.Neutral) { "サーバ名が `${event.oldName}` から `${event.guild.name}` に変更されました。" }
     }
@@ -52,7 +52,7 @@ class GuildSetting(bot: GLaDOS): ListenerFeature(bot) {
     }
 
     override fun onGuildUpdateFeatures(event: GuildUpdateFeaturesEvent) {
-        helper.slackLog(event) { "サーバ `${event.guild.name}` の特殊機能が `${event.oldFeatures.joinToString(", ") }` から `${event.guild.features.joinToString(", ")}` に変更されました." }
+        helper.slackLog(event) { "サーバ `${event.guild.name}` の特殊機能が `${event.oldFeatures.joinToString(", ")}` から `${event.guild.features.joinToString(", ")}` に変更されました." }
     }
 
     override fun onGuildUpdateIcon(event: GuildUpdateIconEvent) {

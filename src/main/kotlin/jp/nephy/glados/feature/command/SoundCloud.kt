@@ -9,16 +9,17 @@ import jp.nephy.glados.component.helper.deleteQueue
 import jp.nephy.glados.component.helper.embedMention
 import jp.nephy.glados.component.helper.prompt.PromptBuilder
 import jp.nephy.glados.feature.CommandFeature
+import jp.nephy.glados.logger
 import net.dv8tion.jda.core.entities.Guild
 import net.dv8tion.jda.core.entities.Member
 import net.dv8tion.jda.core.entities.TextChannel
 import java.util.concurrent.TimeUnit
 
 
-class SoundCloud(bot: GLaDOS): CommandFeature(bot) {
+class SoundCloud: CommandFeature() {
     companion object {
-        fun respondPrompt(bot: GLaDOS, guild: Guild, textChannel: TextChannel, member: Member) {
-            PromptBuilder.build(bot.eventWaiter, textChannel, member) {
+        fun respondPrompt(guild: Guild, textChannel: TextChannel, member: Member) {
+            PromptBuilder.build(textChannel, member) {
                 emojiPrompt<ChartType, ChartType>(
                         title = "SoundCloudのチャート TOP50を再生します",
                         description = "再生するチャートの種類を選択してください。",
@@ -40,10 +41,11 @@ class SoundCloud(bot: GLaDOS): CommandFeature(bot) {
                             color(Color.SoundCloud)
                         }.deleteQueue(30, TimeUnit.SECONDS)
 
+                        val bot = GLaDOS.instance
                         val guildPlayer = bot.playerManager.getGuildPlayer(guild)
                         bot.apiClient.soundCloud.play(guildPlayer, chartType, genre)
 
-                        bot.logger.info { "サーバ ${guild.name} でSoundCloud ${genre.friendlyName}ジャンルの${chartType.friendlyName}チャートをキューに追加します." }
+                        logger.info { "サーバ ${guild.name} でSoundCloud ${genre.friendlyName}ジャンルの${chartType.friendlyName}チャートをキューに追加します." }
                     }
                 }
             }
@@ -60,6 +62,6 @@ class SoundCloud(bot: GLaDOS): CommandFeature(bot) {
     }
 
     override fun executeCommand(event: CommandEvent) {
-        SoundCloud.respondPrompt(bot, event.guild, event.textChannel, event.member)
+        SoundCloud.respondPrompt(event.guild, event.textChannel, event.member)
     }
 }

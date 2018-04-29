@@ -1,17 +1,18 @@
 package jp.nephy.glados.feature.listener.audit
 
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.feature.ListenerFeature
 import net.dv8tion.jda.core.events.guild.voice.*
 
 
-class VoiceState(bot: GLaDOS): ListenerFeature(bot) {
+class VoiceState: ListenerFeature() {
     override fun onGuildVoiceJoin(event: GuildVoiceJoinEvent) {
         helper.slackLog(event) { "VC \"${event.channelJoined.name}\" に参加しました. このチャンネルには 現在${event.channelJoined.members.size}人が接続しています." }
     }
+
     override fun onGuildVoiceLeave(event: GuildVoiceLeaveEvent) {
         helper.slackLog(event) { "VC \"${event.channelLeft.name}\" から退出しました. このチャンネルには 現在${event.channelLeft.members.size}人が接続しています." }
     }
+
     override fun onGuildVoiceMove(event: GuildVoiceMoveEvent) {
         if (event.channelJoined == event.guild.afkChannel) {
             helper.slackLog(event) { "VC \"${event.channelLeft.name}\" から AFKチャンネル \"${event.channelJoined.name}\" に移動しました." }
@@ -27,6 +28,7 @@ class VoiceState(bot: GLaDOS): ListenerFeature(bot) {
             helper.slackLog(event) { "サーバマイクミュート解除されました." }
         }
     }
+
     override fun onGuildVoiceSelfMute(event: GuildVoiceSelfMuteEvent) {
         if (event.isSelfMuted) {
             helper.slackLog(event) { "マイクミュートしました." }
@@ -34,6 +36,7 @@ class VoiceState(bot: GLaDOS): ListenerFeature(bot) {
             helper.slackLog(event) { "マイクミュート解除しました." }
         }
     }
+
     override fun onGuildVoiceGuildDeafen(event: GuildVoiceGuildDeafenEvent) {
         if (event.isGuildDeafened) {
             helper.slackLog(event) { "サーバスピーカーミュートされました." }
@@ -41,6 +44,7 @@ class VoiceState(bot: GLaDOS): ListenerFeature(bot) {
             helper.slackLog(event) { "サーバスピーカーミュート解除されました." }
         }
     }
+
     override fun onGuildVoiceSelfDeafen(event: GuildVoiceSelfDeafenEvent) {
         if (event.isSelfDeafened) {
             helper.slackLog(event) { "スピーカーミュートしました." }

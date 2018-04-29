@@ -30,9 +30,11 @@ class EmbedBuilder {
     fun asMention(target: Member) = apply {
         descriptionRaw.insert(0, "${target.asMention}\n")
     }
+
     fun description(description: () -> Any?) = apply {
         descriptionRaw.append(description().toString())
     }
+
     fun descriptionBuilder(description: StringBuilder.() -> Unit) = apply {
         val stringBuilder = StringBuilder()
         description(stringBuilder)
@@ -62,6 +64,7 @@ class EmbedBuilder {
     fun blankField(inline: Boolean = false) = apply {
         builder.addBlankField(inline)
     }
+
     fun field(name: String, inline: Boolean = false, value: () -> Any) = apply {
         builder.addField(name, value().toString(), inline)
     }

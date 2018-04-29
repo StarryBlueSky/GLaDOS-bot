@@ -1,7 +1,6 @@
 package jp.nephy.glados.feature.command
 
 import com.jagrosh.jdautilities.command.CommandEvent
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.EmbedBuilder
 import jp.nephy.glados.feature.CommandFeature
@@ -9,7 +8,7 @@ import net.dv8tion.jda.core.entities.Icon
 import java.net.URL
 
 
-class Icon(bot: GLaDOS): CommandFeature(bot) {
+class Icon: CommandFeature() {
     init {
         name = "icon"
         help = "GLaDOSのアイコンを変更します。"

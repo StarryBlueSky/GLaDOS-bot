@@ -5,11 +5,13 @@ import com.jagrosh.jdautilities.command.CommandEvent
 import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.audio.music.GuildPlayer
 import jp.nephy.glados.component.helper.*
+import jp.nephy.glados.logger
 import net.dv8tion.jda.core.entities.ChannelType
 import java.util.concurrent.TimeUnit
 
-abstract class CommandFeature(final override val bot: GLaDOS): Command(), IFeature {
-    override val helper = FeatureHelper(bot)
+abstract class CommandFeature: Command(), Feature {
+    override val bot = GLaDOS.instance
+    override val helper = FeatureHelper()
 
     var isMusicCommand = false
     var requireSameChannel = false
@@ -22,7 +24,7 @@ abstract class CommandFeature(final override val bot: GLaDOS): Command(), IFeatu
         if (event.channelType == ChannelType.TEXT) {
             val config = bot.config.getGuildConfig(event.guild)
             if (! config.option.useCommand) {
-                bot.logger.info { "サーバ ${event.guild.name} ではコマンドは利用不可です。" }
+                logger.info { "サーバ ${event.guild.name} ではコマンドは利用不可です。" }
                 return
             }
         }
@@ -33,15 +35,15 @@ abstract class CommandFeature(final override val bot: GLaDOS): Command(), IFeatu
                     ChannelType.TEXT -> {
                         val config = bot.config.getGuildConfig(event.guild)
                         if (config.role.admin == null) {
-                            bot.logger.warn { "Adminロールを要求するコマンド: $name が実行されましたが 管理者ロールが未定義であるため実行しませんでした." }
+                            logger.warn { "Adminロールを要求するコマンド: $name が実行されましたが 管理者ロールが未定義であるため実行しませんでした." }
                             return
-                        } else if (!event.member.hasRole(config.role.admin)) {
+                        } else if (! event.member.hasRole(config.role.admin)) {
                             return event.embedMention {
                                 title("コマンドエラー: $name")
                                 description { "このコマンドの実行には管理者ロールが必要です。" }
                                 color(Color.Bad)
                                 timestamp()
-                            }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+                            }.deleteQueue(30, TimeUnit.SECONDS)
                         }
                     }
                     ChannelType.PRIVATE -> {
@@ -67,7 +69,7 @@ abstract class CommandFeature(final override val bot: GLaDOS): Command(), IFeatu
                     }
                     color(Color.Bad)
                     timestamp()
-                }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+                }.deleteQueue(30, TimeUnit.SECONDS)
             }
         }
 
@@ -79,7 +81,7 @@ abstract class CommandFeature(final override val bot: GLaDOS): Command(), IFeatu
                     description { "このコマンドを実行するにはボイスチャンネルに参加している必要があります。" }
                     color(Color.Bad)
                     timestamp()
-                }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+                }.deleteQueue(30, TimeUnit.SECONDS)
             }
         }
 

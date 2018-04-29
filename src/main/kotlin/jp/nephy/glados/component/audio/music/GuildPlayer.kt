@@ -14,21 +14,23 @@ import jp.nephy.glados.component.audio.music.adapter.EventMessage
 import jp.nephy.glados.component.audio.music.adapter.TrackControls
 import jp.nephy.glados.component.helper.sumBy
 import jp.nephy.glados.component.helper.toMilliSecondString
+import jp.nephy.glados.logger
 import net.dv8tion.jda.core.entities.Guild
 import net.dv8tion.jda.core.entities.VoiceChannel
 
 
-class GuildPlayer(private val bot: GLaDOS, val guild: Guild) {
+class GuildPlayer(val guild: Guild) {
     private val playerManager = DefaultAudioPlayerManager()
+    private val bot = GLaDOS.instance
     private val player = playerManager.createPlayer()!!.apply {
         volume = bot.parameter.defaultPlayerVolume
     }
 
     val config = bot.config.getGuildConfig(guild)
-    val connectionListener = ConnectionListenerImpl(bot)
+    val connectionListener = ConnectionListenerImpl()
     val sendingHandler = AudioSendHandlerImpl(player)
-    val receivingHandler = AudioRecorder(bot, this)
-    val controls = TrackControls(bot, this, player)
+    val receivingHandler = AudioRecorder(this)
+    val controls = TrackControls(this, player)
 
     init {
         if (config.voiceChannel.general == null) {
@@ -40,7 +42,7 @@ class GuildPlayer(private val bot: GLaDOS, val guild: Guild) {
         // AudioSourceManagers.registerLocalSource(playerManager)
 
         player.addListener(controls)
-        player.addListener(EventMessage(bot, this))
+        player.addListener(EventMessage(this))
     }
 
     fun searchTrack(query: String, priority: SearchPriority, limit: Int = 20, handler: PlayerSearchResultHandler) {
@@ -67,8 +69,9 @@ class GuildPlayer(private val bot: GLaDOS, val guild: Guild) {
                 track.typeSetter = trackType
 
                 handler.onLoadTrack(track)
-                bot.logger.info { "[${track.sourceManager.javaClass.simpleName}] トラック \"${track.info.effectiveTitle}\" by ${track.info.author} (${track.duration.toMilliSecondString()}) をキューに追加しました." }
+                logger.info { "[${track.sourceManager.javaClass.simpleName}] トラック \"${track.info.effectiveTitle}\" by ${track.info.author} (${track.duration.toMilliSecondString()}) をキューに追加しました." }
             }
+
             override fun playlistLoaded(playlist: AudioPlaylist) {
                 if (playlist.tracks.isEmpty()) {
                     return noMatches()
@@ -79,7 +82,7 @@ class GuildPlayer(private val bot: GLaDOS, val guild: Guild) {
                 }
 
                 handler.onLoadPlaylist(playlist)
-                bot.logger.info {
+                logger.info {
                     buildString {
                         appendln("[${playlist.tracks.first().sourceManager.javaClass.simpleName}] プレイリスト \"${playlist.name}\" (${playlist.tracks.size}曲, ${playlist.tracks.sumBy { it.duration }.toMilliSecondString()}) をキューに追加しました.")
                         playlist.tracks.forEachIndexed { i, it ->
@@ -91,11 +94,12 @@ class GuildPlayer(private val bot: GLaDOS, val guild: Guild) {
 
             override fun noMatches() {
                 handler.onNoResult()
-                bot.logger.warn { "トラック \"$identifier\" は見つかりませんでした." }
+                logger.warn { "トラック \"$identifier\" は見つかりませんでした." }
             }
+
             override fun loadFailed(exception: FriendlyException) {
                 handler.onFailed(exception)
-                bot.logger.error { "トラック \"$identifier\" の読み込み中にエラーが発生しました." }
+                logger.error { "トラック \"$identifier\" の読み込み中にエラーが発生しました." }
             }
         })
     }
@@ -107,7 +111,7 @@ class GuildPlayer(private val bot: GLaDOS, val guild: Guild) {
 
         guild.audioManager.openAudioConnection(channel)
 
-        bot.logger.info { "サーバ ${guild.name} で ボイスチャンネル \"${channel.name}\" への接続を開始しました." }
+        logger.info { "サーバ ${guild.name} で ボイスチャンネル \"${channel.name}\" への接続を開始しました." }
     }
 
     val voiceChannel: VoiceChannel

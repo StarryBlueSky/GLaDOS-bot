@@ -1,15 +1,15 @@
 package jp.nephy.glados.feature.command
 
 import com.jagrosh.jdautilities.command.CommandEvent
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.EmbedBuilder
 import jp.nephy.glados.feature.CommandFeature
+import jp.nephy.glados.logger
 import javax.script.ScriptEngineManager
 import kotlin.system.measureTimeMillis
 
 
-class EvalKotlin(bot: GLaDOS): CommandFeature(bot) {
+class EvalKotlin: CommandFeature() {
     init {
         name = "evalk"
         help = "Kotlin Scriptを実行します。"
@@ -27,7 +27,7 @@ class EvalKotlin(bot: GLaDOS): CommandFeature(bot) {
                     color(Color.Plain)
                 }
         ) {
-            bot.logger.info { "eval: ${event.args}" }
+            logger.info { "eval: ${event.args}" }
             val engine = ScriptEngineManager().getEngineByName("kotlin").apply {
                 put("event", event)
                 put("jda", event.jda)

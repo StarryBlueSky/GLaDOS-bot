@@ -2,7 +2,7 @@ package jp.nephy.glados.component.config
 
 import jp.nephy.penicillin.PenicillinClient
 
-data class SecretConfig(
+data class GLaDOSSecret(
         val slackIncomingUrl: String,
         val niconicoLoginEmail: String,
         val niconicoLoginPassword: String,

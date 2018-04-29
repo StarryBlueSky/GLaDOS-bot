@@ -4,15 +4,15 @@ import com.jagrosh.jdautilities.command.CommandEvent
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.api.niconico.model.SearchResult
 import jp.nephy.glados.component.audio.music.*
 import jp.nephy.glados.component.helper.*
 import jp.nephy.glados.feature.CommandFeature
+import jp.nephy.glados.logger
 import java.util.concurrent.TimeUnit
 
 
-class Play(bot: GLaDOS): CommandFeature(bot) {
+class Play: CommandFeature() {
     init {
         name = "play"
         help = "指定されたURLのメディアを再生します。"
@@ -38,11 +38,11 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                         }
                         color(Color.Good)
                         timestamp()
-                    }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+                    }.deleteQueue(30, TimeUnit.SECONDS)
 
                     guildPlayer.controls.add(track)
 
-                    bot.logger.info { "${event.member.fullName}が `${track.info.effectiveTitle}` を再生キューに追加しました. (${track.sourceManager.sourceName})" }
+                    logger.info { "${event.member.fullName}が `${track.info.effectiveTitle}` を再生キューに追加しました. (${track.sourceManager.sourceName})" }
                 }
 
                 override fun onLoadPlaylist(playlist: AudioPlaylist) {
@@ -59,7 +59,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                             }
                             color(Color.Good)
                             timestamp()
-                        }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+                        }.deleteQueue(30, TimeUnit.SECONDS)
 
                         guildPlayer.controls.add(playlist.selectedTrack)
                     } else {
@@ -74,7 +74,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                             }
                             color(Color.Good)
                             timestamp()
-                        }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+                        }.deleteQueue(30, TimeUnit.SECONDS)
 
                         guildPlayer.controls.addAll(playlist.tracks)
                     }
@@ -86,7 +86,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                         title("`${event.args}` の結果は見つかりませんでした。")
                         color(Color.Bad)
                         timestamp()
-                    }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
+                    }.deleteQueue(60, TimeUnit.SECONDS)
                 }
 
                 override fun onFailed(exception: FriendlyException) {
@@ -96,7 +96,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                         description { exception.localizedMessage }
                         color(Color.Bad)
                         timestamp()
-                    }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
+                    }.deleteQueue(60, TimeUnit.SECONDS)
                 }
             })
         } else {
@@ -137,11 +137,11 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                                         }
                                         color(Color.Good)
                                         timestamp()
-                                    }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+                                    }.deleteQueue(30, TimeUnit.SECONDS)
 
                                     guildPlayer.controls.add(track)
 
-                                    bot.logger.info { "${event.member.fullName}が `${track.info.effectiveTitle}` を再生キューに追加しました. (${track.sourceManager.sourceName})" }
+                                    logger.info { "${event.member.fullName}が `${track.info.effectiveTitle}` を再生キューに追加しました. (${track.sourceManager.sourceName})" }
                                 }
 
                                 override fun onNoResult() {
@@ -150,7 +150,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                                         title("`$word` の結果は見つかりませんでした。")
                                         color(Color.Bad)
                                         timestamp()
-                                    }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
+                                    }.deleteQueue(60, TimeUnit.SECONDS)
                                 }
 
                                 override fun onFailed(exception: FriendlyException) {
@@ -160,7 +160,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                                         description { exception.localizedMessage }
                                         color(Color.Bad)
                                         timestamp()
-                                    }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
+                                    }.deleteQueue(60, TimeUnit.SECONDS)
                                 }
                             })
                         }
@@ -192,11 +192,11 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                                         }
                                         color(Color.Good)
                                         timestamp()
-                                    }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+                                    }.deleteQueue(30, TimeUnit.SECONDS)
 
                                     guildPlayer.controls.add(track)
 
-                                    bot.logger.info { "${event.member.fullName}が `${track.info.effectiveTitle}` を再生キューに追加しました. (${track.sourceManager.sourceName})" }
+                                    logger.info { "${event.member.fullName}が `${track.info.effectiveTitle}` を再生キューに追加しました. (${track.sourceManager.sourceName})" }
                                 }
 
                                 override fun onNoResult() {
@@ -205,7 +205,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                                         title("`$word` の結果は見つかりませんでした。")
                                         color(Color.Bad)
                                         timestamp()
-                                    }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
+                                    }.deleteQueue(60, TimeUnit.SECONDS)
                                 }
 
                                 override fun onFailed(exception: FriendlyException) {
@@ -215,7 +215,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                                         description { exception.localizedMessage }
                                         color(Color.Bad)
                                         timestamp()
-                                    }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
+                                    }.deleteQueue(60, TimeUnit.SECONDS)
                                 }
                             })
                         }
@@ -228,7 +228,7 @@ class Play(bot: GLaDOS): CommandFeature(bot) {
                         title("`$word` の検索結果は見つかりませんでした。")
                         color(Color.Bad)
                         timestamp()
-                    }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
+                    }.deleteQueue(60, TimeUnit.SECONDS)
                 }
             })
         }

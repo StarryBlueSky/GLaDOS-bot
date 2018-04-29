@@ -10,7 +10,7 @@ import com.google.api.services.youtube.model.SearchResult
 class YouTubeClient(private val apiKey: String) {
     private val httpTransport = NetHttpTransport()
     private val jsonFactory = JacksonFactory()
-    private val youtube = YouTube.Builder(httpTransport, jsonFactory, HttpRequestInitializer {  })
+    private val youtube = YouTube.Builder(httpTransport, jsonFactory, HttpRequestInitializer { })
             .setApplicationName("GLaDOS")
             .build()
 

@@ -10,7 +10,7 @@ import net.dv8tion.jda.core.Permission
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceGuildMuteEvent
 import java.util.concurrent.TimeUnit
 
-class DetectServerMute(bot: GLaDOS): ListenerFeature(bot) {
+class DetectServerMute: ListenerFeature() {
     override fun onGuildVoiceGuildMute(event: GuildVoiceGuildMuteEvent) {
         if (! bot.config.getGuildConfig(event.guild).option.disableServerMute) {
             return
@@ -24,7 +24,7 @@ class DetectServerMute(bot: GLaDOS): ListenerFeature(bot) {
                         title("エラー")
                         description { "GLaDOSのミュートは推奨されません。代わりにプレイヤーをミュートします。" }
                         color(Color.Bad)
-                    }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+                    }.deleteQueue(30, TimeUnit.SECONDS)
                 }
 
                 guildPlayer.controls.mute()

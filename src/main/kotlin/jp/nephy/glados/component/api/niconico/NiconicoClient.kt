@@ -40,6 +40,7 @@ class NiconicoClient {
         val feed = SyndFeedInput().build(XmlReader(url))
         return Ranking(feed, "${category.friendlyName}${period.friendlyName}${type.friendlyName}")
     }
+
     fun play(guildPlayer: GuildPlayer, type: RankingType, period: RankingPeriod, category: RankingCategory) {
         val groupId = Date().time
         getRanking(type, period, category).videos.filter { PlayableVideoURL.Niconico.match(it.link) }.forEach {

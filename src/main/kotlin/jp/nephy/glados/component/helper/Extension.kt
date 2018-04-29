@@ -1,5 +1,6 @@
 package jp.nephy.glados.component.helper
 
+import jp.nephy.glados.GLaDOS
 import java.io.File
 import java.net.JarURLConnection
 import java.nio.file.*
@@ -53,6 +54,7 @@ fun Long?.toMilliSecondString(): String? {
 
 val Number.charLength: Int
     get() = toString().length
+
 fun <T> Iterable<T>.sumBy(selector: (T) -> Long): Long {
     return map(selector).sum()
 }
@@ -66,7 +68,7 @@ fun <T> MutableList<T>.removeAtOrNull(index: Int): T? {
 }
 
 @Suppress("UNCHECKED_CAST")
-inline fun <reified T> enumuratePackage(packageName: String): Set<Class<T>> {
+inline fun <reified T> enumurateClasses(packageName: String): List<Class<T>> {
     val resourceName = packageName.replace('.', File.separatorChar)
     val resourceName2 = packageName.replace('.', '/')
     val classLoader = Thread.currentThread().contextClassLoader
@@ -105,9 +107,22 @@ inline fun <reified T> enumuratePackage(packageName: String): Set<Class<T>> {
             }
         }
         else -> emptySet()
-    }
+    }.sortedBy { it.canonicalName }
 }
 
 fun <T> List<T>.joinToStringIndexed(separator: String, operation: (Int, T) -> String): String {
     return mapIndexed { index, t -> operation(index, t) }.joinToString(separator)
+}
+
+fun tmpFile(first: String, vararg more: String): File {
+    val tmpDir = Paths.get(if (GLaDOS.instance.isDebugMode) "tmp_debug" else "tmp")
+    if (! Files.exists(tmpDir)) {
+        Files.createDirectory(tmpDir)
+    }
+
+    if (more.isNotEmpty()) {
+        Files.createDirectories(Paths.get(tmpDir.toString(), first, *more.dropLast(1).toTypedArray()))
+    }
+
+    return Paths.get(tmpDir.toString(), first, *more).toFile()
 }

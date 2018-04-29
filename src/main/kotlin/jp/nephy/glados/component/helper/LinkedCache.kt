@@ -1,6 +1,5 @@
 package jp.nephy.glados.component.helper
 
-import jp.nephy.glados.GLaDOS
 import java.io.File
 import java.nio.file.Files
 import kotlin.reflect.KClass
@@ -15,13 +14,14 @@ open class LinkedSingleCache<T: Any>(private val klass: KClass<T>, private val d
         }
         return current
     }
+
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         current = value
         write(property.name, value)
     }
 
     private fun getCacheFile(key: String): File {
-        return GLaDOS.getTmpFile("cache", key)
+        return tmpFile("cache", key)
     }
 
     private fun read(key: String): T? {
@@ -64,13 +64,14 @@ open class LinkedListCache<T: Any>(private val klass: KClass<T>, private val def
         }
         return current
     }
+
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: List<T>) {
         current = value
         write(property.name, value)
     }
 
     private fun getCacheFile(key: String): File {
-        return GLaDOS.getTmpFile("cache", key)
+        return tmpFile("cache", key)
     }
 
     private fun read(key: String): List<T>? {

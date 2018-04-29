@@ -6,7 +6,7 @@ import jp.nephy.glados.feature.ListenerFeature
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent
 
 
-class Greeting(bot: GLaDOS): ListenerFeature(bot) {
+class Greeting: ListenerFeature() {
     override fun onGuildMemberJoin(event: GuildMemberJoinEvent) {
         val config = bot.config.getGuildConfig(event.guild)
         if (config.textChannel.general == null || config.textChannel.rules == null) {

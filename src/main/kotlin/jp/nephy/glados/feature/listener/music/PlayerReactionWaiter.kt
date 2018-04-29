@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEv
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
-class PlayerReactionWaiter(bot: GLaDOS): ListenerFeature(bot) {
+class PlayerReactionWaiter: ListenerFeature() {
     private var skipForwardVote = 0
     private var clearVote = 0
 
@@ -35,7 +35,7 @@ class PlayerReactionWaiter(bot: GLaDOS): ListenerFeature(bot) {
             return event.channel.embedMention(event.member) {
                 title("私が再生しているボイスチャンネルに参加していないのでコマンドは実行できません。")
                 color(Color.Bad)
-            }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+            }.deleteQueue(30, TimeUnit.SECONDS)
         }
 
         val config = bot.config.getGuildConfig(event.guild)
@@ -111,7 +111,7 @@ class PlayerReactionWaiter(bot: GLaDOS): ListenerFeature(bot) {
                         }
                     } else {
                         val requiredRate = 0.4
-                        val voteCount = ++skipForwardVote
+                        val voteCount = ++ skipForwardVote
                         val vcMembersCount = guildPlayer.voiceChannel.members.count { ! it.user.isBot }
                         val rate = if (vcMembersCount != 0) {
                             1.0 * voteCount / vcMembersCount
@@ -248,7 +248,7 @@ class PlayerReactionWaiter(bot: GLaDOS): ListenerFeature(bot) {
                     }
                 } else {
                     val requiredRate = 0.4
-                    val voteCount = ++clearVote
+                    val voteCount = ++ clearVote
                     val vcMembersCount = guildPlayer.voiceChannel.members.count { ! it.user.isBot }
                     val rate = if (vcMembersCount != 0) {
                         1.0 * voteCount / vcMembersCount
@@ -282,11 +282,11 @@ class PlayerReactionWaiter(bot: GLaDOS): ListenerFeature(bot) {
                 }
             }
             PlayerEmoji.SoundCloud -> {
-                return SoundCloud.respondPrompt(bot, event.guild, event.channel, event.member)
+                return SoundCloud.respondPrompt(event.guild, event.channel, event.member)
             }
             PlayerEmoji.NicoRanking -> {
-                return Nico.respondPrompt(bot, event.guild, event.channel, event.member)
+                return Nico.respondPrompt(event.guild, event.channel, event.member)
             }
-        }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+        }.deleteQueue(30, TimeUnit.SECONDS)
     }
 }

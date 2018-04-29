@@ -15,6 +15,7 @@ class YouTubeDL(private val videoUrl: String) {
         process.waitFor(1, TimeUnit.SECONDS)
         return process.inputStream ?: null
     }
+
     private fun getResultAsString(vararg args: String): String? {
         val stream = getResultStream(*args) ?: return null
         return InputStreamReader(stream).use { it.readText() }.trim()

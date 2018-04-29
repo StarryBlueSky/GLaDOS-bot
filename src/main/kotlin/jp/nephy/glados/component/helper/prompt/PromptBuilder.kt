@@ -1,11 +1,7 @@
 package jp.nephy.glados.component.helper.prompt
 
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter
-import jp.nephy.glados.component.helper.Color
-import jp.nephy.glados.component.helper.deleteQueue
-import jp.nephy.glados.component.helper.embedMention
-import jp.nephy.glados.component.helper.joinToStringIndexed
-import jp.nephy.glados.component.helper.wait
+import jp.nephy.glados.GLaDOS
+import jp.nephy.glados.component.helper.*
 import net.dv8tion.jda.core.entities.Member
 import net.dv8tion.jda.core.entities.Message
 import net.dv8tion.jda.core.entities.TextChannel
@@ -14,10 +10,10 @@ import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEv
 import java.util.concurrent.TimeUnit
 
 
-class PromptBuilder private constructor(val waiter: EventWaiter, val textChannel: TextChannel, val target: Member) {
+class PromptBuilder private constructor(val textChannel: TextChannel, val target: Member) {
     companion object {
-        fun build(waiter: EventWaiter, textChannel: TextChannel, member: Member, operation: PromptBuilder.() -> Unit) {
-            val builder = PromptBuilder(waiter, textChannel, member)
+        fun build(textChannel: TextChannel, member: Member, operation: PromptBuilder.() -> Unit) {
+            val builder = PromptBuilder(textChannel, member)
             operation(builder)
         }
     }
@@ -58,15 +54,15 @@ class PromptBuilder private constructor(val waiter: EventWaiter, val textChannel
             timestamp()
         }.queue { m ->
             enumConstants.forEach {
-                m.addReaction(it.emoji).queue()
+                m.addReaction(it.emoji).queue({}, {})
             }
 
-            waiter.wait<GuildMessageReactionAddEvent>({
+            GLaDOS.instance.eventWaiter.wait<GuildMessageReactionAddEvent>({
                 user.idLong == target.user.idLong
                         && messageIdLong == m.idLong
                         && ! enumConstants.none { it.emoji == reactionEmote.name }
             }, timeoutSec?.times(1000L), {
-                m.delete().queue()
+                m.delete().queue({}, {})
             }) {
                 val selected = enumConstants.find { it.emoji == reactionEmote.name }!!
 
@@ -81,7 +77,7 @@ class PromptBuilder private constructor(val waiter: EventWaiter, val textChannel
                     color(color)
                     timestamp()
                 }.deleteQueue(30, TimeUnit.SECONDS) {
-                    m.delete().queue()
+                    m.delete().queue({}, {})
                     @Suppress("UNCHECKED_CAST")
                     then(selected as R, it, this)
                 }
@@ -137,13 +133,13 @@ class PromptBuilder private constructor(val waiter: EventWaiter, val textChannel
             color(color)
             timestamp()
         }.queue { m ->
-            waiter.wait<GuildMessageReceivedEvent>({
+            GLaDOS.instance.eventWaiter.wait<GuildMessageReceivedEvent>({
                 member.user.idLong == target.user.idLong
                         && digit.containsMatchIn(message.contentDisplay).apply {
                     println(message.contentDisplay)
                 }
             }, timeoutSec?.times(1000L), {
-                m.delete().queue()
+                m.delete().queue({}, {})
             }) {
                 val number = digit.find(message.contentDisplay)!!.value.toInt()
                 @Suppress("UNCHECKED_CAST")
@@ -159,7 +155,7 @@ class PromptBuilder private constructor(val waiter: EventWaiter, val textChannel
                     description { "${selected.friendlyName} が選択されました。" }
                     color(color)
                 }.deleteQueue(30, TimeUnit.SECONDS) {
-                    m.delete().queue()
+                    m.delete().queue({}, {})
                     @Suppress("UNCHECKED_CAST")
                     then(selected as R, it, this)
                 }
@@ -216,13 +212,13 @@ class PromptBuilder private constructor(val waiter: EventWaiter, val textChannel
             color(color)
             timestamp()
         }.queue { m ->
-            waiter.wait<GuildMessageReceivedEvent>({
+            GLaDOS.instance.eventWaiter.wait<GuildMessageReceivedEvent>({
                 member.user.idLong == target.user.idLong
                         && digit.containsMatchIn(message.contentDisplay).apply {
                     println(message.contentDisplay)
                 }
             }, timeoutSec?.times(1000L), {
-                m.delete().queue()
+                m.delete().queue({}, {})
             }) {
                 val number = digit.find(message.contentDisplay)!!.value.toInt()
                 val selected = list.getOrElse(number) { default }
@@ -241,7 +237,7 @@ class PromptBuilder private constructor(val waiter: EventWaiter, val textChannel
                     }
                     color(color)
                 }.deleteQueue(30, TimeUnit.SECONDS) {
-                    m.delete().queue()
+                    m.delete().queue({}, {})
                     @Suppress("UNCHECKED_CAST")
                     then(selected, it, this)
                 }

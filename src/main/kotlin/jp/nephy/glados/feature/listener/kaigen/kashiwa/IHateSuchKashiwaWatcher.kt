@@ -5,18 +5,21 @@ import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.embedMessage
 import jp.nephy.glados.component.helper.isSelf
 import jp.nephy.glados.feature.ListenerFeature
+import jp.nephy.glados.logger
 import net.dv8tion.jda.core.entities.TextChannel
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.core.events.message.guild.GuildMessageUpdateEvent
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent
+import kotlin.concurrent.thread
 
 val twitterUrl = "(?:http(?:s)?://)?(?:m|mobile)?twitter\\.com/((?:\\w|_){1,16})/status/(\\d+)".toRegex()
-fun TextChannel.revealTweet(text: String, bot: GLaDOS) {
+fun TextChannel.revealTweet(text: String) {
+    val twitter = GLaDOS.instance.apiClient.twitter
     twitterUrl.findAll(text).forEach { matched ->
         val (screenName, statusId) = matched.destructured
-        bot.apiClient.twitter.user.show(screenName = screenName).queue { user ->
+        twitter.user.show(screenName = screenName).queue { user ->
             if (user.result.protected) {
-                bot.apiClient.twitter.status.show(id = statusId.toLong()).queue { status ->
+                twitter.status.show(id = statusId.toLong()).queue { status ->
                     embedMessage {
                         author("${user.result.name} @${user.result.screenName}", "https://twitter.com/${user.result.screenName}", user.result.profileImageUrlHttps)
                         descriptionBuilder {
@@ -38,9 +41,13 @@ fun TextChannel.revealTweet(text: String, bot: GLaDOS) {
     }
 }
 
-class IHateSuchKashiwaWatcher(bot: GLaDOS): ListenerFeature(bot) {
+class IHateSuchKashiwaWatcher: ListenerFeature() {
     init {
-        bot.apiClient.twitter.stream.userStream().listen(KashiwaListener(bot)).start(wait = false)
+        thread(name = "KashiwaStream Keeper") {
+            val kashiwaChannels = GLaDOS.instance.config.guilds.filter { it.textChannel.iHateSuchKashiwa != null }.map { GLaDOS.instance.jda.getTextChannelById(it.textChannel.iHateSuchKashiwa !!) }
+
+            bot.apiClient.twitter.stream.userStream().listen(KashiwaListener(kashiwaChannels)).start(wait = true, autoReconnect = true)
+        }
     }
 
     override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {
@@ -52,18 +59,18 @@ class IHateSuchKashiwaWatcher(bot: GLaDOS): ListenerFeature(bot) {
         val message = bot.messageCacheManager.get(event.messageIdLong) ?: return
         val match = twitterUrl.find(message.contentDisplay)
         if (match == null) {
-            bot.logger.info { "Twitter URLパターンに一致しないメッセージです: ${message.contentDisplay}" }
+            logger.info { "Twitter URLパターンに一致しないメッセージです: ${message.contentDisplay}" }
             return
         }
 
         val emoji = HateEmoji.fromEmoji(event.reactionEmote.name)
         if (emoji == null) {
-            bot.logger.info { "`${message.contentDisplay}`に未知のリアクション ${event.reactionEmote.name} が付きました." }
+            logger.info { "`${message.contentDisplay}`に未知のリアクション ${event.reactionEmote.name} が付きました." }
             return
         }
 
         // TODO
-        if (! GLaDOS.debug) {
+        if (! bot.isDebugMode) {
             return
         }
 
@@ -81,7 +88,7 @@ class IHateSuchKashiwaWatcher(bot: GLaDOS): ListenerFeature(bot) {
                 timestamp()
                 color(Color.Good)
             }.queue {
-                bot.logger.info { "かいげん語録追加: ${match.value}" }
+                logger.info { "かいげん語録追加: ${match.value}" }
             }
         }
     }
@@ -93,11 +100,11 @@ class IHateSuchKashiwaWatcher(bot: GLaDOS): ListenerFeature(bot) {
         }
 
         if (! twitterUrl.containsMatchIn(event.message.contentDisplay)) {
-            bot.logger.info { "Twitter URLパターンに一致しないメッセージです: ${event.message.contentDisplay}" }
+            logger.info { "Twitter URLパターンに一致しないメッセージです: ${event.message.contentDisplay}" }
             return
         }
 
-        event.channel.revealTweet(event.message.contentDisplay, bot)
+        event.channel.revealTweet(event.message.contentDisplay)
 
         HateEmoji.values().forEach {
             event.message.addReaction(it.emoji).queue()
@@ -111,7 +118,7 @@ class IHateSuchKashiwaWatcher(bot: GLaDOS): ListenerFeature(bot) {
         }
 
         if (! twitterUrl.containsMatchIn(event.message.contentDisplay)) {
-            bot.logger.info { "Twitter URLパターンに一致しないメッセージです: ${event.message.contentDisplay}" }
+            logger.info { "Twitter URLパターンに一致しないメッセージです: ${event.message.contentDisplay}" }
             return
         }
 

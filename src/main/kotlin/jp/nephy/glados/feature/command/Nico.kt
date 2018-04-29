@@ -2,24 +2,25 @@ package jp.nephy.glados.feature.command
 
 import com.jagrosh.jdautilities.command.CommandEvent
 import jp.nephy.glados.GLaDOS
-import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.api.niconico.param.RankingCategory
 import jp.nephy.glados.component.api.niconico.param.RankingPeriod
 import jp.nephy.glados.component.api.niconico.param.RankingType
+import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.deleteQueue
 import jp.nephy.glados.component.helper.embedMention
 import jp.nephy.glados.component.helper.prompt.PromptBuilder
 import jp.nephy.glados.feature.CommandFeature
+import jp.nephy.glados.logger
 import net.dv8tion.jda.core.entities.Guild
 import net.dv8tion.jda.core.entities.Member
 import net.dv8tion.jda.core.entities.TextChannel
 import java.util.concurrent.TimeUnit
 
 
-class Nico(bot: GLaDOS): CommandFeature(bot) {
+class Nico: CommandFeature() {
     companion object {
-        fun respondPrompt(bot: GLaDOS, guild: Guild, textChannel: TextChannel, member: Member) {
-            PromptBuilder.build(bot.eventWaiter, textChannel, member) {
+        fun respondPrompt(guild: Guild, textChannel: TextChannel, member: Member) {
+            PromptBuilder.build(textChannel, member) {
                 emojiPrompt<RankingType, RankingType>(
                         title = "ニコニコ動画のランキングを再生します",
                         description = "ランキングの種類を選択してください。",
@@ -46,12 +47,13 @@ class Nico(bot: GLaDOS): CommandFeature(bot) {
                                     append("まもなく再生されます。")
                                 }
                                 color(Color.SoundCloud)
-                            }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+                            }.deleteQueue(30, TimeUnit.SECONDS)
 
+                            val bot = GLaDOS.instance
                             val guildPlayer = bot.playerManager.getGuildPlayer(guild)
                             bot.apiClient.niconico.play(guildPlayer, rankingType, rankingPeriod, rankingCategory)
 
-                            bot.logger.info { "サーバ ${guild.name} でニコニコ動画 ${rankingCategory.friendlyName}カテゴリの${rankingPeriod.friendlyName}${rankingType.name}ランキングをキューに追加します." }
+                            logger.info { "サーバ ${guild.name} でニコニコ動画 ${rankingCategory.friendlyName}カテゴリの${rankingPeriod.friendlyName}${rankingType.name}ランキングをキューに追加します." }
                         }
                     }
                 }
@@ -69,6 +71,6 @@ class Nico(bot: GLaDOS): CommandFeature(bot) {
     }
 
     override fun executeCommand(event: CommandEvent) {
-        Nico.respondPrompt(bot, event.guild, event.textChannel, event.member)
+        Nico.respondPrompt(event.guild, event.textChannel, event.member)
     }
 }

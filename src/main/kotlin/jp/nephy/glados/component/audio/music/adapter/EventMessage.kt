@@ -10,11 +10,15 @@ import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.audio.music.*
 import jp.nephy.glados.component.audio.music.PlayerEmoji
 import jp.nephy.glados.component.helper.*
+import jp.nephy.glados.logger
+import net.dv8tion.jda.core.exceptions.ErrorResponseException
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 
-class EventMessage(private val bot: GLaDOS, private val guildPlayer: GuildPlayer): AudioEventAdapter() {
+class EventMessage(private val guildPlayer: GuildPlayer): AudioEventAdapter() {
+    private val bot = GLaDOS.instance
+
     private fun buildEmbed(builder: EmbedBuilder, track: AudioTrack): EmbedBuilder {
         val info = track.youtubedl.info
         val soundCloud = track.soundCloudCache
@@ -30,7 +34,7 @@ class EventMessage(private val bot: GLaDOS, private val guildPlayer: GuildPlayer
                         append("Released by:\n    ${soundCloud.track.labelName}")
                     }
                 } else if (nico != null) {
-                    appendln("登録タグ: ${nico.tags.split(" ").joinToString(" ") { "__**$it**__" } }")
+                    appendln("登録タグ: ${nico.tags.split(" ").joinToString(" ") { "__**$it**__" }}")
                     appendln("再生数: ${nico.viewCounter} / コメント数: ${nico.commentCounter} / マイリスト数: ${nico.mylistCounter}\n")
                     append("${nico.description.replace("<.+?>".toRegex(), "").take(150)}...")
                 } else if (info?.description != null) {
@@ -87,7 +91,7 @@ class EventMessage(private val bot: GLaDOS, private val guildPlayer: GuildPlayer
     }
 
     override fun onTrackStart(player: AudioPlayer, track: AudioTrack) {
-        bot.logger.info { "[${track.sourceManager.sourceName}] 現在再生中の曲は \"${track.info.effectiveTitle}\" by ${track.info.author} (${track.info.length.toMilliSecondString()}) です." }
+        logger.info { "[${track.sourceManager.sourceName}] 現在再生中の曲は \"${track.info.effectiveTitle}\" by ${track.info.author} (${track.info.length.toMilliSecondString()}) です." }
 
         if (guildPlayer.config.textChannel.bot == null) {
             return
@@ -96,38 +100,48 @@ class EventMessage(private val bot: GLaDOS, private val guildPlayer: GuildPlayer
         bot.jda.getTextChannelById(guildPlayer.config.textChannel.bot).embedMessage { buildEmbed(this, track) }.queue {
             thread {
                 PlayerEmoji.values().forEach { e ->
-                    it.addReaction(e.emoji).queue()
+                    it.addReaction(e.emoji).queue({}, {})
                 }
 
+                var isDeleted = false
                 while (track.state == AudioTrackState.LOADING || track.state == AudioTrackState.SEEKING || track.state == AudioTrackState.PLAYING) {
+                    if (isDeleted) {
+                        return@thread
+                    }
+
                     Thread.sleep(bot.parameter.nowPlayingUpdateMs)
-                    it.editMessage(buildEmbed(EmbedBuilder(), track).build()).queue()
+                    it.editMessage(buildEmbed(EmbedBuilder(), track).build()).queue({}, {
+                        if (it is ErrorResponseException && it.errorCode == 10008) {
+                            isDeleted = true
+                        }
+                    })
                 }
 
-                it.delete().queue()
+                it.delete().queue({}, {})
             }
         }
     }
 
     override fun onTrackEnd(player: AudioPlayer, track: AudioTrack, endReason: AudioTrackEndReason) {
         if (! endReason.mayStartNext) {
-            bot.logger.info { "[${track.sourceManager.sourceName}] \"${track.info.effectiveTitle}\" by ${track.info.author} (${track.info.length.toMilliSecondString()}) の再生が停止しました. (${endReason.name})" }
+            logger.info { "[${track.sourceManager.sourceName}] \"${track.info.effectiveTitle}\" by ${track.info.author} (${track.info.length.toMilliSecondString()}) の再生が停止しました. (${endReason.name})" }
         }
     }
 
     override fun onTrackStuck(player: AudioPlayer, track: AudioTrack, thresholdMs: Long) {
-        bot.logger.info { "\"${track.info?.title}\" by ${track.info?.author} (${track.info?.length.toMilliSecondString()}) の再生がスタックしました. (閾値: ${thresholdMs.toMilliSecondString()})" }
+        logger.info { "\"${track.info?.title}\" by ${track.info?.author} (${track.info?.length.toMilliSecondString()}) の再生がスタックしました. (閾値: ${thresholdMs.toMilliSecondString()})" }
     }
 
     override fun onPlayerPause(player: AudioPlayer) {
-        bot.logger.info { "プレイヤー \"$player\" が一時停止しています." }
+        logger.info { "プレイヤー \"$player\" が一時停止しています." }
     }
+
     override fun onPlayerResume(player: AudioPlayer) {
-        bot.logger.info { "プレイヤー \"$player\" が再開しました." }
+        logger.info { "プレイヤー \"$player\" が再開しました." }
     }
 
     override fun onTrackException(player: AudioPlayer, track: AudioTrack, exception: FriendlyException) {
-        bot.logger.error(exception) { "トラック \"${track.info.effectiveTitle}\" の再生中に例外が発生しました。" }
+        logger.error(exception) { "トラック \"${track.info.effectiveTitle}\" の再生中に例外が発生しました。" }
         if (guildPlayer.config.textChannel.bot == null) {
             return
         }
@@ -138,6 +152,6 @@ class EventMessage(private val bot: GLaDOS, private val guildPlayer: GuildPlayer
             description { "${exception.javaClass.canonicalName}: ${exception.localizedMessage}" }
             color(Color.Bad)
             timestamp()
-        }.deleteQueue(60, TimeUnit.SECONDS, bot.messageCacheManager)
+        }.deleteQueue(60, TimeUnit.SECONDS)
     }
 }

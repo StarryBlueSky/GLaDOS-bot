@@ -1,15 +1,16 @@
 package jp.nephy.glados.feature.listener.debug
 
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.fullNameWithoutGuild
+import jp.nephy.glados.component.helper.tmpFile
 import jp.nephy.glados.feature.ListenerFeature
+import jp.nephy.glados.logger
 import net.dv8tion.jda.core.events.ReadyEvent
 
 
-class DumpIds(bot: GLaDOS): ListenerFeature(bot) {
+class DumpIds: ListenerFeature() {
     override fun onReady(event: ReadyEvent) {
         event.jda.guilds.forEach {
-            val file = GLaDOS.getTmpFile("ids_${it.id}.txt")
+            val file = tmpFile("ids_${it.id}.txt")
             file.writeText(
                     buildString {
                         appendln(it.name)
@@ -52,7 +53,7 @@ class DumpIds(bot: GLaDOS): ListenerFeature(bot) {
                     }
             )
 
-            bot.logger.info { "サーバ ${it.name}のID一覧を ${file.toPath().toAbsolutePath()} に書き出しました." }
+            logger.info { "サーバ ${it.name}のID一覧を ${file.toPath().toAbsolutePath()} に書き出しました." }
         }
     }
 }

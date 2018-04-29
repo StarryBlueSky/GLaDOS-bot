@@ -1,7 +1,6 @@
 package jp.nephy.glados.feature.command
 
 import com.jagrosh.jdautilities.command.CommandEvent
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.deleteQueue
 import jp.nephy.glados.component.helper.embedMention
@@ -9,7 +8,7 @@ import jp.nephy.glados.feature.CommandFeature
 import java.util.concurrent.TimeUnit
 
 
-class Summon(bot: GLaDOS): CommandFeature(bot) {
+class Summon: CommandFeature() {
     init {
         name = "summon"
         help = "現在接続中のボイスチャンネルにGLaDOSを呼びます。"
@@ -24,7 +23,7 @@ class Summon(bot: GLaDOS): CommandFeature(bot) {
                 description { "既に同じボイスチャンネルに参加しています。" }
                 color(Color.Bad)
                 timestamp()
-            }.deleteQueue(30, TimeUnit.SECONDS, bot.messageCacheManager)
+            }.deleteQueue(30, TimeUnit.SECONDS)
         }
 
         guildPlayer.joinVoiceChannel(event.member.voiceState.channel)

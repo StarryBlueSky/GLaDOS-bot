@@ -3,6 +3,7 @@ package jp.nephy.glados.feature.listener.kaigen
 import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.StringLinkedListCache
 import jp.nephy.glados.feature.ListenerFeature
+import jp.nephy.glados.logger
 import jp.nephy.jsonkt.JsonKt
 import jp.nephy.jsonkt.get
 import jp.nephy.jsonkt.jsonArray
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 
-class AbemaTVChannelsChecker(bot: GLaDOS): ListenerFeature(bot) {
+class AbemaTVChannelsChecker: ListenerFeature() {
     private val headers = Headers.Builder()
             .add("Accept-Language", "ja")
             .add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36")
@@ -33,7 +34,7 @@ class AbemaTVChannelsChecker(bot: GLaDOS): ListenerFeature(bot) {
                 try {
                     check(clients)
                 } catch (e: Exception) {
-                    bot.logger.error(e) { "AbemaTVチャンネルのチェック中に例外が発生しました." }
+                    logger.error(e) { "AbemaTVチャンネルのチェック中に例外が発生しました." }
                 }
 
                 TimeUnit.MINUTES.sleep(1)

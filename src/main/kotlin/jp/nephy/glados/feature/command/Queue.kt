@@ -1,7 +1,6 @@
 package jp.nephy.glados.feature.command
 
 import com.jagrosh.jdautilities.command.CommandEvent
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.audio.music.*
 import jp.nephy.glados.component.helper.*
 import jp.nephy.glados.feature.CommandFeature
@@ -11,7 +10,7 @@ import net.dv8tion.jda.core.requests.restaction.MessageAction
 import java.util.concurrent.TimeUnit
 
 
-class Queue(bot: GLaDOS): CommandFeature(bot) {
+class Queue: CommandFeature() {
     init {
         name = "queue"
         help = "現在の再生キューを取得します。"

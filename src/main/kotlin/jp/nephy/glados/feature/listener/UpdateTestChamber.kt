@@ -1,6 +1,5 @@
 package jp.nephy.glados.feature.listener
 
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.feature.ListenerFeature
 import net.dv8tion.jda.core.entities.Game
 import net.dv8tion.jda.core.events.ReadyEvent
@@ -9,7 +8,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 
-class UpdateTestChamber(bot: GLaDOS): ListenerFeature(bot) {
+class UpdateTestChamber: ListenerFeature() {
     override fun onReady(event: ReadyEvent) {
         thread(name = "Update Test Chamber") {
             val rnd = Random()

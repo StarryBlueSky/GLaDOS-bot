@@ -1,6 +1,5 @@
 package jp.nephy.glados.feature.listener.audit
 
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.displayName
 import jp.nephy.glados.component.helper.isSelf
 import jp.nephy.glados.component.helper.toDeltaMilliSecondString
@@ -13,7 +12,7 @@ import net.dv8tion.jda.core.events.user.update.*
 import java.util.*
 
 
-class User(bot: GLaDOS): ListenerFeature(bot) {
+class User: ListenerFeature() {
     override fun onUserTyping(event: UserTypingEvent) {
         if (event.user.isSelf || event.user.isBot) {
             return
@@ -29,6 +28,7 @@ class User(bot: GLaDOS): ListenerFeature(bot) {
 
         helper.slackLog(event) { "ユーザ名を変更しました. 元のユーザ名: @${event.oldName}#${event.entity.discriminator}" }
     }
+
     override fun onUserUpdateDiscriminator(event: UserUpdateDiscriminatorEvent) {
         if (event.user.isSelf) {
             return
@@ -109,6 +109,7 @@ class User(bot: GLaDOS): ListenerFeature(bot) {
     override fun onUserBlocked(event: UserBlockedEvent) {
         helper.slackLog(event) { "ユーザ `${event.user.displayName}` をブロックしました." }
     }
+
     override fun onUserUnblocked(event: UserUnblockedEvent) {
         helper.slackLog(event) { "ユーザ `${event.user.displayName}` をブロック解除しました." }
     }

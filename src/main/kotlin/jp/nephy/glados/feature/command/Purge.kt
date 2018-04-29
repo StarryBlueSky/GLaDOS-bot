@@ -1,13 +1,12 @@
 package jp.nephy.glados.feature.command
 
 import com.jagrosh.jdautilities.command.CommandEvent
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.deleteQueue
 import jp.nephy.glados.feature.CommandFeature
 import java.util.concurrent.TimeUnit
 
 
-class Purge(bot: GLaDOS): CommandFeature(bot) {
+class Purge: CommandFeature() {
     init {
         name = "purge"
         help = "指定されたチャンネルのメッセージをクリーンアップします。"
@@ -27,9 +26,9 @@ class Purge(bot: GLaDOS): CommandFeature(bot) {
                     }.queue()
                 }
 
-                it.editMessage("${event.textChannel.asMention} をクリーンアップしました。").deleteQueue(10, TimeUnit.SECONDS, bot.messageCacheManager)
+                it.editMessage("${event.textChannel.asMention} をクリーンアップしました。").deleteQueue(10, TimeUnit.SECONDS)
             } catch (e: Exception) {
-                it.editMessage("${event.textChannel.asMention} のクリーンアップに失敗しました。").deleteQueue(10, TimeUnit.SECONDS, bot.messageCacheManager)
+                it.editMessage("${event.textChannel.asMention} のクリーンアップに失敗しました。").deleteQueue(10, TimeUnit.SECONDS)
             }
         }
     }

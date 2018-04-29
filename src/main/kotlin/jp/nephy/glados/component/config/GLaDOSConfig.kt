@@ -8,6 +8,7 @@ data class GLaDOSConfig(
 
         val guilds: List<GuildConfig>
 ) {
+
     init {
         if (guilds.isEmpty()) {
             throw IllegalStateException("Configにサーバ設定がありません.")

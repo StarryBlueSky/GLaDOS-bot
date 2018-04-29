@@ -6,7 +6,7 @@ import jp.nephy.glados.feature.ListenerFeature
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent
 
-class PlayerPlayState(bot: GLaDOS): ListenerFeature(bot) {
+class PlayerPlayState: ListenerFeature() {
     override fun onGuildVoiceJoin(event: GuildVoiceJoinEvent) {
         val config = bot.config.getGuildConfig(event.guild)
         if (config.voiceChannel.general == null) {

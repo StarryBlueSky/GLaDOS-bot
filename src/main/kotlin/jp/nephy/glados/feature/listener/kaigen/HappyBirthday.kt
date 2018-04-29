@@ -6,6 +6,7 @@ import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.StringLinkedSingleCache
 import jp.nephy.glados.component.helper.embedMessage
 import jp.nephy.glados.feature.ListenerFeature
+import jp.nephy.glados.logger
 import jp.nephy.glados.model.Member
 import jp.nephy.jsonkt.JsonKt
 import jp.nephy.jsonkt.JsonModel
@@ -20,7 +21,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 
-class HappyBirthday(bot: GLaDOS): ListenerFeature(bot) {
+class HappyBirthday: ListenerFeature() {
     private var lastDate by StringLinkedSingleCache { "" }
 
     override fun onReady(event: ReadyEvent) {
@@ -75,7 +76,7 @@ class HappyBirthday(bot: GLaDOS): ListenerFeature(bot) {
                         lastDate = date
                     }
                 } catch (e: Exception) {
-                    bot.logger.error(e) { "誕生日のチェック中にエラーが発生しました." }
+                    logger.error(e) { "誕生日のチェック中にエラーが発生しました." }
                 } finally {
                     TimeUnit.MINUTES.sleep(1)
                 }

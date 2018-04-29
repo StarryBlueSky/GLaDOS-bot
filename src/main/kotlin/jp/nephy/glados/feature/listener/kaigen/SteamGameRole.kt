@@ -6,13 +6,14 @@ import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.hasRole
 import jp.nephy.glados.component.helper.profile.UserProfile
 import jp.nephy.glados.feature.ListenerFeature
+import jp.nephy.glados.logger
 import net.dv8tion.jda.core.Permission
 import net.dv8tion.jda.core.events.ReadyEvent
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 
-class SteamGameRole(bot: GLaDOS): ListenerFeature(bot) {
+class SteamGameRole: ListenerFeature() {
     private val profileCache = mutableMapOf<Long, MutableMap<Long, UserProfile>>()
     override fun onReady(event: ReadyEvent) {
         thread(name = "Steam Game Role Synchronizer") {
@@ -20,7 +21,7 @@ class SteamGameRole(bot: GLaDOS): ListenerFeature(bot) {
                 try {
                     synchronize(event)
                 } catch (e: Exception) {
-                    bot.logger.error { "ゲームロールの同期中にエラーが発生しました." }
+                    logger.error { "ゲームロールの同期中にエラーが発生しました." }
                 }
                 TimeUnit.MINUTES.sleep(5)
                 profileCache.clear()
@@ -39,12 +40,14 @@ class SteamGameRole(bot: GLaDOS): ListenerFeature(bot) {
                 return@forEach
             }
 
-            guild.members.forEach memberLoop@ { member ->
+            guild.members.forEach memberLoop@{ member ->
                 if (member.user.isBot) {
                     return@memberLoop
                 }
 
-                val profile = profileCache[guild.idLong]!!.getOrPut(member.user.idLong) { helper.getUserProfile(member) ?: return@memberLoop }
+                val profile = profileCache[guild.idLong]!!.getOrPut(member.user.idLong) {
+                    helper.getUserProfile(member) ?: return@memberLoop
+                }
                 val steam = profile.connectedAccounts.find { it.type == "steam" } ?: return@memberLoop
 
                 val request = SteamWebApiRequestFactory.createGetOwnedGamesRequest(steam.id, true, true, config.option.steamGameRoles.map { it.appId })
@@ -53,7 +56,7 @@ class SteamGameRole(bot: GLaDOS): ListenerFeature(bot) {
                     val gameConfig = config.option.steamGameRoles.find { it.appId == game.appid } ?: continue
 
                     if (! guild.selfMember.hasPermission(Permission.MANAGE_ROLES)) {
-                        bot.logger.warn { "サーバ ${guild.name} でロールの管理権限がありません." }
+                        logger.warn { "サーバ ${guild.name} でロールの管理権限がありません." }
                         continue
                     }
 

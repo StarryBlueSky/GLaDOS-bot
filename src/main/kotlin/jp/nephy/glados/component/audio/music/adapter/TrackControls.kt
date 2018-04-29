@@ -9,9 +9,10 @@ import jp.nephy.glados.component.audio.music.*
 import jp.nephy.glados.component.helper.isNoOneExceptSelf
 import jp.nephy.glados.component.helper.removeAtOrNull
 import jp.nephy.glados.component.helper.sumBy
+import jp.nephy.glados.logger
 
 
-class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlayer, private val player: AudioPlayer) : AudioEventAdapter() {
+class TrackControls(private val guildPlayer: GuildPlayer, private val player: AudioPlayer): AudioEventAdapter() {
     private val userRequestQueue = mutableListOf<AudioTrack>()
     private val autoPlaylistQueue = mutableListOf<AudioTrack>()
     private val soundCloudQueue = mutableListOf<AudioTrack>()
@@ -29,7 +30,8 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
                 when (track.type) {
                     TrackType.SoundCloud -> soundCloudQueue.clear()
                     TrackType.NicoRanking -> nicoRankingQueue.clear()
-                    else -> {}
+                    else -> {
+                    }
                 }
             }
 
@@ -46,6 +48,7 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
             add(track, null)
         }
     }
+
     fun addAll(tracks: List<AudioTrack>, justLoad: Boolean = false) {
         tracks.forEach {
             add(it, justLoad)
@@ -149,67 +152,76 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
 
     val isPlaying: Boolean
         get() = ! player.isPaused
+
     fun resume() {
         player.isPaused = false
         if (currentTrack == null) {
             skip()
         }
-        bot.logger.info { "MusicPlayer: リジューム" }
+        logger.info { "MusicPlayer: リジューム" }
     }
+
     fun pause() {
         if (! player.isPaused) {
             player.isPaused = true
-            bot.logger.info { "MusicPlayer: ポーズ" }
+            logger.info { "MusicPlayer: ポーズ" }
         }
     }
 
     val position: Long
         get() = currentTrack?.position ?: 0
+
     fun skipBack() {
         currentTrack?.position = 0
-        bot.logger.info { "MusicPlayer: 後方スキップ" }
+        logger.info { "MusicPlayer: 後方スキップ" }
     }
+
     fun skipForward() {
         skip()
-        bot.logger.info { "MusicPlayer: 前方スキップ" }
+        logger.info { "MusicPlayer: 前方スキップ" }
     }
+
     fun seekBack(sec: Int) {
         if (currentTrack != null) {
             currentTrack!!.position -= sec * 1000L
         }
-        bot.logger.info { "MusicPlayer: 後方シーク (${sec}秒)" }
+        logger.info { "MusicPlayer: 後方シーク (${sec}秒)" }
     }
+
     fun seekForward(sec: Int) {
         if (currentTrack != null) {
             currentTrack!!.position += sec * 1000L
         }
-        bot.logger.info { "MusicPlayer: 前方シーク (${sec}秒)" }
+        logger.info { "MusicPlayer: 前方シーク (${sec}秒)" }
     }
 
     val volume: Int
         get() = player.volume
     val isMuted: Boolean
         get() = player.volume == 0
-    private var previousVolume = bot.parameter.defaultPlayerVolume
+    private var previousVolume = GLaDOS.instance.parameter.defaultPlayerVolume
     fun mute() {
         previousVolume = volume
         player.volume = 0
-        bot.logger.info { "MusicPlayer: ミュート" }
+        logger.info { "MusicPlayer: ミュート" }
     }
+
     fun unmute() {
         player.volume = previousVolume
-        bot.logger.info { "MusicPlayer: ミュート解除" }
+        logger.info { "MusicPlayer: ミュート解除" }
     }
+
     fun volumeUp(amount: Int): Int {
         player.volume += amount
         return volume.apply {
-            bot.logger.info { "MusicPlayer: ボリューム -> $this" }
+            logger.info { "MusicPlayer: ボリューム -> $this" }
         }
     }
+
     fun volumeDown(amount: Int): Int {
         player.volume -= amount
         return volume.apply {
-            bot.logger.info { "MusicPlayer: ボリューム -> $this" }
+            logger.info { "MusicPlayer: ボリューム -> $this" }
         }
     }
 
@@ -217,49 +229,55 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
         userRequestQueue.shuffle()
         autoPlaylistQueue.shuffle()
         soundCloudQueue.shuffle()
-        bot.logger.info { "MusicPlayer: シャッフル" }
+        logger.info { "MusicPlayer: シャッフル" }
     }
 
     private var trackRepeat: Boolean = false
     val isRepeatTrackEnabled: Boolean
         get() = trackRepeat
+
     fun enableRepeatTrack() {
         trackRepeat = true
-        bot.logger.info { "MusicPlayer: トラックリピート -> 有効化" }
+        logger.info { "MusicPlayer: トラックリピート -> 有効化" }
     }
+
     fun disableRepeatTrack() {
         trackRepeat = false
-        bot.logger.info { "MusicPlayer: トラックリピート -> 無効化" }
+        logger.info { "MusicPlayer: トラックリピート -> 無効化" }
     }
 
     private var playlistRepeat: Boolean = false
     val isRepeatPlaylistEnabled: Boolean
         get() = playlistRepeat
+
     fun enableRepeatPlaylist() {
         playlistRepeat = true
-        bot.logger.info { "MusicPlayer: プレイリストリピート -> 有効化" }
+        logger.info { "MusicPlayer: プレイリストリピート -> 有効化" }
     }
+
     fun disableRepeatPlaylist() {
         playlistRepeat = false
-        bot.logger.info { "MusicPlayer: プレイリストリピート -> 無効化" }
+        logger.info { "MusicPlayer: プレイリストリピート -> 無効化" }
     }
 
     private var autoPlaylistEnabled = guildPlayer.config.option.useAutoPlaylist
     val isAutoPlaylistEnabled: Boolean
         get() = autoPlaylistEnabled
+
     fun enableAutoPlaylist() {
         autoPlaylistEnabled = true
         if (! isPlaying && isEmptyQueue) {
             playFromAutoPlaylist()
         }
-        bot.logger.info { "MusicPlayer: オートプレイリスト -> 有効化" }
+        logger.info { "MusicPlayer: オートプレイリスト -> 有効化" }
     }
+
     fun disableAutoPlaylist() {
         autoPlaylistEnabled = false
         if (currentTrack?.type == TrackType.AutoPlaylist) {
             skip()
         }
-        bot.logger.info { "MusicPlayer: オートプレイリスト -> 無効化" }
+        logger.info { "MusicPlayer: オートプレイリスト -> 無効化" }
     }
 
     fun clear() {
@@ -278,6 +296,7 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
             }
         }
     }
+
     private fun playFromNicoRanking(): Boolean {
         if (nicoRankingQueue.isNotEmpty()) {
             val track = nextNicoRankingTrack
@@ -288,6 +307,7 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
         }
         return false
     }
+
     private fun playFromSoundCloud(): Boolean {
         if (soundCloudQueue.isNotEmpty()) {
             val track = nextSoundCloudTrack
@@ -298,6 +318,7 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
         }
         return false
     }
+
     private fun playFromAutoPlaylist(): Boolean {
         if (isAutoPlaylistEnabled) {
             val track = nextAutoPlaylistTrack
@@ -308,12 +329,13 @@ class TrackControls(private val bot: GLaDOS, private val guildPlayer: GuildPlaye
         }
         return false
     }
+
     private fun onQueueEmpty() {
         if (playFromNicoRanking() || playFromSoundCloud() || playFromAutoPlaylist()) {
             return
         }
 
         player.stopTrack()
-        bot.logger.info { "MusicPlayerの再生キューが空になりました." }
+        logger.info { "MusicPlayerの再生キューが空になりました." }
     }
 }

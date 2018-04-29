@@ -12,7 +12,7 @@ import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceSelfMuteEvent
 
 
-class Inkya(bot: GLaDOS): ListenerFeature(bot) {
+class Inkya: ListenerFeature() {
     private fun addRole(guild: Guild, member: Member, jda: JDA) {
         val config = bot.config.getGuildConfig(guild)
         if (config.role.inkya == null) {
@@ -23,6 +23,7 @@ class Inkya(bot: GLaDOS): ListenerFeature(bot) {
             guild.controller.addSingleRoleToMember(member, jda.getRoleById(config.role.inkya)).queue()
         }
     }
+
     private fun removeRole(guild: Guild, member: Member, jda: JDA) {
         val config = bot.config.getGuildConfig(guild)
         if (config.role.inkya == null) {
@@ -52,6 +53,7 @@ class Inkya(bot: GLaDOS): ListenerFeature(bot) {
     override fun onGuildVoiceLeave(event: GuildVoiceLeaveEvent) {
         removeRole(event.guild, event.member, event.jda)
     }
+
     override fun onGuildVoiceMove(event: GuildVoiceMoveEvent) {
         // AFKチャンネルに移動した場合
         if (event.channelJoined == event.guild.afkChannel) {
