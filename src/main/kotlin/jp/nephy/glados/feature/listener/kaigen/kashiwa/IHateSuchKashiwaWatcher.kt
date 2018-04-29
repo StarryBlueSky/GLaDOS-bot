@@ -5,13 +5,43 @@ import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.embedMessage
 import jp.nephy.glados.component.helper.isSelf
 import jp.nephy.glados.feature.ListenerFeature
+import net.dv8tion.jda.core.entities.TextChannel
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.core.events.message.guild.GuildMessageUpdateEvent
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent
 
+val twitterUrl = "(?:http(?:s)?://)?(?:m|mobile)?twitter\\.com/((?:\\w|_){1,16})/status/(\\d+)".toRegex()
+fun TextChannel.revealTweet(text: String, bot: GLaDOS) {
+    twitterUrl.findAll(text).forEach { matched ->
+        val (screenName, statusId) = matched.destructured
+        bot.apiClient.twitter.user.show(screenName = screenName).queue { user ->
+            if (user.result.protected) {
+                bot.apiClient.twitter.status.show(id = statusId.toLong()).queue { status ->
+                    embedMessage {
+                        author("${user.result.name} @${user.result.screenName}", "https://twitter.com/${user.result.screenName}", user.result.profileImageUrlHttps)
+                        descriptionBuilder {
+                            appendln(status.result.fullText)
+                            appendln()
+                            append(matched.value)
+                        }
+                        if (status.result.extendedEntities?.media.orEmpty().isNotEmpty()) {
+                            image(status.result.extendedEntities!!.media.first().mediaUrlHttps)
+                        }
+
+                        color(Color.Twitter)
+                        footer("Twitter", "https://abs.twimg.com/icons/apple-touch-icon-192x192.png")
+                        timestamp()
+                    }.queue()
+                }
+            }
+        }
+    }
+}
 
 class IHateSuchKashiwaWatcher(bot: GLaDOS): ListenerFeature(bot) {
-    private val twitterUrl = "(?:http(?:s)?://)?(?:m|mobile)?twitter\\.com/(\\w+?)/status/(\\d+)".toRegex()
+    init {
+        bot.apiClient.twitter.stream.userStream().listen(KashiwaListener(bot)).start(wait = false)
+    }
 
     override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {
         val config = bot.config.getGuildConfig(event.guild)
@@ -67,21 +97,7 @@ class IHateSuchKashiwaWatcher(bot: GLaDOS): ListenerFeature(bot) {
             return
         }
 
-        val statusInfo = twitterUrl.matchEntire(event.message.contentDisplay)!!.destructured.toList()
-        val (screenName, statusId) = statusInfo[0] to statusInfo[1]
-        val twitter = bot.apiClient.twitter
-        twitter.user.show(screenName).queue {
-            val user = it.result
-            if (user.protected) {
-                twitter.status.show(statusId.toLong()).queue {
-                val status = it.result
-                    event.channel.embedMessage {
-                        title(user.name + " (@" + user.screenName + ")")
-                        description { status.fullText }
-                    }
-                }
-            }
-        }
+        event.channel.revealTweet(event.message.contentDisplay, bot)
 
         HateEmoji.values().forEach {
             event.message.addReaction(it.emoji).queue()

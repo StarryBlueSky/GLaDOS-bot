@@ -2,8 +2,8 @@ package jp.nephy.glados.feature.command
 
 import com.jagrosh.jdautilities.command.CommandEvent
 import jp.nephy.glados.GLaDOS
-import jp.nephy.glados.component.api.twitter.kashiwa.UserStreamListener
 import jp.nephy.glados.feature.CommandFeature
+import jp.nephy.glados.feature.listener.kaigen.kashiwa.KashiwaListener
 
 class ChangeIHSKCommand(bot: GLaDOS): CommandFeature(bot) {
     init {
@@ -15,7 +15,6 @@ class ChangeIHSKCommand(bot: GLaDOS): CommandFeature(bot) {
     }
 
     override fun executeCommand(event: CommandEvent) {
-        UserStreamListener.hateCommandString = event.args
+        KashiwaListener.hateCommandString = event.args
     }
-
 }
