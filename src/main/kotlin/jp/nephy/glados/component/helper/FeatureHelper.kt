@@ -14,6 +14,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 class FeatureHelper {
+    companion object {
+        var messageLoggerEnabled by BooleanLinkedSingleCache { false }
+    }
+
     private val bot = GLaDOS.instance
     private val client = OkHttpClient()
 
@@ -52,21 +56,26 @@ class FeatureHelper {
         }
 
         val config = bot.config.getGuildConfig(guild)
+        if (! config.option.useLogger) {
+            return
+        }
         if (config.textChannel.log == null) {
             logger.warn { "${guild.name} は logチャンネルが未定義のためMessageロガーは使用できません. 代わりにSlackロガーを使用します." }
             slackLog(event, message = message)
             return
         }
 
-        guild.getTextChannelById(config.textChannel.log).embedMessage {
-            if (title != null) {
-                title(title)
-            }
-            description(message)
-            color(color)
-            footer(guild.name, guild.iconUrl)
-            timestamp()
-        }.queue()
+        if (messageLoggerEnabled) {
+            guild.getTextChannelById(config.textChannel.log).embedMessage {
+                if (title != null) {
+                    title(title)
+                }
+                description(message)
+                color(color)
+                footer(guild.name, guild.iconUrl)
+                timestamp()
+            }.queue()
+        }
         slackLog(event, message = message)
     }
 
@@ -76,7 +85,11 @@ class FeatureHelper {
         val user = event.nullableUser
 
         val config = if (guild != null) {
-            bot.config.getGuildConfig(guild)
+            bot.config.getGuildConfig(guild).apply {
+                if (! option.useLogger) {
+                    return
+                }
+            }
         } else {
             null
         }

@@ -4,12 +4,12 @@ import jp.nephy.glados.component.config.additional.SteamGameRoleConfig
 
 data class GuildOption(
         val useCommand: Boolean = false,
-
         val useAutoPlaylist: Boolean = false,
         val useFindVideoURL: Boolean = false,
         val useNiconicoDict: Boolean = false,
         val useHappyBirthday: Boolean = false,
         val disableServerMute: Boolean = false,
+        val useLogger: Boolean = false,
 
         val ignoreUserIds: List<Long> = emptyList(),
 
