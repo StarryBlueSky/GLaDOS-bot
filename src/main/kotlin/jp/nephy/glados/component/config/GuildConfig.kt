@@ -7,7 +7,6 @@ data class GuildConfig(
         val role: RoleConfig = RoleConfig(),
         val voiceChannel: VoiceChannelConfig = VoiceChannelConfig(),
         val textChannel: TextChannelConfig = TextChannelConfig(),
-        val webhook: WebhookConfig = WebhookConfig(),
 
         val option: GuildOption = GuildOption()
 )

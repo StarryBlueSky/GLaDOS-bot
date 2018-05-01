@@ -86,9 +86,6 @@ val config = GLaDOSConfig(
                                 iHateSuchKashiwa = 367991669032747010,
                                 giveaway = 278454146867134464
                         ),
-                        webhook = WebhookConfig(
-                                abemaTV = "https://discordapp.com/api/webhooks/404532017233920001/***"
-                        ),
                         option = GuildOption(
                                 useCommand = true,
                                 useFindVideoURL = true,
