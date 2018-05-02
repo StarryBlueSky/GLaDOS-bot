@@ -1,6 +1,5 @@
 package jp.nephy.glados.feature.listener.music
 
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.deleteQueue
 import jp.nephy.glados.component.helper.embedMessage

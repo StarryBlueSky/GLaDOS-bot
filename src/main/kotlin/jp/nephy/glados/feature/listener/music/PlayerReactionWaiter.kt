@@ -1,6 +1,5 @@
 package jp.nephy.glados.feature.listener.music
 
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.audio.music.PlayerEmoji
 import jp.nephy.glados.component.helper.*
 import jp.nephy.glados.feature.ListenerFeature

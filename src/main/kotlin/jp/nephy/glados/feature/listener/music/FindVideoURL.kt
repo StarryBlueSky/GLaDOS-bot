@@ -3,7 +3,6 @@ package jp.nephy.glados.feature.listener.music
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.audio.music.*
 import jp.nephy.glados.component.helper.*
 import jp.nephy.glados.component.helper.prompt.YesNoEmoji

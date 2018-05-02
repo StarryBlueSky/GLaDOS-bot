@@ -27,10 +27,8 @@ class KashiwaListener(private val channels: List<TextChannel>): UserStreamListen
     override fun onStatus(status: Status) {
         if (status.inReplyToUserId == account.id) {
             if (status.fullText.contains(hateCommandString)) {
-                logger.info { status.fullText }
                 channels.forEach {
                     status.entities.urls.forEach { url ->
-                        logger.info { url.expandedUrl }
                         it.revealTweet(url.expandedUrl)
                     }
                 }

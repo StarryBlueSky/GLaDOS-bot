@@ -1,6 +1,5 @@
 package jp.nephy.glados.feature.listener.kaigen
 
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.config.GuildConfig
 import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.StringLinkedSingleCache

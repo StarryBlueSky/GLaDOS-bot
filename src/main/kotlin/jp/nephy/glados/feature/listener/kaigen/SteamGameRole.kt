@@ -2,7 +2,6 @@ package jp.nephy.glados.feature.listener.kaigen
 
 import com.lukaspradel.steamapi.data.json.ownedgames.GetOwnedGames
 import com.lukaspradel.steamapi.webapi.request.builders.SteamWebApiRequestFactory
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.hasRole
 import jp.nephy.glados.component.helper.profile.UserProfile
 import jp.nephy.glados.feature.ListenerFeature

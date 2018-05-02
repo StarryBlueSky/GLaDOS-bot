@@ -28,7 +28,7 @@ fun TextChannel.revealTweet(text: String, onlyWhenProtected: Boolean = false) {
                         append(matched.value)
                     }
                     if (status.result.extendedEntities?.media.orEmpty().isNotEmpty()) {
-                        image(status.result.extendedEntities !!.media.first().mediaUrlHttps)
+                        image(status.result.extendedEntities!!.media.first().mediaUrlHttps)
                     }
 
                     color(Color.Twitter)

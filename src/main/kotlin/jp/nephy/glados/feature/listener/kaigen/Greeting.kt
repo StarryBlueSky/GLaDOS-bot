@@ -1,6 +1,5 @@
 package jp.nephy.glados.feature.listener.kaigen
 
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.embedMessage
 import jp.nephy.glados.feature.ListenerFeature
 import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent

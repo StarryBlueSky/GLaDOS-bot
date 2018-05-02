@@ -1,6 +1,5 @@
 package jp.nephy.glados.feature.listener
 
-import jp.nephy.glados.GLaDOS
 import jp.nephy.glados.component.helper.getMessages
 import jp.nephy.glados.component.helper.isSelf
 import jp.nephy.glados.component.helper.tmpFile
