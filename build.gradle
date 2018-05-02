@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.40'
+    ext.kotlin_version = '1.2.41'
 
     repositories {
         mavenCentral()
@@ -33,7 +33,7 @@ dependencies {
     compile "com.sedmelluq:jda-nas:1.0.5"
 
     /* Twitter */
-    compile "jp.nephy:penicillin:2.0.1"
+    compile "jp.nephy:penicillin:2.0.3"
 
     /* Google */
     compile "com.google.cloud:google-cloud:0.39.0-alpha"
