@@ -1,25 +1,58 @@
 package jp.nephy.glados.feature.listener.kaigen
 
 import jp.nephy.glados.GLaDOS
+import jp.nephy.glados.component.helper.hasRole
 import jp.nephy.glados.feature.ListenerFeature
+import jp.nephy.glados.logger
 import net.dv8tion.jda.core.JDA
 import net.dv8tion.jda.core.entities.Guild
 import net.dv8tion.jda.core.entities.Member
+import net.dv8tion.jda.core.events.ReadyEvent
 import net.dv8tion.jda.core.events.guild.member.GuildMemberRoleRemoveEvent
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent
 import net.dv8tion.jda.core.events.guild.voice.GuildVoiceSelfMuteEvent
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 
 class Inkya: ListenerFeature() {
+    override fun onReady(event: ReadyEvent) {
+        // 10秒おきに陰キャロールが適切かを調べるスレッド
+        thread {
+            while (true) {
+                try {
+                    event.jda.guilds.forEach { guild ->
+                        val config = GLaDOS.instance.config.getGuildConfig(guild)
+                        if (config.role.inkya == null) {
+                            return@forEach
+                        }
+
+                        guild.members.forEach {
+                            if (! it.voiceState.inVoiceChannel() || it.voiceState.channel == guild.afkChannel || ! it.voiceState.isSelfMuted) {
+                                removeRole(guild, it, event.jda)
+                            } else {
+                                addRole(guild, it, event.jda)
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    logger.error(e) { "陰キャロールの整理に失敗しました." }
+                }
+
+                TimeUnit.SECONDS.sleep(10)
+            }
+        }
+    }
+
     private fun addRole(guild: Guild, member: Member, jda: JDA) {
         val config = bot.config.getGuildConfig(guild)
         if (config.role.inkya == null) {
             return
         }
 
-        if (member.roles.find { it.idLong == config.role.inkya } == null) {
+        if (! member.hasRole(config.role.inkya)) {
             guild.controller.addSingleRoleToMember(member, jda.getRoleById(config.role.inkya)).queue()
         }
     }
@@ -30,7 +63,7 @@ class Inkya: ListenerFeature() {
             return
         }
 
-        if (member.roles.find { it.idLong == config.role.inkya } != null) {
+        if (member.hasRole(config.role.inkya)) {
             guild.controller.removeSingleRoleFromMember(member, jda.getRoleById(config.role.inkya)).queue()
         }
     }
@@ -74,9 +107,9 @@ class Inkya: ListenerFeature() {
         }
     }
 
-    // マイクミュート状態でVCに参加した場合
+    // マイクミュート状態でVCに参加した場合 (AFKチャンネル以外)
     override fun onGuildVoiceJoin(event: GuildVoiceJoinEvent) {
-        if (event.member.voiceState.isSelfMuted) {
+        if (event.member.voiceState.isSelfMuted && event.member.voiceState.channel != event.guild.afkChannel) {
             addRole(event.guild, event.member, event.jda)
         }
     }
