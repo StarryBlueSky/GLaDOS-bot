@@ -14,4 +14,5 @@ class ApiClient {
     val niconico by lazy { NiconicoClient() }
     val youtube by lazy { YouTubeClient(secret.googleApiKey) }
     val steam by lazy { SteamWebApiClient.SteamWebApiClientBuilder(secret.steamApiKey).build()!! }
+    val botDB by lazy { secret.mongodb.getDatabase("bot")!! }
 }

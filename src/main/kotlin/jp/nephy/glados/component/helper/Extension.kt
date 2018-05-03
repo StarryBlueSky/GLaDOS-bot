@@ -1,6 +1,13 @@
 package jp.nephy.glados.component.helper
 
+import com.mongodb.client.MongoCollection
 import jp.nephy.glados.GLaDOS
+import jp.nephy.jsonkt.JsonKt
+import jp.nephy.jsonkt.JsonModel
+import org.bson.Document
+import org.bson.conversions.Bson
+import org.bson.json.JsonWriterSettings
+import org.litote.kmongo.findOne
 import java.io.File
 import java.net.JarURLConnection
 import java.nio.file.*
@@ -125,4 +132,26 @@ fun tmpFile(first: String, vararg more: String): File {
     }
 
     return Paths.get(tmpDir.toString(), first, *more).toFile()
+}
+
+val pureJsonWriter = JsonWriterSettings.builder().int64Converter { value, writer ->
+    writer.writeRaw(value.toString())
+}.build()!!
+
+inline fun <reified T: JsonModel> MongoCollection<Document>.findAndParse(filter: Bson? = null): List<T> {
+    return if (filter != null) {
+        find(filter)
+    } else {
+        find()
+    }.toList().map { JsonKt.parse<T>(it.toJson(pureJsonWriter)) }
+}
+
+inline fun <reified T: JsonModel> MongoCollection<Document>.findOneAndParse(filter: Bson? = null): T? {
+    return if (filter != null) {
+        findOne(filter)
+    } else {
+        findOne()
+    }?.let {
+        JsonKt.parse(it.toJson(pureJsonWriter))
+    }
 }

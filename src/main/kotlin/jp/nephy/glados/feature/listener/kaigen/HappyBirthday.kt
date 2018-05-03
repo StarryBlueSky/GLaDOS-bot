@@ -1,19 +1,16 @@
 package jp.nephy.glados.feature.listener.kaigen
 
+import com.mongodb.client.model.Filters
 import jp.nephy.glados.component.config.GuildConfig
 import jp.nephy.glados.component.helper.Color
 import jp.nephy.glados.component.helper.StringLinkedSingleCache
 import jp.nephy.glados.component.helper.embedMessage
+import jp.nephy.glados.component.helper.findAndParse
 import jp.nephy.glados.feature.ListenerFeature
 import jp.nephy.glados.logger
-import jp.nephy.glados.model.Member
-import jp.nephy.jsonkt.JsonKt
-import jp.nephy.jsonkt.JsonModel
-import jp.nephy.jsonkt.jsonObject
+import jp.nephy.glados.model.MemberModel
 import net.dv8tion.jda.core.entities.Guild
 import net.dv8tion.jda.core.events.ReadyEvent
-import java.nio.file.Path
-import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -33,12 +30,6 @@ class HappyBirthday: ListenerFeature() {
         }
     }
 
-    private inline fun <reified T: JsonModel> parseAsList(path: Path): List<T> {
-        return JsonKt.toJsonArray(path).map { JsonKt.parse<T>(it.jsonObject) }
-    }
-
-    private val members: List<Member>
-        get() = parseAsList(Paths.get("C:/Server/Authenticator/members.json"))
     private val timezone = TimeZone.getTimeZone("Asia/Tokyo")
     private val date: String
         get() = SimpleDateFormat("MM/dd").apply {
@@ -54,10 +45,10 @@ class HappyBirthday: ListenerFeature() {
                         val month = calendar.get(Calendar.MONTH) + 1
                         val day = calendar.get(Calendar.DATE)
 
-                        members.filter { it.profile.birthday?.month == month && it.profile.birthday?.day == day }.forEach {
-                            val discord = it.accounts.discord.firstOrNull { ! it.private }
+                        bot.apiClient.botDB.getCollection("Member").findAndParse<MemberModel>(Filters.and(Filters.eq("profile.birthday.month", month), Filters.eq("profile.birthday.day", day))).forEach {
+                            val discord = it.accounts.discord.firstOrNull { ! it.private && ! it.internal }
                             val discordMember = guild.members.find { discord?.tag == "${it.user.name}#${it.user.discriminator}" }
-                            val twitter = it.accounts.twitter.firstOrNull { ! it.private }
+                            val twitter = it.accounts.twitter.firstOrNull { ! it.private && ! it.internal }
 
                             guild.getTextChannelById(config.textChannel.general!!).embedMessage {
                                 title(":birthday: 誕生日おめでとうございます！")

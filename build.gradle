@@ -55,6 +55,7 @@ dependencies {
     compile "jp.nephy:jsonkt:1.4"
     compile "org.jsoup:jsoup:1.11.2"
     compile "com.rometools:rome:1.9.0"
+    compile "org.litote.kmongo:kmongo-native:3.6.3"
 
     /* Logging */
     compile "io.github.microutils:kotlin-logging:1.4.9"
