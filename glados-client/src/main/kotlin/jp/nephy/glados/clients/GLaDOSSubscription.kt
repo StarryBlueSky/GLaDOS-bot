@@ -35,8 +35,11 @@ import java.lang.reflect.InvocationTargetException
  * GLaDOS Subscription base class.
  */
 abstract class GLaDOSSubscription<A: Annotation, E: Event>: Subscription<A, E> {
-    final override val logger: Logger = Logger.of("GLaDOS.$fullname")
-
+    final override val logger: Logger by lazy {
+        // filename requires Plugin
+        Logger.of("GLaDOS.$fullname")
+    }
+    
     override fun onFailure(throwable: Throwable, event: E) {
         val t = (throwable as? InvocationTargetException)?.targetException ?: throwable
         
