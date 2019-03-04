@@ -26,6 +26,7 @@ package jp.nephy.glados.core
 
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.clients.logger.of
+import java.net.URL
 import java.net.URLClassLoader
 import java.nio.file.Path
 import java.util.jar.JarFile
@@ -36,8 +37,9 @@ private val logger = Logger.of("GLaDOS.ClassLoader")
 
 @Suppress("UNCHECKED_CAST")
 internal inline fun <reified T: Any> loadClasses(jarPath: Path): List<KClass<T>> {
-    val classLoader = URLClassLoader.newInstance(arrayOf(jarPath.toUri().toURL()))
-    
+    val thread = Thread.currentThread()
+    thread.addClassPath(jarPath)
+
     return JarFile(jarPath.toFile()).use { file ->
         file.stream().asSequence().filter {
             it.name.endsWith(".class") && '$' !in it.name
@@ -45,7 +47,7 @@ internal inline fun <reified T: Any> loadClasses(jarPath: Path): List<KClass<T>>
             it.name.removeSuffix(".class").replace('/', '.')
         }.mapNotNull {
             runCatching {
-                classLoader.loadClass(it)
+                thread.contextClassLoader.loadClass(it)
             }.onSuccess {
                 if (it.canonicalName == null) {
                     return@mapNotNull null
@@ -61,4 +63,10 @@ internal inline fun <reified T: Any> loadClasses(jarPath: Path): List<KClass<T>>
             it.kotlin as KClass<T>
         }.toList()
     }
+}
+
+private fun Thread.addClassPath(jarPath: Path) {
+    val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
+    method.isAccessible = true
+    method.invoke(contextClassLoader, jarPath.toUri().toURL())
 }
