@@ -29,6 +29,7 @@ import jp.nephy.glados.api.*
 import jp.nephy.glados.api.annotations.TestOnlyFeature
 import jp.nephy.glados.api.annotations.TestableFeature
 import jp.nephy.glados.clients.logger.of
+import jp.nephy.glados.clients.utils.effectiveName
 import jp.nephy.glados.clients.utils.fullName
 import jp.nephy.glados.clients.utils.name
 import kotlinx.coroutines.CoroutineScope
@@ -82,7 +83,7 @@ internal object PluginManager: ClassManager<Plugin>, CoroutineScope by GLaDOS {
     
     override fun load(kotlinClass: KClass<out Plugin>) {
         if (GLaDOS.isDebugMode && kotlinClass.findAnnotation<TestOnlyFeature>() == null && kotlinClass.findAnnotation<TestableFeature>() == null) {
-            logger.error { "クラス: \"${kotlinClass.qualifiedName}\" はテスト可能ではありません。スキップします。" }
+            logger.info { "クラス: \"${kotlinClass.qualifiedName}\" はテスト可能ではありません。スキップします。" }
             return
         } else if (!GLaDOS.isDebugMode && kotlinClass.findAnnotation<TestOnlyFeature>() != null) {
             logger.info { "クラス: \"${kotlinClass.qualifiedName}\" はテスト環境でのみ実行できます。スキップします。" }
@@ -93,7 +94,7 @@ internal object PluginManager: ClassManager<Plugin>, CoroutineScope by GLaDOS {
             kotlinClass.objectInstance ?: kotlinClass.createInstance()
         }.onSuccess { 
             if (kotlinClass.objectInstance == null) {
-                logger.warn { "Plugin: \"${it.fullName}\" は object 宣言ではなく class 宣言されています。object 宣言が推奨されます。" }
+                logger.warn { "Plugin: \"${it.effectiveName}\" は object 宣言ではなく class 宣言されています。object 宣言が推奨されます。" }
             }
             
             logger.debug { "Plugin: \"${it.fullName}\" をロードしました。" }
@@ -101,36 +102,41 @@ internal object PluginManager: ClassManager<Plugin>, CoroutineScope by GLaDOS {
             logger.error(e) { "クラス: \"${kotlinClass.qualifiedName}\" の初期化に失敗しました。" }
         }.getOrNull() ?: return
 
-        val jobs = kotlinClass.declaredFunctions.map { function -> 
+        val jobs = plugin::class.declaredFunctions.map { function -> 
             launch {
                 if (function.valueParameters.size != 1) {
-                    logger.trace { "関数: \"${plugin.name}#${function.name}\" は引数の長さが 1 ではありません。スキップします。" }
+                    logger.trace { "関数: \"${plugin.effectiveName}#${function.name}\" は引数の長さが 1 ではありません。スキップします。" }
                     return@launch
                 }
 
-                val eventClass = function.valueParameters.first().type.jvmErasure
+                val eventType = function.valueParameters.first().type
+                val eventClass = eventType.jvmErasure
                 if (!eventClass.isSubclassOf(Event::class)) {
-                    logger.trace { "関数: \"${plugin.name}#${function.name}\" の引数は jp.nephy.glados.api.Event を継承していません。スキップします。" }
+                    logger.trace { "関数: \"${plugin.effectiveName}#${function.name}\" の引数は ${Event::class.qualifiedName} を継承していません。スキップします。" }
                     return@launch
                 }
                 
                 if (function.javaMethod?.isDefault == true) {
-                    logger.trace { "Subscription: \"${plugin.name}#${function.name}\" はデフォルト実装です。スキップします。" }
+                    logger.trace { "Subscription: \"${plugin.effectiveName}#${function.name}\" はデフォルト実装です。スキップします。" }
                     return@launch
                 }
                 
                 if (function.visibility != KVisibility.PUBLIC) {
-                    logger.warn { "Subscription: \"${plugin.name}#${function.name}\" は public 宣言されていません。スキップします。" }
+                    logger.warn { "Subscription: \"${plugin.effectiveName}#${function.name}\" は public 宣言されていません。スキップします。" }
                     return@launch
                 }
 
+                if (eventType.isMarkedNullable) {
+                    logger.warn { "Subscription: \"${plugin.effectiveName}#${function.name}\" の引数は Nullable です。Nullable にする必要はありません" }
+                }
+                
                 if (function.returnType.jvmErasure != Unit::class) {
-                    logger.warn { "Subscription: \"${plugin.name}#${function.name}\" は返り値の型が ${function.returnType} です。Unit が推奨されます。" }
+                    logger.warn { "Subscription: \"${plugin.effectiveName}#${function.name}\" は返り値の型が ${function.returnType} です。Unit が推奨されます。" }
                 }
                 
                 for (client in ClientManager.clients) {
                     if (client.register(plugin, function, eventClass)) {
-                        logger.debug { "Subscription: \"${plugin.name}#${function.name}\" は \"${client.name}\" に登録されました。" }
+                        logger.debug { "Subscription: \"${plugin.effectiveName}#${function.name}\" は \"${client.name}\" に登録されました。" }
                     }
                 }
             }
