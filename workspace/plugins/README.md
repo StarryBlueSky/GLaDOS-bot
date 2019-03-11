@@ -1,1 +1,0 @@
-## Plugin Jar destination directory
