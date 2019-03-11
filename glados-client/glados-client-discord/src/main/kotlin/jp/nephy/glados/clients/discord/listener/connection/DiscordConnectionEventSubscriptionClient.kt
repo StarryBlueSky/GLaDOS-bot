@@ -25,16 +25,16 @@
 package jp.nephy.glados.clients.discord.listener.connection
 
 import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.clients.GLaDOSSubscriptionClient
+import jp.nephy.glados.GLaDOSSubscriptionClient
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
 import jp.nephy.glados.clients.discord.listener.connection.events.DiscordConnectionEventBase
 import jp.nephy.glados.clients.discord.listener.connection.events.DiscordConnectionStatusChangeEvent
 import jp.nephy.glados.clients.discord.listener.connection.events.DiscordPingEvent
 import jp.nephy.glados.clients.discord.listener.connection.events.DiscordUserSpeakingEvent
 import jp.nephy.glados.clients.discord.listener.defaultDiscordEventAnnotation
-import jp.nephy.glados.clients.utils.eventClass
-import jp.nephy.glados.clients.utils.invoke
-import jp.nephy.glados.clients.utils.subscriptions
+import jp.nephy.glados.clients.eventClass
+import jp.nephy.glados.clients.invoke
+import jp.nephy.glados.clients.subscriptions
 import kotlinx.coroutines.launch
 import net.dv8tion.jda.api.audio.SpeakingMode
 import net.dv8tion.jda.api.audio.hooks.ConnectionListener

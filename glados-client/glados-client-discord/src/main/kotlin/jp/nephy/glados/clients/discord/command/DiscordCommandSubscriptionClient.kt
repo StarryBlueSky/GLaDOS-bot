@@ -25,7 +25,7 @@
 package jp.nephy.glados.clients.discord.command
 
 import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.clients.GLaDOSSubscriptionClient
+import jp.nephy.glados.GLaDOSSubscriptionClient
 import jp.nephy.glados.clients.discord.config.textChannel
 import jp.nephy.glados.clients.discord.extensions.awaitAndDelete
 import jp.nephy.glados.clients.discord.extensions.config
@@ -34,10 +34,10 @@ import jp.nephy.glados.clients.discord.extensions.launchAndDelete
 import jp.nephy.glados.clients.discord.extensions.messages.HexColor
 import jp.nephy.glados.clients.discord.extensions.messages.emojiEnumPrompt
 import jp.nephy.glados.clients.discord.extensions.messages.reply
-import jp.nephy.glados.clients.utils.fullname
-import jp.nephy.glados.clients.utils.invoke
-import jp.nephy.glados.clients.utils.isExperimental
-import jp.nephy.glados.clients.utils.subscriptions
+import jp.nephy.glados.clients.fullname
+import jp.nephy.glados.clients.invoke
+import jp.nephy.glados.clients.isExperimental
+import jp.nephy.glados.clients.subscriptions
 import kotlinx.coroutines.launch
 import net.dv8tion.jda.api.entities.ChannelType
 import net.dv8tion.jda.api.entities.Message

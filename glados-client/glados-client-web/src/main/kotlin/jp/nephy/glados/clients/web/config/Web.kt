@@ -36,4 +36,4 @@ data class Web(override val json: JsonObject): JsonModel {
 }
 
 val ConfigJson.web: Web
-    get() = json["web"].parse()
+    get() = json.getOrNull("web").parseOrNull() ?: Web(jsonObjectOf())

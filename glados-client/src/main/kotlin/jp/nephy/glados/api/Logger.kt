@@ -22,21 +22,13 @@
  * SOFTWARE.
  */
 
-@file:Suppress("UNUSED")
+package jp.nephy.glados.api
 
-package jp.nephy.glados.clients
-
-import jp.nephy.glados.api.EventModel
-import jp.nephy.glados.api.Logger
-import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.clients.logger.of
-import jp.nephy.glados.clients.utils.fullName
+import jp.nephy.glados.clients.logger.LoggerImpl
 
 /**
- * GLaDOS Plugin base class.
+ * Creates new Logger.
  */
-abstract class GLaDOSPlugin(
-    override val name: String? = null, override val version: String? = null, override val description: String? = null
-): Plugin, EventModel, GLaDOSCoroutineScope() {
-    final override val logger: Logger = Logger.of("GLaDOS.Plugin.$fullName")
+fun Logger.Companion.of(name: String, slackChannel: String? = null, slackIconEmoji: String? = null, useSlack: Boolean = true): Logger {
+    return LoggerImpl(name, slackChannel, slackIconEmoji, useSlack)
 }

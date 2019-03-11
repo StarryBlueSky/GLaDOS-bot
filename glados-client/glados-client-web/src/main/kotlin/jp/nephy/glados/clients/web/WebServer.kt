@@ -41,8 +41,8 @@ import io.ktor.sessions.Sessions
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.attributes
 import jp.nephy.glados.api.config
-import jp.nephy.glados.clients.utils.invoke
-import jp.nephy.glados.clients.utils.subscriptions
+import jp.nephy.glados.clients.invoke
+import jp.nephy.glados.clients.subscriptions
 import jp.nephy.glados.clients.web.config.web
 import jp.nephy.glados.clients.web.error.WebErrorPageSubscriptionClient
 import jp.nephy.glados.clients.web.error.domain

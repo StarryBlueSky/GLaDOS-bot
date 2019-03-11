@@ -26,7 +26,7 @@ package jp.nephy.glados.clients.discord.listener.audio
 
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.annotations.Priority
-import jp.nephy.glados.clients.GLaDOSSubscription
+import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
 import jp.nephy.glados.clients.discord.listener.audio.events.DiscordAudioEventBase
 import kotlin.reflect.KFunction

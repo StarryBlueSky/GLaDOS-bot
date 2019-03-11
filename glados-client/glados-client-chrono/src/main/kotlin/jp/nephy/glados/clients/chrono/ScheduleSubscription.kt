@@ -26,7 +26,7 @@ package jp.nephy.glados.clients.chrono
 
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.annotations.Priority
-import jp.nephy.glados.clients.GLaDOSSubscription
+import jp.nephy.glados.GLaDOSSubscription
 import java.util.*
 import kotlin.reflect.KFunction
 

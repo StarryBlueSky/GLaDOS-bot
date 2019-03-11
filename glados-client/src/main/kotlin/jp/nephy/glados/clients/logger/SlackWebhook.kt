@@ -31,7 +31,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.content.OutgoingContent
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.config
-import jp.nephy.glados.clients.GLaDOSCoroutineScope
+import jp.nephy.glados.GLaDOSCoroutineScope
 import jp.nephy.jsonkt.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job

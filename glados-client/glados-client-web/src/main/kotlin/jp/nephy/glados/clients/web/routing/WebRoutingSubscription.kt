@@ -33,7 +33,7 @@ import io.ktor.request.path
 import io.ktor.util.pipeline.PipelineContext
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.annotations.Priority
-import jp.nephy.glados.clients.GLaDOSSubscription
+import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.web.PathType
 import jp.nephy.glados.clients.web.event.WebAccessEvent
 import jp.nephy.glados.clients.web.extensions.meta.SitemapUpdateFrequency

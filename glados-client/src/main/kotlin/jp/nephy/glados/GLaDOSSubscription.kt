@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients
+package jp.nephy.glados
 
 import jp.nephy.glados.api.Event
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.Subscription
-import jp.nephy.glados.clients.logger.of
-import jp.nephy.glados.clients.utils.fullname
+import jp.nephy.glados.api.of
+import jp.nephy.glados.clients.fullname
 import java.lang.reflect.InvocationTargetException
 
 /**

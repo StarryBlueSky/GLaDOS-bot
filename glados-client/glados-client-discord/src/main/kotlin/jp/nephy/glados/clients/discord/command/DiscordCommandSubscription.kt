@@ -26,14 +26,14 @@ package jp.nephy.glados.clients.discord.command
 
 import jp.nephy.glados.api.*
 import jp.nephy.glados.api.annotations.Priority
-import jp.nephy.glados.clients.GLaDOSSubscription
+import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.discord.config.booleanOption
 import jp.nephy.glados.clients.discord.config.discord
 import jp.nephy.glados.clients.discord.config.textChannel
 import jp.nephy.glados.clients.discord.extensions.*
 import jp.nephy.glados.clients.discord.extensions.messages.HexColor
 import jp.nephy.glados.clients.discord.extensions.messages.reply
-import jp.nephy.glados.clients.utils.name
+import jp.nephy.glados.clients.name
 import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent

@@ -48,7 +48,7 @@ interface GLaDOS {
             internal set
 
         @Deprecated("Directly accessing to this property is deprecated.")
-        override var isDebugMode: Boolean = false
+        override var isDevelopmentMode: Boolean = false
 
         @Deprecated("Directly accessing to this property is deprecated.")
         override lateinit var config: ConfigJson
@@ -83,7 +83,7 @@ interface GLaDOS {
     /**
      * The flag whether GLaDOS works as development mode.
      */
-    val isDebugMode: Boolean
+    val isDevelopmentMode: Boolean
 
     /**
      * GLaDOS config.json model.
@@ -141,10 +141,10 @@ val GLaDOS.Companion.initialized: Boolean
     get() = GLaDOS.Instance.initialized
 
 /**
- * Shortcut to `GLaDOS.Instance.isDebugMode`.
+ * Shortcut to `GLaDOS.Instance.isDevelopmentMode`.
  */
 val GLaDOS.Companion.isDebugMode: Boolean
-    get() = GLaDOS.Instance.isDebugMode
+    get() = GLaDOS.Instance.isDevelopmentMode
 
 /**
  * Shortcut to `GLaDOS.Instance.config`.

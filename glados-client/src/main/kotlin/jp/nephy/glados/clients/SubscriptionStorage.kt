@@ -22,13 +22,36 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.logger
+package jp.nephy.glados.clients
 
-import jp.nephy.glados.api.Logger
+import jp.nephy.glados.api.Event
+import jp.nephy.glados.api.Subscription
+import jp.nephy.glados.api.SubscriptionStorage
 
 /**
- * Creates new Logger.
+ * plusAssign (+=) syntax sugar for add(subscription: S).
  */
-fun Logger.Companion.of(name: String, slackChannel: String? = null, slackIconEmoji: String? = null, useSlack: Boolean = true): Logger {
-    return LoggerImpl(name, slackChannel, slackIconEmoji, useSlack)
+suspend operator fun <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionStorage<A, E, S>.plusAssign(subscription: S) {
+    add(subscription)
+}
+
+/**
+ * plusAssign (+=) syntax sugar for add(subscriptions: Collection<S>).
+ */
+suspend operator fun <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionStorage<A, E, S>.plusAssign(subscriptions: Collection<S>) {
+    add(subscriptions)
+}
+
+/**
+ * minusAssign (-=) syntax sugar for remove(subscription: S).
+ */
+suspend operator fun <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionStorage<A, E, S>.minusAssign(subscription: S) {
+    remove(subscription)
+}
+
+/**
+ * minusAssign (-=) syntax sugar for remove(subscriptions: Collection<S>).
+ */
+suspend operator fun <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionStorage<A, E, S>.minusAssign(subscriptions: Collection<S>) {
+    remove(subscriptions)
 }

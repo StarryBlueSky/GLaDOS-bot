@@ -27,13 +27,13 @@ package jp.nephy.glados.clients.twitter
 import io.ktor.client.engine.cio.CIO
 import io.ktor.util.KtorExperimentalAPI
 import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.clients.GLaDOSSubscriptionClient
+import jp.nephy.glados.GLaDOSSubscriptionClient
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 import jp.nephy.glados.clients.twitter.config.client
 import jp.nephy.glados.clients.twitter.event.*
-import jp.nephy.glados.clients.utils.eventClass
-import jp.nephy.glados.clients.utils.invoke
-import jp.nephy.glados.clients.utils.subscriptions
+import jp.nephy.glados.clients.eventClass
+import jp.nephy.glados.clients.invoke
+import jp.nephy.glados.clients.subscriptions
 import jp.nephy.jsonkt.*
 import jp.nephy.penicillin.endpoints.stream
 import jp.nephy.penicillin.extensions.endpoints.TweetstormListener
@@ -74,7 +74,7 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
                 try {
                     client(engine = CIO).use {
                         // TODO
-                        it.stream.tweetstorm().listen(createListener(this@startJob)).await(autoReconnect = false)
+                        it.stream.tweetstorm().listen(createListener(this@startJob)).await(reconnect = false)
                     }
                 } catch (e: CancellationException) {
                     delay(5000)
@@ -122,10 +122,14 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
             logger.info { "Tweetstorm (@${account.user.screenName}) が開始されました。" }
         }
 
-        override suspend fun onDisconnect() {
-            runEvent(DisconnectEvent(account))
+        override suspend fun onDisconnect(cause: Throwable?) {
+            runEvent(DisconnectEvent(account, cause))
 
-            logger.warn { "Tweetstorm (@${account.user.screenName}) から切断されました。" }
+            if (cause != null) {
+                logger.warn(cause) { "Tweetstorm (@${account.user.screenName}) から切断されました。" }
+            } else {
+                logger.warn { "Tweetstorm (@${account.user.screenName}) から切断されました。" }
+            }
         }
 
         override suspend fun onStatus(status: Status) {

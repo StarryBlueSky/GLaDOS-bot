@@ -27,5 +27,6 @@ package jp.nephy.glados.clients.twitter.event
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 
 data class DisconnectEvent(
-    override val account: TwitterAccount
+    override val account: TwitterAccount,
+    val cause: Throwable?
 ): TwitterEventBase

@@ -26,14 +26,14 @@ package jp.nephy.glados.clients.discord.listener.audio
 
 import com.sedmelluq.discord.lavaplayer.player.event.*
 import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.clients.GLaDOSSubscriptionClient
+import jp.nephy.glados.GLaDOSSubscriptionClient
 import jp.nephy.glados.clients.discord.GuildPlayer
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
 import jp.nephy.glados.clients.discord.listener.audio.events.*
 import jp.nephy.glados.clients.discord.listener.defaultDiscordEventAnnotation
-import jp.nephy.glados.clients.utils.eventClass
-import jp.nephy.glados.clients.utils.invoke
-import jp.nephy.glados.clients.utils.subscriptions
+import jp.nephy.glados.clients.eventClass
+import jp.nephy.glados.clients.invoke
+import jp.nephy.glados.clients.subscriptions
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction

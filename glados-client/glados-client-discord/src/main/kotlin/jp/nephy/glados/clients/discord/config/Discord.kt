@@ -48,4 +48,4 @@ data class Discord(override val json: JsonObject): JsonModel {
 }
 
 val ConfigJson.discord: Discord
-    get() = json["discord"].parse()
+    get() = json.getOrNull("discord").parseOrNull() ?: throw IllegalStateException("Key \"discord\" is not found in config.json.")

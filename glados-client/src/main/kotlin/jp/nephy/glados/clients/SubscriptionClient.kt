@@ -24,32 +24,20 @@
 
 @file:Suppress("UNUSED")
 
-package jp.nephy.glados.clients.utils
+package jp.nephy.glados.clients
 
-import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.api.annotations.ExperimentalFeature
-import kotlin.reflect.full.findAnnotation
-
-/**
- * Effective name of Plugin.
- */
-val Plugin.effectiveName: String
-    get() = name?.ifBlank { null } ?: this::class.simpleName.orEmpty()
+import jp.nephy.glados.api.Event
+import jp.nephy.glados.api.Subscription
+import jp.nephy.glados.api.SubscriptionClient
 
 /**
- * Effective version of Plugin.
+ * The name of SubscriptionClient.
  */
-val Plugin.effectiveVersion: String
-    get() = version ?: "1.0.0.0"
+val SubscriptionClient<*, *, *>.name: String
+    get() = this::class.simpleName!!
 
 /**
- * Full name of Plugin.
+ * The set of Subscriptions.
  */
-val Plugin.fullName: String
-    get() = "$effectiveName[v$effectiveVersion]"
-
-/**
- * The flag whether Plugin is experimental.
- */
-val Plugin.isExperimental: Boolean
-    get() = this::class.findAnnotation<ExperimentalFeature>() != null
+val <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionClient<A, E, S>.subscriptions: Set<S>
+    get() = storage.subscriptions

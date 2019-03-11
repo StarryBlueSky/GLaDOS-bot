@@ -24,6 +24,9 @@
 
 package jp.nephy.glados.api
 
+/**
+ * GLaDOS Logger model.
+ */
 interface Logger {
     companion object
     

@@ -26,7 +26,7 @@ package jp.nephy.glados.clients.discord.listener.websocket
 
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.annotations.Priority
-import jp.nephy.glados.clients.GLaDOSSubscription
+import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import kotlin.reflect.KFunction

@@ -22,36 +22,34 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.utils
+@file:Suppress("UNUSED")
 
-import jp.nephy.glados.api.Event
-import jp.nephy.glados.api.Subscription
-import jp.nephy.glados.api.SubscriptionStorage
+package jp.nephy.glados.clients
 
-/**
- * plusAssign (+=) syntax sugar for add(subscription: S).
- */
-suspend operator fun <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionStorage<A, E, S>.plusAssign(subscription: S) {
-    add(subscription)
-}
+import jp.nephy.glados.api.Plugin
+import jp.nephy.glados.api.annotations.ExperimentalFeature
+import kotlin.reflect.full.findAnnotation
 
 /**
- * plusAssign (+=) syntax sugar for add(subscriptions: Collection<S>).
+ * Effective name of Plugin.
  */
-suspend operator fun <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionStorage<A, E, S>.plusAssign(subscriptions: Collection<S>) {
-    add(subscriptions)
-}
+val Plugin.effectiveName: String
+    get() = name?.ifBlank { null } ?: this::class.simpleName.orEmpty()
 
 /**
- * minusAssign (-=) syntax sugar for remove(subscription: S).
+ * Effective version of Plugin.
  */
-suspend operator fun <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionStorage<A, E, S>.minusAssign(subscription: S) {
-    remove(subscription)
-}
+val Plugin.effectiveVersion: String
+    get() = version ?: "1.0.0.0"
 
 /**
- * minusAssign (-=) syntax sugar for remove(subscriptions: Collection<S>).
+ * Full name of Plugin.
  */
-suspend operator fun <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionStorage<A, E, S>.minusAssign(subscriptions: Collection<S>) {
-    remove(subscriptions)
-}
+val Plugin.fullName: String
+    get() = "$effectiveName[v$effectiveVersion]"
+
+/**
+ * The flag whether Plugin is experimental.
+ */
+val Plugin.isExperimental: Boolean
+    get() = this::class.findAnnotation<ExperimentalFeature>() != null

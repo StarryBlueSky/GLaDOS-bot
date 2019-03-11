@@ -28,7 +28,7 @@ import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.annotations.Priority
 import jp.nephy.glados.api.config
-import jp.nephy.glados.clients.GLaDOSSubscription
+import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 import jp.nephy.glados.clients.twitter.config.twitter
 import jp.nephy.glados.clients.twitter.config.twitterAccount

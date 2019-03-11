@@ -31,5 +31,32 @@ import jp.nephy.glados.api.annotations.Priority
  */
 @Target(AnnotationTarget.FUNCTION)
 annotation class Schedule(
-    val hours: IntArray = [], val minutes: IntArray = [], val multipleHours: IntArray = [], val multipleMinutes: IntArray = [], val priority: Priority = Priority.Normal
+    /**
+     * Hours.
+     * e.g. hours = [0, 8, 21, 24] means this subscription will be executed at 0:XX, 8:XX and 21:XX.
+     */
+    val hours: IntArray = [],
+
+    /**
+     * Minutes.
+     * e.g. minutes = [0, 30] means this subscription will be executed at X:00 and X:30.
+     */
+    val minutes: IntArray = [],
+
+    /**
+     * Multiple of hours.
+     * e.g. multipleHours = [7, 10] means this subscription will be executed at 0:XX, 7:XX, 10:XX, 14:XX, 20:XX and 21:XX.
+     */
+    val multipleHours: IntArray = [],
+
+    /**
+     * Multiple of minutes.
+     * e.g. multipleMinutes = [15] means this subscription will be executed at X:00, X:15, X:30 and X:45.
+     */
+    val multipleMinutes: IntArray = [],
+
+    /**
+     * Execution priority.
+     */
+    val priority: Priority = Priority.Normal
 )

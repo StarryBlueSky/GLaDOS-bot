@@ -32,7 +32,7 @@ interface SystemEventModel: EventModel {
     /**
      * Called when GLaDOS is ready.
      */
-    suspend fun onReady(event: ReadyEvent)
+    suspend fun onReady(event: ReadyEvent) {}
     
     /**
      * Called when GLaDOS will shutdown.

@@ -22,26 +22,23 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients
+@file:Suppress("UNUSED")
 
-import jp.nephy.glados.api.GLaDOS
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.io.core.Closeable
-import kotlin.coroutines.CoroutineContext
+package jp.nephy.glados
+
+import jp.nephy.glados.api.EventModel
+import jp.nephy.glados.api.Logger
+import jp.nephy.glados.api.Plugin
+import jp.nephy.glados.api.of
+import jp.nephy.glados.clients.fullName
 
 /**
- * GLaDOS CoroutineScope base class.
+ * GLaDOS Plugin base class.
  */
-abstract class GLaDOSCoroutineScope: CoroutineScope, Closeable {
-    private val job = Job()
-    final override val coroutineContext: CoroutineContext
-        get() = GLaDOS.coroutineContext + job
-
-    /**
-     * Stops the entire job.
-     */
-    override fun close() {
-        job.cancel()
-    }
+abstract class GLaDOSPlugin(
+    final override val name: String? = null,
+    final override val version: String? = null,
+    final override val description: String? = null
+): Plugin, EventModel, GLaDOSCoroutineScope() {
+    final override val logger: Logger = Logger.of("GLaDOS.Plugin.$fullName")
 }

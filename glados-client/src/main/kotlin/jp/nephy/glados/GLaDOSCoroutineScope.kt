@@ -22,22 +22,26 @@
  * SOFTWARE.
  */
 
-@file:Suppress("UNUSED")
+package jp.nephy.glados
 
-package jp.nephy.glados.clients.utils
-
-import jp.nephy.glados.api.Event
-import jp.nephy.glados.api.Subscription
-import jp.nephy.glados.api.SubscriptionClient
-
-/**
- * The name of SubscriptionClient.
- */
-val SubscriptionClient<*, *, *>.name: String
-    get() = this::class.simpleName!!
+import jp.nephy.glados.api.GLaDOS
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.io.core.Closeable
+import kotlin.coroutines.CoroutineContext
 
 /**
- * The set of Subscriptions.
+ * GLaDOS CoroutineScope base class.
  */
-val <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionClient<A, E, S>.subscriptions: Set<S>
-    get() = storage.subscriptions
+abstract class GLaDOSCoroutineScope: CoroutineScope, Closeable {
+    private val job = Job()
+    final override val coroutineContext: CoroutineContext
+        get() = GLaDOS.coroutineContext + job
+
+    /**
+     * Stops the entire job.
+     */
+    override fun close() {
+        job.cancel()
+    }
+}

@@ -40,13 +40,9 @@ import io.ktor.response.respondFile
 import io.ktor.util.AttributeKey
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.pipeline.PipelineContext
-import jp.nephy.glados.api.GLaDOS
-import jp.nephy.glados.api.Logger
-import jp.nephy.glados.api.config
-import jp.nephy.glados.api.resourceFile
-import jp.nephy.glados.clients.logger.of
-import jp.nephy.glados.clients.utils.invoke
-import jp.nephy.glados.clients.utils.subscriptions
+import jp.nephy.glados.api.*
+import jp.nephy.glados.clients.invoke
+import jp.nephy.glados.clients.subscriptions
 import jp.nephy.glados.clients.web.config.web
 import jp.nephy.glados.clients.web.extensions.effectiveHost
 import jp.nephy.glados.clients.web.extensions.url

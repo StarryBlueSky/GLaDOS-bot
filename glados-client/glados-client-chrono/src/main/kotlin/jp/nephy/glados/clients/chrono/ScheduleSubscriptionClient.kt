@@ -25,9 +25,9 @@
 package jp.nephy.glados.clients.chrono
 
 import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.clients.GLaDOSSubscriptionClient
-import jp.nephy.glados.clients.utils.invoke
-import jp.nephy.glados.clients.utils.subscriptions
+import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.clients.invoke
+import jp.nephy.glados.clients.subscriptions
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.reflect.KClass

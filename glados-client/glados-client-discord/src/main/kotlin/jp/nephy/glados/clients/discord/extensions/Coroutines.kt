@@ -26,7 +26,7 @@ package jp.nephy.glados.clients.discord.extensions
 
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Logger
-import jp.nephy.glados.clients.logger.of
+import jp.nephy.glados.api.of
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine

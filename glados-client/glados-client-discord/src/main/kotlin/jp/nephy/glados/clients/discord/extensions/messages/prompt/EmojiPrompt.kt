@@ -25,6 +25,7 @@
 package jp.nephy.glados.clients.discord.extensions.messages.prompt
 
 import jp.nephy.glados.api.Logger
+import jp.nephy.glados.api.of
 import jp.nephy.glados.clients.discord.extensions.DiscordEventWaiter
 import jp.nephy.glados.clients.discord.extensions.await
 import jp.nephy.glados.clients.discord.extensions.launch
@@ -32,7 +33,6 @@ import jp.nephy.glados.clients.discord.extensions.launchAndDelete
 import jp.nephy.glados.clients.discord.extensions.messages.HexColor
 import jp.nephy.glados.clients.discord.extensions.messages.edit
 import jp.nephy.glados.clients.discord.extensions.messages.reply
-import jp.nephy.glados.clients.logger.of
 import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent

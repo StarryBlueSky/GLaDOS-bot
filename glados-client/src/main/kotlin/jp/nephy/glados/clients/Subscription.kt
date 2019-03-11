@@ -24,7 +24,7 @@
 
 @file:Suppress("UNUSED")
 
-package jp.nephy.glados.clients.utils
+package jp.nephy.glados.clients
 
 import jp.nephy.glados.api.Event
 import jp.nephy.glados.api.Subscription

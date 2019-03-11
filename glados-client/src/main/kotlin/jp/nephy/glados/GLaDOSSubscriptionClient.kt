@@ -22,11 +22,10 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients
+package jp.nephy.glados
 
 import jp.nephy.glados.api.*
-import jp.nephy.glados.clients.logger.of
-import jp.nephy.glados.clients.utils.name
+import jp.nephy.glados.clients.name
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.reflect.KClass

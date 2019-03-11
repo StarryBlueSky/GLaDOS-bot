@@ -37,6 +37,7 @@ import io.ktor.util.AttributeKey
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.isDebugMode
+import jp.nephy.glados.api.of
 import kotlinx.coroutines.io.ByteChannel
 import kotlinx.coroutines.io.close
 import kotlinx.coroutines.io.readRemaining

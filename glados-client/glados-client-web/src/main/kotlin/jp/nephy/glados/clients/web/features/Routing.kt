@@ -31,7 +31,7 @@ import io.ktor.response.respondText
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import jp.nephy.glados.api.annotations.Priority
-import jp.nephy.glados.clients.utils.subscriptions
+import jp.nephy.glados.clients.subscriptions
 import jp.nephy.glados.clients.web.PathType
 import jp.nephy.glados.clients.web.routing.WebRoutingSubscriptionClient
 

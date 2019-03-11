@@ -25,8 +25,8 @@
 package jp.nephy.glados.clients.loop
 
 import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.clients.GLaDOSSubscriptionClient
-import jp.nephy.glados.clients.utils.invoke
+import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.clients.invoke
 import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass

@@ -25,7 +25,7 @@
 package jp.nephy.glados.clients.web.routing
 
 import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.clients.GLaDOSSubscriptionClient
+import jp.nephy.glados.GLaDOSSubscriptionClient
 import jp.nephy.glados.clients.web.disposeWebApplication
 import jp.nephy.glados.clients.web.event.WebAccessEvent
 import jp.nephy.glados.clients.web.initializeWebApplication

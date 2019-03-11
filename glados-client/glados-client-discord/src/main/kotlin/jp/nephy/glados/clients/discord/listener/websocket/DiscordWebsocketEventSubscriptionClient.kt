@@ -25,7 +25,7 @@
 package jp.nephy.glados.clients.discord.listener.websocket
 
 import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.clients.GLaDOSSubscriptionClient
+import jp.nephy.glados.GLaDOSSubscriptionClient
 import jp.nephy.glados.clients.discord.disposeJDA
 import jp.nephy.glados.clients.discord.initializeJDA
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
@@ -68,9 +68,9 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUse
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUserTypingEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.self.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.*
-import jp.nephy.glados.clients.utils.eventClass
-import jp.nephy.glados.clients.utils.invoke
-import jp.nephy.glados.clients.utils.subscriptions
+import jp.nephy.glados.clients.eventClass
+import jp.nephy.glados.clients.invoke
+import jp.nephy.glados.clients.subscriptions
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.dv8tion.jda.api.entities.Guild
@@ -155,6 +155,7 @@ object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<Discord
         }
     }
 
+    @Suppress("UNUSED")
     @SubscribeEvent
     fun onEvent(jdaEvent: Event) {
         val event = jdaEvent.toGLaDOSEvent() ?: return logger.trace { 

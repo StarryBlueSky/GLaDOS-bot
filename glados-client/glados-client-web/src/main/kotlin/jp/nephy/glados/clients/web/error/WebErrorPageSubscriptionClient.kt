@@ -25,7 +25,7 @@
 package jp.nephy.glados.clients.web.error
 
 import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.clients.GLaDOSSubscriptionClient
+import jp.nephy.glados.GLaDOSSubscriptionClient
 import jp.nephy.glados.clients.web.event.WebErrorEvent
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
