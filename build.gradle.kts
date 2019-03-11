@@ -4,8 +4,6 @@ import com.adarshr.gradle.testlogger.theme.ThemeType
 import com.github.breadmoirai.ChangeLogSupplier
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.jetbrains.dokka.gradle.DokkaTask
-import java.nio.file.Paths
-import java.nio.file.Files
 import java.text.SimpleDateFormat
 import java.util.Date
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -120,12 +118,6 @@ allprojects {
         theme = ThemeType.MOCHA
     }
 
-    tasks.named<Test>("test") {
-        useJUnitPlatform {
-            includeEngines("spek2")
-        }
-    }
-
     /*
      * Documentation
      */
@@ -217,6 +209,22 @@ dependencies {
 
 application { 
     mainClassName = "jp.nephy.glados.MainKt"
+}
+
+task<Jar>("jarRuntime") {
+    version = ""
+
+    manifest {
+        attributes("Main-Class" to "jp.nephy.glados.MainKt")
+    }
+    
+    doFirst {
+        from(configurations.runtimeClasspath.filter {
+            !it.name.endsWith(".pom")
+        }.map {
+            if (it.isDirectory) it else zipTree(it)
+        })
+    }
 }
 
 /*

@@ -9,12 +9,12 @@ subprojects {
         api(project(":glados-client"))
     }
     
-    tasks.named<Jar>("jar") {
+    task<Jar>("jarClient") {
         version = ""
         destinationDir = rootDir.resolve("clients")
         
         doFirst {
-            from(configurations.compileClasspath.filter {
+            from(configurations.runtimeClasspath.filter {
                 !it.name.endsWith(".pom")
             }.map {
                 if (it.isDirectory) it else zipTree(it)
@@ -25,6 +25,6 @@ subprojects {
 
 task("jarClients") {
     for (project in subprojects) {
-        dependsOn(project.tasks["jar"])
+        dependsOn(project.tasks["jarClient"])
     }
 }
