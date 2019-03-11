@@ -57,14 +57,14 @@ val isEAPBuild: Boolean
     get() = hasProperty("snapshot")
 
 fun incrementBuildNumber(): Int {
-    val buildNumberPath = Paths.get(rootProject.buildDir.absolutePath, "build-number-${packageVersion.label}.txt")
-    val buildNumber = if (Files.exists(buildNumberPath)) {
-        buildNumberPath.toFile().readText().toIntOrNull()
+    val buildNumberFile = rootProject.buildDir.resolve("build-number-${packageVersion.label}.txt")
+    val buildNumber = if (buildNumberFile.exists()) {
+        buildNumberFile.readText().toIntOrNull()
     } else {
         null
     }?.coerceAtLeast(0)?.plus(1) ?: 1
 
-    buildNumberPath.toFile().writeText(buildNumber.toString())
+    buildNumberFile.writeText(buildNumber.toString())
 
     return buildNumber
 }
@@ -149,14 +149,6 @@ allprojects {
 
     apply(plugin = "maven-publish")
     apply(plugin = "com.jfrog.bintray")
-    
-    if (isEAPBuild) {
-        val jar = tasks.named<Jar>("jar").get()
-
-        jar.destinationDir.listFiles().forEach {
-            it.delete()
-        }
-    }
 
     val sourcesJar = task<Jar>("sourcesJar") {
         classifier = "sources"
