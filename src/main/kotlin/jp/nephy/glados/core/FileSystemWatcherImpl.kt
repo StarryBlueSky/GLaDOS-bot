@@ -29,8 +29,8 @@ import io.methvin.watcher.DirectoryWatcher
 import jp.nephy.glados.api.FileSystemEventListener
 import jp.nephy.glados.api.FileSystemWatcher
 import jp.nephy.glados.api.Logger
-import jp.nephy.glados.clients.GLaDOSCoroutineScope
-import jp.nephy.glados.clients.logger.of
+import jp.nephy.glados.GLaDOSCoroutineScope
+import jp.nephy.glados.api.of
 import kotlinx.coroutines.launch
 import java.nio.file.Files
 import java.nio.file.Path

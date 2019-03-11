@@ -41,7 +41,7 @@ import kotlinx.coroutines.newFixedThreadPoolContext
 @UseExperimental(ObsoleteCoroutinesApi::class)
 fun main(args: Array<String>) {
     GLaDOS.initialize {
-        isDebugMode = "--debug" in args
+        isDevelopmentMode = "--dev" in args
         
         config = ConfigJsonImpl.load()
         secret = SecretJsonImpl.load()

@@ -26,7 +26,6 @@ package jp.nephy.glados.core
 
 import ch.qos.logback.classic.Level
 import jp.nephy.glados.api.*
-import jp.nephy.glados.clients.logger.of
 import jp.nephy.jsonkt.*
 import jp.nephy.jsonkt.delegation.*
 import java.nio.file.Files
@@ -38,16 +37,15 @@ internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
         private val productionConfigJsonPath: Path = Paths.get("config.prod.json")
         private val developmentConfigJsonPath: Path = Paths.get("config.dev.json")
         
-        private const val emptyJson = "{\n    \n}\n"
-        
         fun load(): ConfigJson {
             val logger = Logger.of("GLaDOS.Config.ConfigJson")
             
             return if (GLaDOS.isDebugMode) {
                 if (!Files.exists(developmentConfigJsonPath)) {
-                    logger.info { "$developmentConfigJsonPath は存在しません。空の JSON を新たに作成します。" }
+                    logger.info { "$developmentConfigJsonPath は存在しません。デフォルトの JSON をコピーします。" }
                     
-                    developmentConfigJsonPath.toFile().writeText(emptyJson)
+                    val defaultJson = this::class.java.classLoader.getResource(developmentConfigJsonPath.fileName.toString()).readText()
+                    developmentConfigJsonPath.toFile().writeText(defaultJson)
                 }
                 
                 logger.info { "Development モードの設定をロードします。" }
@@ -56,7 +54,8 @@ internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
                 if (!Files.exists(productionConfigJsonPath)) {
                     logger.info { "$productionConfigJsonPath は存在しません。空の JSON を新たに作成します。" }
 
-                    productionConfigJsonPath.toFile().writeText(emptyJson)
+                    val defaultJson = this::class.java.classLoader.getResource(productionConfigJsonPath.fileName.toString()).readText()
+                    productionConfigJsonPath.toFile().writeText(defaultJson)
                 }
                 
                 logger.info { "Production モードの設定をロードします。" }

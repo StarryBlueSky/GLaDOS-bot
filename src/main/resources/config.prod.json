@@ -1,0 +1,14 @@
+{
+    "parallelism": 16,
+    "paths": {
+        "tmp": "tmp",
+        "resources": "resources",
+        "clients": "clients",
+        "plugins": "plugins"
+    },
+    "logging": {
+        "level": "info",
+        "level_for_slack": "warn",
+        "slack_webhook_url": null
+    }
+}

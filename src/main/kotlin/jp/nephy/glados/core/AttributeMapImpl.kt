@@ -26,7 +26,7 @@ package jp.nephy.glados.core
 
 import jp.nephy.glados.api.AttributeMap
 import jp.nephy.glados.api.Logger
-import jp.nephy.glados.clients.logger.of
+import jp.nephy.glados.api.of
 import java.util.concurrent.ConcurrentHashMap
 
 internal object AttributeMapImpl: AttributeMap {

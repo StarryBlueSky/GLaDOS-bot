@@ -28,10 +28,9 @@ import io.ktor.util.extension
 import jp.nephy.glados.api.*
 import jp.nephy.glados.api.annotations.TestOnlyFeature
 import jp.nephy.glados.api.annotations.TestableFeature
-import jp.nephy.glados.clients.logger.of
-import jp.nephy.glados.clients.utils.effectiveName
-import jp.nephy.glados.clients.utils.fullName
-import jp.nephy.glados.clients.utils.name
+import jp.nephy.glados.clients.effectiveName
+import jp.nephy.glados.clients.fullName
+import jp.nephy.glados.clients.name
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -48,6 +47,13 @@ import kotlin.system.measureTimeMillis
 
 internal object PluginManager: ClassManager<Plugin>, CoroutineScope by GLaDOS {
     private val logger = Logger.of("GLaDOS.PluginManager")
+    
+    init {
+        if (!Files.exists(GLaDOS.config.paths.plugins)) {
+            Files.createDirectories(GLaDOS.config.paths.plugins)
+            logger.info { "ディレクトリ: \"${GLaDOS.config.paths.plugins}\" を作成しました。" }
+        }
+    }
     
     override fun loadAll() {
         val loadingTimeMillis = measureTimeMillis {
@@ -102,7 +108,7 @@ internal object PluginManager: ClassManager<Plugin>, CoroutineScope by GLaDOS {
             logger.error(e) { "クラス: \"${kotlinClass.qualifiedName}\" の初期化に失敗しました。" }
         }.getOrNull() ?: return
 
-        val jobs = plugin::class.declaredFunctions.map { function -> 
+        val jobs = kotlinClass.declaredFunctions.map { function -> 
             launch {
                 if (function.valueParameters.size != 1) {
                     logger.trace { "関数: \"${plugin.effectiveName}#${function.name}\" は引数の長さが 1 ではありません。スキップします。" }
@@ -110,7 +116,13 @@ internal object PluginManager: ClassManager<Plugin>, CoroutineScope by GLaDOS {
                 }
 
                 val eventType = function.valueParameters.first().type
-                val eventClass = eventType.jvmErasure
+                val eventClass = try {
+                    eventType.jvmErasure
+                } catch (e: Throwable) {
+                    logger.warn(e) { "関数: \"${plugin.effectiveName}#${function.name}\"  のイベントクラスの取得に失敗しました。必要な SubscriptionClient がロードされていない可能性があります。 ($eventType)" }
+                    return@launch
+                }
+                
                 if (!eventClass.isSubclassOf(Event::class)) {
                     logger.trace { "関数: \"${plugin.effectiveName}#${function.name}\" の引数は ${Event::class.qualifiedName} を継承していません。スキップします。" }
                     return@launch

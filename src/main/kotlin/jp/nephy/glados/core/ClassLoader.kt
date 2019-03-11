@@ -25,7 +25,9 @@
 package jp.nephy.glados.core
 
 import jp.nephy.glados.api.Logger
-import jp.nephy.glados.clients.logger.of
+import jp.nephy.glados.api.of
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
 import java.net.URL
 import java.net.URLClassLoader
 import java.nio.file.Path
@@ -58,9 +60,11 @@ internal inline fun <reified T: Any> loadClasses(jarPath: Path): List<KClass<T>>
                 logger.trace(e) { "クラス: \"$it\" のロードに失敗しました。($jarPath)" }
             }.getOrNull()
         }.filter { 
-            T::class.java.isAssignableFrom(it)
-        }.map {
-            it.kotlin as KClass<T>
+            T::class.java.isAssignableFrom(it) && !it.isInterface
+        }.mapNotNull {
+            it.kotlin as? KClass<T>
+        }.filter {
+            !it.isAbstract
         }.toList()
     }
 }

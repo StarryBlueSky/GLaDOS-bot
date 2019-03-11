@@ -26,8 +26,7 @@ package jp.nephy.glados.core
 
 import io.ktor.util.extension
 import jp.nephy.glados.api.*
-import jp.nephy.glados.clients.logger.of
-import jp.nephy.glados.clients.utils.name
+import jp.nephy.glados.clients.name
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -43,6 +42,13 @@ import kotlin.system.measureTimeMillis
 
 internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, CoroutineScope by GLaDOS, Closeable {
     private val logger = Logger.of("GLaDOS.ClientManager")
+
+    init {
+        if (!Files.exists(GLaDOS.config.paths.clients)) {
+            Files.createDirectories(GLaDOS.config.paths.clients)
+            logger.info { "ディレクトリ: \"${GLaDOS.config.paths.clients}\" を作成しました。" }
+        }
+    }
     
     val clients = CopyOnWriteArraySet<SubscriptionClient<*, *, *>>()
     
@@ -87,7 +93,7 @@ internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Corout
             kotlinClass.objectInstance ?: kotlinClass.createInstance()
         }.onSuccess { client ->
             clients += client
-            logger.debug { "SubscriptionClient: \"${client.name}\" をロードしました。" }
+            logger.info { "SubscriptionClient: \"${client.name}\" をロードしました。" }
         }.onFailure { e ->
             logger.error(e) { "クラス: \"${kotlinClass.qualifiedName}\" の初期化に失敗しました。" }
         }

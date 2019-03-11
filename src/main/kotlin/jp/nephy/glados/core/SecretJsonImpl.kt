@@ -26,11 +26,7 @@
 
 package jp.nephy.glados.core
 
-import jp.nephy.glados.api.FileSystemEventListener
-import jp.nephy.glados.api.GLaDOS
-import jp.nephy.glados.api.Logger
-import jp.nephy.glados.api.SecretJson
-import jp.nephy.glados.clients.logger.of
+import jp.nephy.glados.api.*
 import jp.nephy.jsonkt.*
 import kotlinx.serialization.json.JsonObject
 import java.nio.file.Files
@@ -40,16 +36,15 @@ import java.nio.file.Paths
 internal class SecretJsonImpl(override val json: JsonObject): SecretJson {
     companion object {
         private val secretJsonPath: Path = Paths.get("config.secret.json")
-
-        private const val emptyJson = "{\n    \n}\n"
         
         fun load(): SecretJson {
             val logger = Logger.of("GLaDOS.Config.SecretJson")
             
             if (!Files.exists(secretJsonPath)) {
                 logger.info { "$secretJsonPath は存在しません。空の JSON を新たに作成します。" }
-                
-                secretJsonPath.toFile().writeText(emptyJson)
+
+                val defaultJson = this::class.java.classLoader.getResource(secretJsonPath.fileName.toString()).readText()
+                secretJsonPath.toFile().writeText(defaultJson)
             }
             
             logger.info { "シークレット設定をロードします。" }
