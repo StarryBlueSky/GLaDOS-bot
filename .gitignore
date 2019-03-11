@@ -6,6 +6,6 @@
 /*.json
 
 /clients/*.jar
-/plugins/
-/logs/
+/plugins/*.jar
+/logs/*.log
 /tmp/
