@@ -29,7 +29,6 @@ import jp.nephy.glados.api.attributes
 import jp.nephy.glados.api.config
 import jp.nephy.glados.clients.discord.command.DiscordCommandSubscriptionClient
 import jp.nephy.glados.clients.discord.config.discord
-import jp.nephy.glados.clients.discord.extensions.DiscordEventWaiter
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscriptionClient
 import net.dv8tion.jda.api.AccountType
 import net.dv8tion.jda.api.JDA
@@ -54,7 +53,7 @@ internal fun initializeJDA() {
             // setAudioSendFactory(NativeAudioSendFactory(5000))
             
             setEventManager(AnnotatedEventManager())
-            addEventListeners(DiscordWebsocketEventSubscriptionClient, DiscordCommandSubscriptionClient, DiscordEventWaiter)
+            addEventListeners(DiscordMessageManager, DiscordWebsocketEventSubscriptionClient, DiscordCommandSubscriptionClient, DiscordEventWaiter)
         }.build()
     }
 }

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.extensions
+package jp.nephy.glados.clients.discord
 
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex

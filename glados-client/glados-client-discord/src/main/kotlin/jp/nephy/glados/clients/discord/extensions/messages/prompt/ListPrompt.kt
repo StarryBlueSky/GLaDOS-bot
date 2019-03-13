@@ -24,10 +24,9 @@
 
 package jp.nephy.glados.clients.discord.extensions.messages.prompt
 
-import javafx.scene.paint.Color.color
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.of
-import jp.nephy.glados.clients.discord.extensions.DiscordEventWaiter
+import jp.nephy.glados.clients.discord.DiscordEventWaiter
 import jp.nephy.glados.clients.discord.extensions.await
 import jp.nephy.glados.clients.discord.extensions.launchAndDelete
 import jp.nephy.glados.clients.discord.extensions.messages.HexColor
@@ -36,7 +35,6 @@ import jp.nephy.glados.clients.discord.extensions.messages.reply
 import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
-import sun.text.normalizer.UTF16.append
 import java.util.concurrent.TimeUnit
 
 data class ListPrompt<T>(

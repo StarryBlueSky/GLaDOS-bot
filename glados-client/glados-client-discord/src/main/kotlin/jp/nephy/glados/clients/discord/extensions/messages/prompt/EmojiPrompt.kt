@@ -26,7 +26,7 @@ package jp.nephy.glados.clients.discord.extensions.messages.prompt
 
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.of
-import jp.nephy.glados.clients.discord.extensions.DiscordEventWaiter
+import jp.nephy.glados.clients.discord.DiscordEventWaiter
 import jp.nephy.glados.clients.discord.extensions.await
 import jp.nephy.glados.clients.discord.extensions.launch
 import jp.nephy.glados.clients.discord.extensions.launchAndDelete
