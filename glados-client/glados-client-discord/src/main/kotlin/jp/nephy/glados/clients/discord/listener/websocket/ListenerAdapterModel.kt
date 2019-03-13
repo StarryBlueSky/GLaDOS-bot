@@ -26,190 +26,172 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket
 
-import jp.nephy.glados.clients.discord.listener.websocket.events.general.DiscordReadyEvent
-import jp.nephy.glados.clients.discord.listener.websocket.events.general.DiscordReconnectedEvent
-import jp.nephy.glados.clients.discord.listener.websocket.events.general.DiscordResumedEvent
 import jp.nephy.glados.api.EventModel
-import net.dv8tion.jda.api.events.DisconnectEvent
-import net.dv8tion.jda.api.events.ExceptionEvent
-import net.dv8tion.jda.api.events.ShutdownEvent
-import net.dv8tion.jda.api.events.StatusChangeEvent
-import net.dv8tion.jda.api.events.channel.category.CategoryCreateEvent
-import net.dv8tion.jda.api.events.channel.category.CategoryDeleteEvent
-import net.dv8tion.jda.api.events.channel.category.update.CategoryUpdateNameEvent
-import net.dv8tion.jda.api.events.channel.category.update.CategoryUpdatePermissionsEvent
-import net.dv8tion.jda.api.events.channel.category.update.CategoryUpdatePositionEvent
-import net.dv8tion.jda.api.events.channel.priv.PrivateChannelCreateEvent
-import net.dv8tion.jda.api.events.channel.priv.PrivateChannelDeleteEvent
-import net.dv8tion.jda.api.events.channel.text.TextChannelCreateEvent
-import net.dv8tion.jda.api.events.channel.text.TextChannelDeleteEvent
-import net.dv8tion.jda.api.events.channel.text.update.*
-import net.dv8tion.jda.api.events.channel.voice.VoiceChannelCreateEvent
-import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent
-import net.dv8tion.jda.api.events.channel.voice.update.*
-import net.dv8tion.jda.api.events.emote.EmoteAddedEvent
-import net.dv8tion.jda.api.events.emote.EmoteRemovedEvent
-import net.dv8tion.jda.api.events.emote.update.EmoteUpdateNameEvent
-import net.dv8tion.jda.api.events.emote.update.EmoteUpdateRolesEvent
-import net.dv8tion.jda.api.events.guild.*
-import net.dv8tion.jda.api.events.guild.member.*
-import net.dv8tion.jda.api.events.guild.update.*
-import net.dv8tion.jda.api.events.guild.voice.*
-import net.dv8tion.jda.api.events.http.HttpRequestEvent
-import net.dv8tion.jda.api.events.message.*
-import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent
-import net.dv8tion.jda.api.events.message.guild.GuildMessageEmbedEvent
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
-import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveAllEvent
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageDeleteEvent
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageEmbedEvent
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageUpdateEvent
-import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent
-import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionRemoveEvent
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
-import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveAllEvent
-import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent
-import net.dv8tion.jda.api.events.role.RoleCreateEvent
-import net.dv8tion.jda.api.events.role.RoleDeleteEvent
-import net.dv8tion.jda.api.events.role.update.*
-import net.dv8tion.jda.api.events.self.*
-import net.dv8tion.jda.api.events.user.UserActivityEndEvent
-import net.dv8tion.jda.api.events.user.UserActivityStartEvent
-import net.dv8tion.jda.api.events.user.UserTypingEvent
-import net.dv8tion.jda.api.events.user.update.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.category.DiscordCategoryCreateEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.category.DiscordCategoryDeleteEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.category.update.DiscordCategoryUpdateNameEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.category.update.DiscordCategoryUpdatePermissionsEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.category.update.DiscordCategoryUpdatePositionEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.priv.DiscordPrivateChannelCreateEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.priv.DiscordPrivateChannelDeleteEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.DiscordTextChannelCreateEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.DiscordTextChannelDeleteEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.update.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.voice.DiscordVoiceChannelCreateEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.voice.DiscordVoiceChannelDeleteEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.voice.update.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.emote.DiscordEmoteAddedEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.emote.DiscordEmoteRemovedEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.emote.update.DiscordEmoteUpdateNameEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.emote.update.DiscordEmoteUpdateRolesEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.general.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.update.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.voice.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.message.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.message.guild.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.message.priv.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.message.reaction.DiscordMessageReactionAddEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.message.reaction.DiscordMessageReactionRemoveAllEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.message.reaction.DiscordMessageReactionRemoveEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.role.DiscordRoleCreateEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.role.DiscordRoleDeleteEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.role.update.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUserActivityEndEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUserActivityStartEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUserTypingEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.self.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.*
 
 interface ListenerAdapterModel: EventModel {
     suspend fun onDiscordReady(event: DiscordReadyEvent) {}
     suspend fun onDiscordResume(event: DiscordResumedEvent) {}
     suspend fun onDiscordReconnect(event: DiscordReconnectedEvent) {}
-    suspend fun onDiscordDisconnect(event: DisconnectEvent) {}
-    suspend fun onDiscordShutdown(event: ShutdownEvent) {}
-    suspend fun onDiscordStatusChange(event: StatusChangeEvent) {}
-    suspend fun onDiscordException(event: ExceptionEvent) {}
-    suspend fun onDiscordHttpRequest(event: HttpRequestEvent) {}
+    suspend fun onDiscordDisconnect(event: DiscordDisconnectEvent) {}
+    suspend fun onDiscordShutdown(event: DiscordShutdownEvent) {}
+    suspend fun onDiscordStatusChange(event: DiscordStatusChangeEvent) {}
+    suspend fun onDiscordException(event: DiscordExceptionEvent) {}
+    suspend fun onDiscordHttpRequest(event: DiscordHttpRequestEvent) {}
     
-    suspend fun onDiscordUserUpdateName(event: UserUpdateNameEvent) {}
-    suspend fun onDiscordUserUpdateDiscriminator(event: UserUpdateDiscriminatorEvent) {}
-    suspend fun onDiscordUserUpdateAvatar(event: UserUpdateAvatarEvent) {}
-    suspend fun onDiscordUserUpdateOnlineStatus(event: UserUpdateOnlineStatusEvent) {}
-    suspend fun onDiscordUserUpdateActivityOrder(event: UserUpdateActivityOrderEvent) {}
-    suspend fun onDiscordUserTyping(event: UserTypingEvent) {}
-    suspend fun onDiscordUserActivityStart(event: UserActivityStartEvent) {}
-    suspend fun onDiscordUserActivityEnd(event: UserActivityEndEvent) {}
+    suspend fun onDiscordUserUpdateName(event: DiscordUserUpdateNameEvent) {}
+    suspend fun onDiscordUserUpdateDiscriminator(event: DiscordUserUpdateDiscriminatorEvent) {}
+    suspend fun onDiscordUserUpdateAvatar(event: DiscordUserUpdateAvatarEvent) {}
+    suspend fun onDiscordUserUpdateOnlineStatus(event: DiscordUserUpdateOnlineStatusEvent) {}
+    suspend fun onDiscordUserUpdateActivityOrder(event: DiscordUserUpdateActivityOrderEvent) {}
+    suspend fun onDiscordUserTyping(event: DiscordUserTypingEvent) {}
+    suspend fun onDiscordUserActivityStart(event: DiscordUserActivityStartEvent) {}
+    suspend fun onDiscordUserActivityEnd(event: DiscordUserActivityEndEvent) {}
 
-    suspend fun onDiscordSelfUpdateAvatar(event: SelfUpdateAvatarEvent) {}
-    suspend fun onDiscordSelfUpdateEmail(event: SelfUpdateEmailEvent) {}
-    suspend fun onDiscordSelfUpdateMFA(event: SelfUpdateMFAEvent) {}
-    suspend fun onDiscordSelfUpdateName(event: SelfUpdateNameEvent) {}
-    suspend fun onDiscordSelfUpdateVerified(event: SelfUpdateVerifiedEvent) {}
+    suspend fun onDiscordSelfUpdateAvatar(event: DiscordSelfUpdateAvatarEvent) {}
+    suspend fun onDiscordSelfUpdateEmail(event: DiscordSelfUpdateEmailEvent) {}
+    suspend fun onDiscordSelfUpdateMFA(event: DiscordSelfUpdateMFAEvent) {}
+    suspend fun onDiscordSelfUpdateName(event: DiscordSelfUpdateNameEvent) {}
+    suspend fun onDiscordSelfUpdateVerified(event: DiscordSelfUpdateVerifiedEvent) {}
     
-    suspend fun onDiscordGuildMessageReceived(event: GuildMessageReceivedEvent) {}
-    suspend fun onDiscordGuildMessageUpdate(event: GuildMessageUpdateEvent) {}
-    suspend fun onDiscordGuildMessageDelete(event: GuildMessageDeleteEvent) {}
-    suspend fun onDiscordGuildMessageEmbed(event: GuildMessageEmbedEvent) {}
-    suspend fun onDiscordGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {}
-    suspend fun onDiscordGuildMessageReactionRemove(event: GuildMessageReactionRemoveEvent) {}
-    suspend fun onDiscordGuildMessageReactionRemoveAll(event: GuildMessageReactionRemoveAllEvent) {}
+    suspend fun onDiscordGuildMessageReceived(event: DiscordGuildMessageReceivedEvent) {}
+    suspend fun onDiscordGuildMessageUpdate(event: DiscordGuildMessageUpdateEvent) {}
+    suspend fun onDiscordGuildMessageDelete(event: DiscordGuildMessageDeleteEvent) {}
+    suspend fun onDiscordGuildMessageEmbed(event: DiscordGuildMessageEmbedEvent) {}
+    suspend fun onDiscordGuildMessageReactionAdd(event: DiscordGuildMessageReactionAddEvent) {}
+    suspend fun onDiscordGuildMessageReactionRemove(event: DiscordGuildMessageReactionRemoveEvent) {}
+    suspend fun onDiscordGuildMessageReactionRemoveAll(event: DiscordGuildMessageReactionRemoveAllEvent) {}
     
-    suspend fun onDiscordPrivateMessageReceived(event: PrivateMessageReceivedEvent) {}
-    suspend fun onDiscordPrivateMessageUpdate(event: PrivateMessageUpdateEvent) {}
-    suspend fun onDiscordPrivateMessageDelete(event: PrivateMessageDeleteEvent) {}
-    suspend fun onDiscordPrivateMessageEmbed(event: PrivateMessageEmbedEvent) {}
-    suspend fun onDiscordPrivateMessageReactionAdd(event: PrivateMessageReactionAddEvent) {}
-    suspend fun onDiscordPrivateMessageReactionRemove(event: PrivateMessageReactionRemoveEvent) {}
+    suspend fun onDiscordPrivateMessageReceived(event: DiscordPrivateMessageReceivedEvent) {}
+    suspend fun onDiscordPrivateMessageUpdate(event: DiscordPrivateMessageUpdateEvent) {}
+    suspend fun onDiscordPrivateMessageDelete(event: DiscordPrivateMessageDeleteEvent) {}
+    suspend fun onDiscordPrivateMessageEmbed(event: DiscordPrivateMessageEmbedEvent) {}
+    suspend fun onDiscordPrivateMessageReactionAdd(event: DiscordPrivateMessageReactionAddEvent) {}
+    suspend fun onDiscordPrivateMessageReactionRemove(event: DiscordPrivateMessageReactionRemoveEvent) {}
     
-    suspend fun onDiscordMessageReceived(event: MessageReceivedEvent) {}
-    suspend fun onDiscordMessageUpdate(event: MessageUpdateEvent) {}
-    suspend fun onDiscordMessageDelete(event: MessageDeleteEvent) {}
-    suspend fun onDiscordMessageBulkDelete(event: MessageBulkDeleteEvent) {}
-    suspend fun onDiscordMessageEmbed(event: MessageEmbedEvent) {}
-    suspend fun onDiscordMessageReactionAdd(event: MessageReactionAddEvent) {}
-    suspend fun onDiscordMessageReactionRemove(event: MessageReactionRemoveEvent) {}
-    suspend fun onDiscordMessageReactionRemoveAll(event: MessageReactionRemoveAllEvent) {}
+    suspend fun onDiscordMessageReceived(event: DiscordMessageReceivedEvent) {}
+    suspend fun onDiscordMessageUpdate(event: DiscordMessageUpdateEvent) {}
+    suspend fun onDiscordMessageDelete(event: DiscordMessageDeleteEvent) {}
+    suspend fun onDiscordMessageBulkDelete(event: DiscordMessageBulkDeleteEvent) {}
+    suspend fun onDiscordMessageEmbed(event: DiscordMessageEmbedEvent) {}
+    suspend fun onDiscordMessageReactionAdd(event: DiscordMessageReactionAddEvent) {}
+    suspend fun onDiscordMessageReactionRemove(event: DiscordMessageReactionRemoveEvent) {}
+    suspend fun onDiscordMessageReactionRemoveAll(event: DiscordMessageReactionRemoveAllEvent) {}
     
-    suspend fun onDiscordTextChannelDelete(event: TextChannelDeleteEvent) {}
-    suspend fun onDiscordTextChannelUpdateName(event: TextChannelUpdateNameEvent) {}
-    suspend fun onDiscordTextChannelUpdateTopic(event: TextChannelUpdateTopicEvent) {}
-    suspend fun onDiscordTextChannelUpdatePosition(event: TextChannelUpdatePositionEvent) {}
-    suspend fun onDiscordTextChannelUpdatePermissions(event: TextChannelUpdatePermissionsEvent) {}
-    suspend fun onDiscordTextChannelUpdateNSFW(event: TextChannelUpdateNSFWEvent) {}
-    suspend fun onDiscordTextChannelUpdateParent(event: TextChannelUpdateParentEvent) {}
-    suspend fun onDiscordTextChannelUpdateSlowmode(event: TextChannelUpdateSlowmodeEvent) {}
-    suspend fun onDiscordTextChannelCreate(event: TextChannelCreateEvent) {}
+    suspend fun onDiscordTextChannelDelete(event: DiscordTextChannelDeleteEvent) {}
+    suspend fun onDiscordTextChannelUpdateName(event: DiscordTextChannelUpdateNameEvent) {}
+    suspend fun onDiscordTextChannelUpdateTopic(event: DiscordTextChannelUpdateTopicEvent) {}
+    suspend fun onDiscordTextChannelUpdatePosition(event: DiscordTextChannelUpdatePositionEvent) {}
+    suspend fun onDiscordTextChannelUpdatePermissions(event: DiscordTextChannelUpdatePermissionsEvent) {}
+    suspend fun onDiscordTextChannelUpdateNSFW(event: DiscordTextChannelUpdateNSFWEvent) {}
+    suspend fun onDiscordTextChannelUpdateParent(event: DiscordTextChannelUpdateParentEvent) {}
+    suspend fun onDiscordTextChannelUpdateSlowmode(event: DiscordTextChannelUpdateSlowmodeEvent) {}
+    suspend fun onDiscordTextChannelCreate(event: DiscordTextChannelCreateEvent) {}
     
-    suspend fun onDiscordVoiceChannelDelete(event: VoiceChannelDeleteEvent) {}
-    suspend fun onDiscordVoiceChannelUpdateName(event: VoiceChannelUpdateNameEvent) {}
-    suspend fun onDiscordVoiceChannelUpdatePosition(event: VoiceChannelUpdatePositionEvent) {}
-    suspend fun onDiscordVoiceChannelUpdateUserLimit(event: VoiceChannelUpdateUserLimitEvent) {}
-    suspend fun onDiscordVoiceChannelUpdateBitrate(event: VoiceChannelUpdateBitrateEvent) {}
-    suspend fun onDiscordVoiceChannelUpdatePermissions(event: VoiceChannelUpdatePermissionsEvent) {}
-    suspend fun onDiscordVoiceChannelUpdateParent(event: VoiceChannelUpdateParentEvent) {}
-    suspend fun onDiscordVoiceChannelCreate(event: VoiceChannelCreateEvent) {}
+    suspend fun onDiscordVoiceChannelDelete(event: DiscordVoiceChannelDeleteEvent) {}
+    suspend fun onDiscordVoiceChannelUpdateName(event: DiscordVoiceChannelUpdateNameEvent) {}
+    suspend fun onDiscordVoiceChannelUpdatePosition(event: DiscordVoiceChannelUpdatePositionEvent) {}
+    suspend fun onDiscordVoiceChannelUpdateUserLimit(event: DiscordVoiceChannelUpdateUserLimitEvent) {}
+    suspend fun onDiscordVoiceChannelUpdateBitrate(event: DiscordVoiceChannelUpdateBitrateEvent) {}
+    suspend fun onDiscordVoiceChannelUpdatePermissions(event: DiscordVoiceChannelUpdatePermissionsEvent) {}
+    suspend fun onDiscordVoiceChannelUpdateParent(event: DiscordVoiceChannelUpdateParentEvent) {}
+    suspend fun onDiscordVoiceChannelCreate(event: DiscordVoiceChannelCreateEvent) {}
     
-    suspend fun onDiscordCategoryDelete(event: CategoryDeleteEvent) {}
-    suspend fun onDiscordCategoryUpdateName(event: CategoryUpdateNameEvent) {}
-    suspend fun onDiscordCategoryUpdatePosition(event: CategoryUpdatePositionEvent) {}
-    suspend fun onDiscordCategoryUpdatePermissions(event: CategoryUpdatePermissionsEvent) {}
-    suspend fun onDiscordCategoryCreate(event: CategoryCreateEvent) {}
+    suspend fun onDiscordCategoryDelete(event: DiscordCategoryDeleteEvent) {}
+    suspend fun onDiscordCategoryUpdateName(event: DiscordCategoryUpdateNameEvent) {}
+    suspend fun onDiscordCategoryUpdatePosition(event: DiscordCategoryUpdatePositionEvent) {}
+    suspend fun onDiscordCategoryUpdatePermissions(event: DiscordCategoryUpdatePermissionsEvent) {}
+    suspend fun onDiscordCategoryCreate(event: DiscordCategoryCreateEvent) {}
     
-    suspend fun onDiscordPrivateChannelCreate(event: PrivateChannelCreateEvent) {}
-    suspend fun onDiscordPrivateChannelDelete(event: PrivateChannelDeleteEvent) {}
+    suspend fun onDiscordPrivateChannelCreate(event: DiscordPrivateChannelCreateEvent) {}
+    suspend fun onDiscordPrivateChannelDelete(event: DiscordPrivateChannelDeleteEvent) {}
     
-    suspend fun onDiscordGuildReady(event: GuildReadyEvent) {}
-    suspend fun onDiscordGuildJoin(event: GuildJoinEvent) {}
-    suspend fun onDiscordGuildLeave(event: GuildLeaveEvent) {}
-    suspend fun onDiscordGuildAvailable(event: GuildAvailableEvent) {}
-    suspend fun onDiscordGuildUnavailable(event: GuildUnavailableEvent) {}
-    suspend fun onDiscordUnavailableGuildJoined(event: UnavailableGuildJoinedEvent) {}
-    suspend fun onDiscordGuildBan(event: GuildBanEvent) {}
-    suspend fun onDiscordGuildUnban(event: GuildUnbanEvent) {}
-    suspend fun onDiscordGuildUpdateAfkChannel(event: GuildUpdateAfkChannelEvent) {}
-    suspend fun onDiscordGuildUpdateSystemChannel(event: GuildUpdateSystemChannelEvent) {}
-    suspend fun onDiscordGuildUpdateAfkTimeout(event: GuildUpdateAfkTimeoutEvent) {}
-    suspend fun onDiscordGuildUpdateExplicitContentLevel(event: GuildUpdateExplicitContentLevelEvent) {}
-    suspend fun onDiscordGuildUpdateIcon(event: GuildUpdateIconEvent) {}
-    suspend fun onDiscordGuildUpdateMFALevel(event: GuildUpdateMFALevelEvent) {}
-    suspend fun onDiscordGuildUpdateName(event: GuildUpdateNameEvent) {}
-    suspend fun onDiscordGuildUpdateNotificationLevel(event: GuildUpdateNotificationLevelEvent) {}
-    suspend fun onDiscordGuildUpdateOwner(event: GuildUpdateOwnerEvent) {}
-    suspend fun onDiscordGuildUpdateRegion(event: GuildUpdateRegionEvent) {}
-    suspend fun onDiscordGuildUpdateSplash(event: GuildUpdateSplashEvent) {}
-    suspend fun onDiscordGuildUpdateVerificationLevel(event: GuildUpdateVerificationLevelEvent) {}
-    suspend fun onDiscordGuildUpdateFeatures(event: GuildUpdateFeaturesEvent) {}
+    suspend fun onDiscordGuildReady(event: DiscordGuildReadyEvent) {}
+    suspend fun onDiscordGuildJoin(event: DiscordGuildJoinEvent) {}
+    suspend fun onDiscordGuildLeave(event: DiscordGuildLeaveEvent) {}
+    suspend fun onDiscordGuildAvailable(event: DiscordGuildAvailableEvent) {}
+    suspend fun onDiscordGuildUnavailable(event: DiscordGuildUnavailableEvent) {}
+    suspend fun onDiscordUnavailableGuildJoined(event: DiscordUnavailableGuildJoinedEvent) {}
+    suspend fun onDiscordGuildBan(event: DiscordGuildBanEvent) {}
+    suspend fun onDiscordGuildUnban(event: DiscordGuildUnbanEvent) {}
+    suspend fun onDiscordGuildUpdateAfkChannel(event: DiscordGuildUpdateAfkChannelEvent) {}
+    suspend fun onDiscordGuildUpdateSystemChannel(event: DiscordGuildUpdateSystemChannelEvent) {}
+    suspend fun onDiscordGuildUpdateAfkTimeout(event: DiscordGuildUpdateAfkTimeoutEvent) {}
+    suspend fun onDiscordGuildUpdateExplicitContentLevel(event: DiscordGuildUpdateExplicitContentLevelEvent) {}
+    suspend fun onDiscordGuildUpdateIcon(event: DiscordGuildUpdateIconEvent) {}
+    suspend fun onDiscordGuildUpdateMFALevel(event: DiscordGuildUpdateMFALevelEvent) {}
+    suspend fun onDiscordGuildUpdateName(event: DiscordGuildUpdateNameEvent) {}
+    suspend fun onDiscordGuildUpdateNotificationLevel(event: DiscordGuildUpdateNotificationLevelEvent) {}
+    suspend fun onDiscordGuildUpdateOwner(event: DiscordGuildUpdateOwnerEvent) {}
+    suspend fun onDiscordGuildUpdateRegion(event: DiscordGuildUpdateRegionEvent) {}
+    suspend fun onDiscordGuildUpdateSplash(event: DiscordGuildUpdateSplashEvent) {}
+    suspend fun onDiscordGuildUpdateVerificationLevel(event: DiscordGuildUpdateVerificationLevelEvent) {}
+    suspend fun onDiscordGuildUpdateFeatures(event: DiscordGuildUpdateFeaturesEvent) {}
     
-    suspend fun onDiscordGuildMemberJoin(event: GuildMemberJoinEvent) {}
-    suspend fun onDiscordGuildMemberLeave(event: GuildMemberLeaveEvent) {}
-    suspend fun onDiscordGuildMemberRoleAdd(event: GuildMemberRoleAddEvent) {}
-    suspend fun onDiscordGuildMemberRoleRemove(event: GuildMemberRoleRemoveEvent) {}
-    suspend fun onDiscordGuildMemberNickChange(event: GuildMemberNickChangeEvent) {}
+    suspend fun onDiscordGuildMemberJoin(event: DiscordGuildMemberJoinEvent) {}
+    suspend fun onDiscordGuildMemberLeave(event: DiscordGuildMemberLeaveEvent) {}
+    suspend fun onDiscordGuildMemberRoleAdd(event: DiscordGuildMemberRoleAddEvent) {}
+    suspend fun onDiscordGuildMemberRoleRemove(event: DiscordGuildMemberRoleRemoveEvent) {}
+    suspend fun onDiscordGuildMemberNickChange(event: DiscordGuildMemberNickChangeEvent) {}
     
-    suspend fun onDiscordGuildVoiceUpdate(event: GuildVoiceUpdateEvent) {}
-    suspend fun onDiscordGuildVoiceJoin(event: GuildVoiceJoinEvent) {}
-    suspend fun onDiscordGuildVoiceMove(event: GuildVoiceMoveEvent) {}
-    suspend fun onDiscordGuildVoiceLeave(event: GuildVoiceLeaveEvent) {}
-    suspend fun onDiscordGuildVoiceMute(event: GuildVoiceMuteEvent) {}
-    suspend fun onDiscordGuildVoiceDeafen(event: GuildVoiceDeafenEvent) {}
-    suspend fun onDiscordGuildVoiceGuildMute(event: GuildVoiceGuildMuteEvent) {}
-    suspend fun onDiscordGuildVoiceGuildDeafen(event: GuildVoiceGuildDeafenEvent) {}
-    suspend fun onDiscordGuildVoiceSelfMute(event: GuildVoiceSelfMuteEvent) {}
-    suspend fun onDiscordGuildVoiceSelfDeafen(event: GuildVoiceSelfDeafenEvent) {}
-    suspend fun onDiscordGuildVoiceSuppress(event: GuildVoiceSuppressEvent) {}
+    suspend fun onDiscordGuildVoiceUpdate(event: DiscordGuildVoiceUpdateEvent) {}
+    suspend fun onDiscordGuildVoiceJoin(event: DiscordGuildVoiceJoinEvent) {}
+    suspend fun onDiscordGuildVoiceMove(event: DiscordGuildVoiceMoveEvent) {}
+    suspend fun onDiscordGuildVoiceLeave(event: DiscordGuildVoiceLeaveEvent) {}
+    suspend fun onDiscordGuildVoiceMute(event: DiscordGuildVoiceMuteEvent) {}
+    suspend fun onDiscordGuildVoiceDeafen(event: DiscordGuildVoiceDeafenEvent) {}
+    suspend fun onDiscordGuildVoiceGuildMute(event: DiscordGuildVoiceGuildMuteEvent) {}
+    suspend fun onDiscordGuildVoiceGuildDeafen(event: DiscordGuildVoiceGuildDeafenEvent) {}
+    suspend fun onDiscordGuildVoiceSelfMute(event: DiscordGuildVoiceSelfMuteEvent) {}
+    suspend fun onDiscordGuildVoiceSelfDeafen(event: DiscordGuildVoiceSelfDeafenEvent) {}
+    suspend fun onDiscordGuildVoiceSuppress(event: DiscordGuildVoiceSuppressEvent) {}
     
-    suspend fun onDiscordRoleCreate(event: RoleCreateEvent) {}
-    suspend fun onDiscordRoleDelete(event: RoleDeleteEvent) {}
-    suspend fun onDiscordRoleUpdateColor(event: RoleUpdateColorEvent) {}
-    suspend fun onDiscordRoleUpdateHoisted(event: RoleUpdateHoistedEvent) {}
-    suspend fun onDiscordRoleUpdateMentionable(event: RoleUpdateMentionableEvent) {}
-    suspend fun onDiscordRoleUpdateName(event: RoleUpdateNameEvent) {}
-    suspend fun onDiscordRoleUpdatePermissions(event: RoleUpdatePermissionsEvent) {}
-    suspend fun onDiscordRoleUpdatePosition(event: RoleUpdatePositionEvent) {}
+    suspend fun onDiscordRoleCreate(event: DiscordRoleCreateEvent) {}
+    suspend fun onDiscordRoleDelete(event: DiscordRoleDeleteEvent) {}
+    suspend fun onDiscordRoleUpdateColor(event: DiscordRoleUpdateColorEvent) {}
+    suspend fun onDiscordRoleUpdateHoisted(event: DiscordRoleUpdateHoistedEvent) {}
+    suspend fun onDiscordRoleUpdateMentionable(event: DiscordRoleUpdateMentionableEvent) {}
+    suspend fun onDiscordRoleUpdateName(event: DiscordRoleUpdateNameEvent) {}
+    suspend fun onDiscordRoleUpdatePermissions(event: DiscordRoleUpdatePermissionsEvent) {}
+    suspend fun onDiscordRoleUpdatePosition(event: DiscordRoleUpdatePositionEvent) {}
     
-    suspend fun onDiscordEmoteAdded(event: EmoteAddedEvent) {}
-    suspend fun onDiscordEmoteRemoved(event: EmoteRemovedEvent) {}
-    suspend fun onDiscordEmoteUpdateName(event: EmoteUpdateNameEvent) {}
-    suspend fun onDiscordEmoteUpdateRoles(event: EmoteUpdateRolesEvent) {}
+    suspend fun onDiscordEmoteAdded(event: DiscordEmoteAddedEvent) {}
+    suspend fun onDiscordEmoteRemoved(event: DiscordEmoteRemovedEvent) {}
+    suspend fun onDiscordEmoteUpdateName(event: DiscordEmoteUpdateNameEvent) {}
+    suspend fun onDiscordEmoteUpdateRoles(event: DiscordEmoteUpdateRolesEvent) {}
 }
