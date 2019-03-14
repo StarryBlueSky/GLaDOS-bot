@@ -119,7 +119,7 @@ internal object PluginManager: ClassManager<Plugin>, CoroutineScope by GLaDOS {
                 val eventClass = try {
                     eventType.jvmErasure
                 } catch (e: Throwable) {
-                    logger.warn(e) { "関数: \"${plugin.effectiveName}#${function.name}\"  のイベントクラスの取得に失敗しました。必要な SubscriptionClient がロードされていない可能性があります。 ($eventType)" }
+                    logger.warn(e) { "関数: \"${plugin.effectiveName}#${function.name}\" のイベントクラスの取得に失敗しました。必要な SubscriptionClient がロードされていない可能性があります。 ($eventType)" }
                     return@launch
                 }
                 

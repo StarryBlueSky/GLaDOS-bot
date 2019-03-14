@@ -24,8 +24,10 @@
 
 package jp.nephy.glados.core
 
+import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.of
+import java.io.File
 import java.net.JarURLConnection
 import java.net.URL
 import java.net.URLClassLoader
@@ -75,11 +77,14 @@ private fun Thread.addClassPath(jarPath: Path) {
     method.invoke(contextClassLoader, jarPath.toUri().toURL())
 }
 
+private const val definitionPath = "META-INF/clients"
+
 @Suppress("UNCHECKED_CAST")
 internal inline fun <reified T: Any> loadClassesFromClassPath(): List<KClass<T>> {
     val classLoader = Thread.currentThread().contextClassLoader
-    val roots = classLoader.getResources("META-INF/clients").toList()
-
+    val roots = GLaDOS::class.java.classLoader.getResource(definitionPath)?.let { listOf(it) }
+        ?: classLoader.getResources(definitionPath).toList()
+    
     return roots.flatMap {  root ->
         logger.trace { "クラスパス: \"$root\" を検出しました。" }
 
@@ -100,8 +105,12 @@ internal inline fun <reified T: Any> loadClassesFromClassPath(): List<KClass<T>>
             "jar" -> {
                 (root.openConnection() as JarURLConnection).jarFile.use {
                     it.entries().toList()
+                }.filter {
+                    it.name.startsWith(definitionPath)
                 }.map {
-                    it.name
+                    it.name.removePrefix("$definitionPath/")
+                }.filter { 
+                    it.isNotBlank()
                 }
             }
             else -> {
@@ -116,9 +125,9 @@ internal inline fun <reified T: Any> loadClassesFromClassPath(): List<KClass<T>>
                 return@mapNotNull null
             }
 
-            logger.trace { "クラス: \"${it.canonicalName}\" をロードしました。($it)" }
+            logger.trace { "クラス: \"${it.canonicalName}\" をロードしました。" }
         }.onFailure { e ->
-            logger.trace(e) { "クラス: \"$it\" のロードに失敗しました。($it)" }
+            logger.error(e) { "クラス: \"$it\" のロードに失敗しました。" }
         }.getOrNull()
     }.filter {
         T::class.java.isAssignableFrom(it) && !it.isInterface
