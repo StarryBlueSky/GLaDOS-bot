@@ -92,7 +92,6 @@ internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
     data class PathsImpl(override val json: JsonObject): ConfigJson.Paths {
         override val tmp: Path by lambda("tmp", { java.nio.file.Paths.get("tmp") }) { java.nio.file.Paths.get(it.string) }
         override val resources: Path by lambda("resources", { java.nio.file.Paths.get("resources") }) { java.nio.file.Paths.get(it.string) }
-        override val clients: Path by lambda("clients", { java.nio.file.Paths.get("clients") }) { java.nio.file.Paths.get(it.string) }
         override val plugins: Path by lambda("plugins", { java.nio.file.Paths.get("plugins") }) { java.nio.file.Paths.get(it.string) }
     }
     

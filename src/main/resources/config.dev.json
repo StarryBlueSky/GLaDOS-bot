@@ -1,9 +1,8 @@
 {
-    "parallelism": 16,
+    "parallelism": 8,
     "paths": {
         "tmp": "tmp",
         "resources": "resources",
-        "clients": "clients",
         "plugins": "plugins"
     },
     "logging": {

@@ -60,12 +60,7 @@ interface ConfigJson: JsonModel {
          * resources directory.
          */
         val resources: Path
-
-        /**
-         * GLaDOS SubscriptionClient jars directory.
-         */
-        val clients: Path
-
+        
         /**
          * GLaDOS Plugin jars directory.
          */
