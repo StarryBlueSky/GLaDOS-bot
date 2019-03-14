@@ -24,27 +24,10 @@
 
 package jp.nephy.glados.api
 
-/**
- * GLaDOS AttributeMap model.
- */
-interface AttributeMap {
-    /**
-     * Gets an instance with the key.
-     */
-    operator fun <T: Any> get(key: String): T
+fun <T: Any> AttributeMap.getOrPut(key: String, block: () -> T): T {
+    if (key !in this) {
+        this[key] = block
+    }
 
-    /**
-     * Sets an instance with the key.
-     */
-    operator fun <T: Any> set(key: String, block: () -> T)
-
-    /**
-     * Checks if an instance with the key exists.
-     */
-    operator fun contains(key: String): Boolean
-
-    /**
-     * Removes an instance with the key.
-     */
-    fun <T: Any> remove(key: String): T?
+    return this[key]
 }

@@ -44,7 +44,7 @@ internal object AttributeMapImpl: AttributeMap {
         }
     }
 
-    override operator fun set(key: String, block: () -> Any) {
+    override operator fun <T: Any> set(key: String, block: () -> T) {
         if (key in this) {
             throw IllegalStateException("Attribute[\"$key\"] is already initialized.")
         }
@@ -57,7 +57,8 @@ internal object AttributeMapImpl: AttributeMap {
         return map.containsKey(key)
     }
 
-    override fun dispose(key: String) {
-        map.remove(key)
+    @Suppress("UNCHECKED_CAST")
+    override fun <T: Any> remove(key: String): T? {
+        return map.remove(key) as? T
     }
 }

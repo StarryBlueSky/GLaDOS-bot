@@ -41,6 +41,7 @@ import io.ktor.sessions.Sessions
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.attributes
 import jp.nephy.glados.api.config
+import jp.nephy.glados.api.getOrPut
 import jp.nephy.glados.clients.invoke
 import jp.nephy.glados.clients.subscriptions
 import jp.nephy.glados.clients.web.config.web
@@ -61,11 +62,7 @@ val GLaDOS.Companion.webServer: ApplicationEngine
     get() = GLaDOS.attributes["web"]
 
 internal fun initializeWebApplication() {
-    if ("web" in GLaDOS.attributes) {
-        return
-    }
-
-    GLaDOS.attributes["web"] = {
+    GLaDOS.attributes.getOrPut("web") {
         embeddedServer(Netty, host = GLaDOS.config.web.host, port = GLaDOS.config.web.port) {
             install(XForwardedHeaderSupport)
             install(AutoHeadResponse)
@@ -109,12 +106,7 @@ internal fun initializeWebApplication() {
 }
 
 internal fun disposeWebApplication() {
-    if ("web" !in GLaDOS.attributes) {
-        return
+    GLaDOS.attributes.remove<ApplicationEngine>("web")?.also {
+        it.stop(1, 5, TimeUnit.SECONDS)
     }
-
-    val app: ApplicationEngine = GLaDOS.attributes["web"]
-    app.stop(1, 5, TimeUnit.SECONDS)
-
-    GLaDOS.attributes.dispose("web")
 }

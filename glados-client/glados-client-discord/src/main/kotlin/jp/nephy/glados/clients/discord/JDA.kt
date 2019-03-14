@@ -27,6 +27,7 @@ package jp.nephy.glados.clients.discord
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.attributes
 import jp.nephy.glados.api.config
+import jp.nephy.glados.api.getOrPut
 import jp.nephy.glados.clients.discord.command.DiscordCommandSubscriptionClient
 import jp.nephy.glados.clients.discord.config.discord
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscriptionClient
@@ -40,11 +41,7 @@ val GLaDOS.Companion.jda: JDA
     get() = GLaDOS.attributes["jda"]
 
 internal fun initializeJDA() {
-    if ("jda" in GLaDOS.attributes) {
-        return
-    }
-
-    GLaDOS.attributes["jda"] = {
+    GLaDOS.attributes.getOrPut("jda") {
         JDABuilder(AccountType.BOT).apply {
             setToken(GLaDOS.config.discord.token)
             setActivity(Activity.playing("Starting..."))
@@ -59,12 +56,7 @@ internal fun initializeJDA() {
 }
 
 internal fun disposeJDA() {
-    if ("jda" !in GLaDOS.attributes) {
-        return
+    GLaDOS.attributes.remove<JDA>("jda")?.also { 
+        it.shutdown()
     }
-
-    val jda: JDA = GLaDOS.attributes["jda"]
-    jda.shutdown()
-
-    GLaDOS.attributes.dispose("jda")
 }
