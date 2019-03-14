@@ -24,7 +24,6 @@
 
 package jp.nephy.glados.api
 
-import jp.nephy.glados.api.annotations.Priority
 import kotlin.reflect.KFunction
 
 /**

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.api.annotations
+package jp.nephy.glados.api
 
 /**
  * Subscription executing priority.
