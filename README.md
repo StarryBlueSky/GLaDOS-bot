@@ -1,15 +1,10 @@
 # GLaDOS-bot
-<p align="center">
-  <img src="https://cdn.discordapp.com/avatars/292673941057568769/360959a4a7af21cdfe4dc30b6767c915.png?size=128" alt="GLaDOS#0316">
-</p>
 
-GLaDOS-Bot は [かいげん Discord](https://nephy.jp/discord) 等で稼働している Discord Bot です。
-
-
-独自のクラスローダを内蔵しており, 容易に機能の追加を行えるようにしています。
-
-
-このリポジトリには プラグインを含んでいません。プラグイン集は [こちら](https://github.com/NephyProject/GLaDOS-bot-plugins) からどうぞ。
+[![Kotlin 1.3.21](https://img.shields.io/badge/Kotlin-1.3.21-blue.svg)](http://kotlinlang.org)
+[![Bintray](https://api.bintray.com/packages/nephyproject/glados-bot/glados/images/download.svg)](https://bintray.com/nephyproject/glados-bot/glados/_latestVersion)
+[![MIT License](https://img.shields.io/github/license/NephyProject/GLaDOS-bot.svg)](https://github.com/NephyProject/GLaDOS-bot/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/NephyProject/GLaDOS-bot.svg)](https://github.com/NephyProject/GLaDOS-bot/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/NephyProject/GLaDOS-bot.svg)](https://github.com/NephyProject/GLaDOS-bot/pulls)
 
 ## Plugin API
 [HackMD](https://hackmd.io/5URKBTt6Q02L3FneACyH9A) で公開しています。
@@ -17,6 +12,10 @@ GLaDOS-Bot は [かいげん Discord](https://nephy.jp/discord) 等で稼働し�
 誰でもプラグインを作成して機能を追加できます。
 
 ## Build
-Gradle のマルチプロジェクトに対応しているため 依存関係を分離できます。
+[NephyProject/GLaDOS-bot-plugins](https://github.com/NephyProject/GLaDOS-bot-plugins) を参照してください。
 
-Gradle の subproject に `fatJar` タスクが追加されるので これを実行することでプラグイン同梱のJarを作成できます。
+## License
+
+GLaDOS-bot is provided under MIT license. A copy of MIT license of Nephy Project is available [here](https://nephy.jp/license/mit).
+
+Copyright (c) 2017-2019 Nephy Project.
