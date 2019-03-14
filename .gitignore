@@ -2,10 +2,3 @@
 /.gradle/
 /build/
 /out/
-
-/*.json
-
-/clients/*.jar
-/plugins/*.jar
-/logs/*.log
-/tmp/

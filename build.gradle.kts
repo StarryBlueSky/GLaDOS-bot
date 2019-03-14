@@ -1,7 +1,5 @@
 @file:Suppress("KDocMissingDocumentation", "PublicApiImplicitType")
 
-import com.adarshr.gradle.testlogger.theme.ThemeType
-import com.github.breadmoirai.ChangeLogSupplier
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import java.text.SimpleDateFormat
@@ -20,16 +18,10 @@ val bintrayApiKey by property()
 
 plugins { 
     kotlin("jvm") version "1.3.21"
-    application
-
-    // For testing
-    id("com.adarshr.test-logger") version "1.6.0"
-    id("build-time-tracker") version "0.11.0"
-
+    
     // For publishing
     id("maven-publish")
     id("com.jfrog.bintray") version "1.8.4"
-    id("com.github.breadmoirai.github-release") version "2.2.4"
 
     // For documentation
     id("org.jetbrains.dokka") version "0.9.17"
@@ -78,8 +70,6 @@ allprojects {
     version = currentVersion
 
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "com.adarshr.test-logger")
-    apply(plugin = "build-time-tracker")
 
     repositories {
         mavenCentral()
@@ -90,32 +80,11 @@ allprojects {
         maven(url = "https://kotlin.bintray.com/kotlin-eap")
     }
     
-    dependencies {
-        api(kotlin("stdlib-jdk8"))
-    }
-
     tasks.withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "1.8"
             freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
         }
-    }
-
-    /*
-     * Tests
-     */
-
-    buildtimetracker {
-        reporters {
-            register("summary") {
-                options["ordered"] = "true"
-                options["shortenTaskNames"] = "false"
-            }
-        }
-    }
-
-    testlogger {
-        theme = ThemeType.MOCHA
     }
 
     /*
@@ -205,86 +174,4 @@ dependencies {
 
     implementation("ch.qos.logback:logback-core:1.2.3")
     implementation("org.fusesource.jansi:jansi:1.17.1")
-}
-
-application { 
-    mainClassName = "jp.nephy.glados.MainKt"
-}
-
-task<Jar>("jarRuntime") {
-    version = ""
-
-    manifest {
-        attributes("Main-Class" to "jp.nephy.glados.MainKt")
-    }
-    
-    doFirst {
-        from(configurations.runtimeClasspath.filter {
-            !it.name.endsWith(".pom")
-        }.map {
-            if (it.isDirectory) it else zipTree(it)
-        })
-    }
-}
-
-/*
- * GitHub Release
- */
-
-val githubToken by property()
-
-if (hasProperty("github")) {
-    githubRelease {
-        token(githubToken)
-
-        val jar = tasks.named<Jar>("jar").get()
-        val assets = jar.destinationDir.listFiles { _, filename ->
-            project.version.toString() in filename && filename.endsWith(".jar")
-        }
-        releaseAssets(*assets)
-
-        owner(githubOrganizationName)
-        repo(githubRepositoryName)
-
-        tagName("v${project.version}")
-        releaseName("v${project.version}")
-        targetCommitish("master")
-        draft(false)
-        prerelease(false)
-        overwrite(false)
-
-        changelog(closureOf<ChangeLogSupplier> {
-            currentCommit("HEAD")
-            lastCommit("HEAD~10")
-            options(listOf("--format=oneline", "--abbrev-commit", "--max-count=50", "graph"))
-        })
-
-        fun buildChangelog(): String {
-            return try {
-                changelog().call().lines().takeWhile {
-                    "Version bump" !in it
-                }.joinToString("\n") {
-                    val (tag, message) = it.split(" ", limit = 2)
-                    "| $tag | $message |"
-                }
-            } catch (e: Exception) {
-                ""
-            }
-        }
-
-        body {
-            buildString {
-                appendln("## Version\n")
-                appendln("**Latest** GLaDOS version: [![Bintray](https://api.bintray.com/packages/nephyproject/glados/glados/images/download.svg)](https://bintray.com/nephyproject/glados/glados/_latestVersion)")
-                appendln("The latest release build: `${project.version}`\n")
-
-                appendln()
-
-                appendln("## Changelogs\n")
-                appendln("| Commits | Message |")
-                appendln("|:------------:|:-----------|")
-                append(buildChangelog())
-            }
-        }
-    }
 }
