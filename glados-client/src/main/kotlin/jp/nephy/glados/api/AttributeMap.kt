@@ -26,7 +26,7 @@ package jp.nephy.glados.api
 
 fun <T: Any> AttributeMap.getOrPut(key: String, block: () -> T): T {
     if (key !in this) {
-        this[key] = block
+        this[key] = block()
     }
 
     return this[key]

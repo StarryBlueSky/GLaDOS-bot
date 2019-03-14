@@ -36,7 +36,7 @@ interface AttributeMap {
     /**
      * Sets an instance with the key.
      */
-    operator fun <T: Any> set(key: String, block: () -> T)
+    operator fun <T: Any> set(key: String, value: T)
 
     /**
      * Checks if an instance with the key exists.
