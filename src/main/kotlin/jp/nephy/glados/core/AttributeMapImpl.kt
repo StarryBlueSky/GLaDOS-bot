@@ -44,12 +44,12 @@ internal object AttributeMapImpl: AttributeMap {
         }
     }
 
-    override operator fun <T: Any> set(key: String, block: () -> T) {
+    override operator fun <T: Any> set(key: String, value: T) {
         if (key in this) {
             throw IllegalStateException("Attribute[\"$key\"] is already initialized.")
         }
         
-        map[key] = block()
+        map[key] = value
         logger.debug { "Attribute: \"$key\" が作成されました。" }
     }
 
