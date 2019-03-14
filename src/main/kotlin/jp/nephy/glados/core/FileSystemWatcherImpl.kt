@@ -32,6 +32,7 @@ import jp.nephy.glados.api.Logger
 import jp.nephy.glados.GLaDOSCoroutineScope
 import jp.nephy.glados.api.of
 import kotlinx.coroutines.launch
+import java.nio.file.FileSystemException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -57,7 +58,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
             launch {
                 try {
                     listener.onCreated(path)
-                } catch (e: NoSuchFileException) {
+                } catch (e: FileSystemException) {
                 }
             }
         }
@@ -68,7 +69,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
             launch {
                 try {
                     listener.onModified(path)
-                } catch (e: NoSuchFileException) {
+                } catch (e: FileSystemException) {
                 }
             }
         }
@@ -79,7 +80,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
             launch {
                 try {
                     listener.onDeleted(path)
-                } catch (e: NoSuchFileException) {
+                } catch (e: FileSystemException) {
                 }
             }
         }
@@ -90,7 +91,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
             launch {
                 try {
                     listener.onOverflow(path)
-                } catch (e: NoSuchFileException) {
+                } catch (e: FileSystemException) {
                 }
             }
         }
