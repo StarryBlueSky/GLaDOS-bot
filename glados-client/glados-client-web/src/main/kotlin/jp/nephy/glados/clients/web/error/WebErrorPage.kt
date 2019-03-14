@@ -24,7 +24,7 @@
 
 package jp.nephy.glados.clients.web.error
 
-import jp.nephy.glados.api.annotations.Priority
+import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.web.HttpStatusCode
 
 @Target(AnnotationTarget.FUNCTION)

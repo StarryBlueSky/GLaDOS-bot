@@ -24,7 +24,7 @@
 
 package jp.nephy.glados.clients.loop
 
-import jp.nephy.glados.api.annotations.Priority
+import jp.nephy.glados.api.Priority
 import java.util.concurrent.TimeUnit
 
 @Target(AnnotationTarget.FUNCTION)

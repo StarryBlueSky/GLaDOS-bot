@@ -24,7 +24,7 @@
 
 package jp.nephy.glados.clients.twitter
 
-import jp.nephy.glados.api.annotations.Priority
+import jp.nephy.glados.api.Priority
 
 @Target(AnnotationTarget.FUNCTION)
 annotation class TwitterEvent(

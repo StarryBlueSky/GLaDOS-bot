@@ -26,7 +26,7 @@ package jp.nephy.glados.clients.web.error
 
 import io.ktor.http.HttpStatusCode
 import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.api.annotations.Priority
+import jp.nephy.glados.api.Priority
 import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.web.event.WebErrorEvent
 import kotlin.reflect.KFunction

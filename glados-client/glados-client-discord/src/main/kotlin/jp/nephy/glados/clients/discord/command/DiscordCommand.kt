@@ -24,7 +24,7 @@
 
 package jp.nephy.glados.clients.discord.command
 
-import jp.nephy.glados.api.annotations.Priority
+import jp.nephy.glados.api.Priority
 import net.dv8tion.jda.api.entities.ChannelType
 
 @Target(AnnotationTarget.FUNCTION)

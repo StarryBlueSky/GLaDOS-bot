@@ -24,7 +24,7 @@
 
 package jp.nephy.glados.clients.chrono
 
-import jp.nephy.glados.api.annotations.Priority
+import jp.nephy.glados.api.Priority
 
 /**
  * Indicates that its function should be executed on schedule.

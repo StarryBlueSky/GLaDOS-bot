@@ -25,7 +25,7 @@
 package jp.nephy.glados.clients.discord.command
 
 import jp.nephy.glados.api.*
-import jp.nephy.glados.api.annotations.Priority
+import jp.nephy.glados.api.Priority
 import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.discord.config.booleanOption
 import jp.nephy.glados.clients.discord.config.discord

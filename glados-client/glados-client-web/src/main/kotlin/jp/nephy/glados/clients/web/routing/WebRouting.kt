@@ -24,7 +24,7 @@
 
 package jp.nephy.glados.clients.web.routing
 
-import jp.nephy.glados.api.annotations.Priority
+import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.web.HttpMethod
 import jp.nephy.glados.clients.web.PathType
 import jp.nephy.glados.clients.web.extensions.meta.SitemapUpdateFrequency
