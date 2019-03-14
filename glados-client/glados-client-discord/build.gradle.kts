@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 dependencies {
-    api("net.dv8tion:JDA:4.ALPHA.0_58")
+    api("net.dv8tion:JDA:4.ALPHA.0_62")
     api("com.sedmelluq:lavaplayer:1.3.11")
     implementation("com.sedmelluq:jda-nas:1.0.6")
 }
