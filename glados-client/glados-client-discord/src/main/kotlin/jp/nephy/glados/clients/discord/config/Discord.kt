@@ -33,7 +33,9 @@ data class Discord(override val json: JsonObject): JsonModel {
     val ownerId by nullableLong("owner_id")
     val prefix by string { "!" }
 
-    val guilds by lambda { it.jsonObject.map { guild -> guild.value.jsonObject.parse<GuildConfig>() } }
+    val guildMap by lambda("guilds") { it.jsonObject.map { guild -> guild.key to guild.value.jsonObject.parse<GuildConfig>() }.toMap() }
+    
+    val guilds by lazy { guildMap.values.toList() }
 
     data class GuildConfig(override val json: JsonObject): JsonModel {
         val id by long
@@ -49,3 +51,7 @@ data class Discord(override val json: JsonObject): JsonModel {
 
 val ConfigJson.discord: Discord
     get() = json.getOrNull("discord").parseOrNull() ?: throw IllegalStateException("Key \"discord\" is not found in config.json.")
+
+fun Discord.guild(key: String): Discord.GuildConfig {
+    return guildMap[key] ?: throw NoSuchElementException("Guild config \"$key\" is not found in config.json.")
+}
