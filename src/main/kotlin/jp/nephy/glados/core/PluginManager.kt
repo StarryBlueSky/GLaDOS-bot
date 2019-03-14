@@ -77,7 +77,7 @@ internal object PluginManager: ClassManager<Plugin>, CoroutineScope by GLaDOS {
         logger.debug { "Jar: \"${jarPath.toAbsolutePath()}\" のロードを試みます。" }
 
         runCatching {
-            loadClasses<Plugin>(jarPath)
+            loadClassesFromJar<Plugin>(jarPath)
         }.onSuccess { classes ->
             for (kotlinClass in classes) {
                 load(kotlinClass)

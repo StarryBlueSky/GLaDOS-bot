@@ -26,11 +26,11 @@ package jp.nephy.glados.core
 
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.of
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
+import java.net.JarURLConnection
 import java.net.URL
 import java.net.URLClassLoader
-import java.nio.file.Path
+import java.nio.file.*
+import java.nio.file.attribute.BasicFileAttributes
 import java.util.jar.JarFile
 import kotlin.reflect.KClass
 import kotlin.streams.asSequence
@@ -38,11 +38,11 @@ import kotlin.streams.asSequence
 private val logger = Logger.of("GLaDOS.ClassLoader")
 
 @Suppress("UNCHECKED_CAST")
-internal inline fun <reified T: Any> loadClasses(jarPath: Path): List<KClass<T>> {
+internal inline fun <reified T: Any> loadClassesFromJar(path: Path): List<KClass<T>> {
     val thread = Thread.currentThread()
-    thread.addClassPath(jarPath)
+    thread.addClassPath(path)
 
-    return JarFile(jarPath.toFile()).use { file ->
+    return JarFile(path.toFile()).use { file ->
         file.stream().asSequence().filter {
             it.name.endsWith(".class") && '$' !in it.name
         }.map {
@@ -55,9 +55,9 @@ internal inline fun <reified T: Any> loadClasses(jarPath: Path): List<KClass<T>>
                     return@mapNotNull null
                 }
                 
-                logger.trace { "クラス: \"${it.canonicalName}\" をロードしました。($jarPath)" }
+                logger.trace { "クラス: \"${it.canonicalName}\" をロードしました。($path)" }
             }.onFailure {  e ->
-                logger.trace(e) { "クラス: \"$it\" のロードに失敗しました。($jarPath)" }
+                logger.trace(e) { "クラス: \"$it\" のロードに失敗しました。($path)" }
             }.getOrNull()
         }.filter { 
             T::class.java.isAssignableFrom(it) && !it.isInterface
@@ -73,4 +73,58 @@ private fun Thread.addClassPath(jarPath: Path) {
     val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
     method.isAccessible = true
     method.invoke(contextClassLoader, jarPath.toUri().toURL())
+}
+
+@Suppress("UNCHECKED_CAST")
+internal inline fun <reified T: Any> loadClassesFromClassPath(): List<KClass<T>> {
+    val classLoader = Thread.currentThread().contextClassLoader
+    val roots = classLoader.getResources("META-INF/clients").toList()
+
+    return roots.flatMap {  root ->
+        logger.trace { "クラスパス: \"$root\" を検出しました。" }
+
+        when (root.protocol) {
+            "file" -> {
+                val paths = arrayListOf<Path>()
+                Files.walkFileTree(Paths.get(root.toURI()), object: SimpleFileVisitor<Path>() {
+                    override fun visitFile(path: Path, attrs: BasicFileAttributes): FileVisitResult {
+                        paths.add(path)
+                        return FileVisitResult.CONTINUE
+                    }
+                })
+
+                paths.map {
+                    it.fileName.toString()
+                }
+            }
+            "jar" -> {
+                (root.openConnection() as JarURLConnection).jarFile.use {
+                    it.entries().toList()
+                }.map {
+                    it.name
+                }
+            }
+            else -> {
+                throw UnsupportedOperationException("Unknown protocol: ${root.protocol}")
+            }
+        }
+    }.asSequence().mapNotNull {
+        runCatching {
+            classLoader.loadClass(it)
+        }.onSuccess {
+            if (it.canonicalName == null) {
+                return@mapNotNull null
+            }
+
+            logger.trace { "クラス: \"${it.canonicalName}\" をロードしました。($it)" }
+        }.onFailure { e ->
+            logger.trace(e) { "クラス: \"$it\" のロードに失敗しました。($it)" }
+        }.getOrNull()
+    }.filter {
+        T::class.java.isAssignableFrom(it) && !it.isInterface
+    }.mapNotNull {
+        it.kotlin as? KClass<T>
+    }.filter {
+        !it.isAbstract
+    }.toList()
 }

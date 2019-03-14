@@ -24,7 +24,6 @@
 
 package jp.nephy.glados.core
 
-import io.ktor.util.extension
 import jp.nephy.glados.api.*
 import jp.nephy.glados.clients.name
 import kotlinx.coroutines.CoroutineScope
@@ -32,23 +31,14 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.core.Closeable
-import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CopyOnWriteArraySet
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
-import kotlin.streams.toList
 import kotlin.system.measureTimeMillis
 
 internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, CoroutineScope by GLaDOS, Closeable {
     private val logger = Logger.of("GLaDOS.ClientManager")
-
-    init {
-        if (!Files.exists(GLaDOS.config.paths.clients)) {
-            Files.createDirectories(GLaDOS.config.paths.clients)
-            logger.info { "ディレクトリ: \"${GLaDOS.config.paths.clients}\" を作成しました。" }
-        }
-    }
     
     val clients = CopyOnWriteArraySet<SubscriptionClient<*, *, *>>()
     
@@ -58,9 +48,7 @@ internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Corout
         }
 
         val loadingTimeMillis = measureTimeMillis {
-            val jobs = Files.walk(GLaDOS.config.paths.clients).filter { 
-                it.extension == "jar"
-            }.map { 
+            val jobs = loadClassesFromClassPath<SubscriptionClient<*, *, *>>().map { 
                 launch { 
                     load(it)
                 }
@@ -78,7 +66,7 @@ internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Corout
         logger.debug { "Jar: \"${jarPath.toAbsolutePath()}\" のロードを試みます。" }
         
         runCatching {
-            loadClasses<SubscriptionClient<*, *, *>>(jarPath)
+            loadClassesFromJar<SubscriptionClient<*, *, *>>(jarPath)
         }.onSuccess { classes -> 
             for (kotlinClass in classes) {
                 load(kotlinClass)
