@@ -37,7 +37,7 @@ import java.lang.reflect.InvocationTargetException
 abstract class GLaDOSSubscription<A: Annotation, E: Event>: Subscription<A, E> {
     final override val logger: Logger by lazy {
         // filename requires Plugin
-        Logger.of("GLaDOS.$fullname")
+        Logger.of("GLaDOS.Plugin.$fullname")
     }
     
     override fun onFailure(throwable: Throwable, event: E) {
