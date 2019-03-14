@@ -26,6 +26,7 @@ package jp.nephy.glados.clients.discord.command
 
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.discord.config.textChannel
 import jp.nephy.glados.clients.discord.extensions.awaitAndDelete
 import jp.nephy.glados.clients.discord.extensions.config
@@ -52,6 +53,9 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 
 object DiscordCommandSubscriptionClient: GLaDOSSubscriptionClient<DiscordCommand, DiscordCommandEvent, DiscordCommandSubscription>(), EventListener {
+    override val priority: Priority
+        get() = Priority.Normal
+    
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): DiscordCommandSubscription? {
         if (eventClass != DiscordCommandEvent::class) {
             return null
@@ -138,7 +142,7 @@ object DiscordCommandSubscriptionClient: GLaDOSSubscriptionClient<DiscordCommand
                     commandEvent.reply {
                         embed {
                             title("コマンドエラー: `${commandEvent.command.primaryCommandSyntax}`")
-                            description { "サーバ ${event.guild.name} ではGLaDOSのコマンド機能は利用できません。サーバ管理者またはGLaDOS開発者にご連絡ください。" }
+                            description { "`${event.guild.name}` では GLaDOS のコマンド機能は利用できません。Admin または GLaDOS 開発者にご連絡ください。" }
                             color(HexColor.Bad)
                             timestamp()
                         }

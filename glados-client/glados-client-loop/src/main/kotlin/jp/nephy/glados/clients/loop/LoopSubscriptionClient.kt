@@ -26,6 +26,7 @@ package jp.nephy.glados.clients.loop
 
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.invoke
 import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
@@ -34,6 +35,9 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 
 object LoopSubscriptionClient: GLaDOSSubscriptionClient<Loop, LoopEvent, LoopSubscription>() {
+    override val priority: Priority
+        get() = Priority.Lower
+    
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): LoopSubscription? {
         if (eventClass != LoopEvent::class) {
             return null

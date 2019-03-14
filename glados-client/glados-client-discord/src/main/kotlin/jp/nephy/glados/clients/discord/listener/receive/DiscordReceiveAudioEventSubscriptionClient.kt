@@ -26,6 +26,7 @@ package jp.nephy.glados.clients.discord.listener.receive
 
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.discord.GuildPlayer
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
 import jp.nephy.glados.clients.discord.listener.defaultDiscordEventAnnotation
@@ -45,6 +46,9 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubclassOf
 
 object DiscordReceiveAudioEventSubscriptionClient: GLaDOSSubscriptionClient<DiscordEvent, DiscordReceiveAudioEventBase, DiscordReceiveAudioEventSubscription>() {
+    override val priority: Priority
+        get() = Priority.Normal
+    
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): DiscordReceiveAudioEventSubscription? {
         if (!eventClass.isSubclassOf(DiscordReceiveAudioEventBase::class)) {
             return null

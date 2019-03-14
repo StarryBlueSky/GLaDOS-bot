@@ -27,6 +27,7 @@ package jp.nephy.glados.clients.system
 import jp.nephy.glados.api.Event
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.eventClass
 import jp.nephy.glados.clients.invoke
 import jp.nephy.glados.clients.system.events.ReadyEvent
@@ -40,6 +41,9 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubclassOf
 
 object SystemSubscriptionClient: GLaDOSSubscriptionClient<SystemEvent, SystemEventBase, SystemSubscription>() {
+    override val priority: Priority
+        get() = Priority.Lowest
+    
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): SystemSubscription? {
         if (!eventClass.isSubclassOf(SystemEventBase::class)) {
             return null

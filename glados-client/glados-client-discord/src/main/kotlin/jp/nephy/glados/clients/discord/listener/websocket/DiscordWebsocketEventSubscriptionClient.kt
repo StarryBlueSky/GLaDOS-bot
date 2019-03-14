@@ -26,6 +26,7 @@ package jp.nephy.glados.clients.discord.listener.websocket
 
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.discord.disposeJDA
 import jp.nephy.glados.clients.discord.initializeJDA
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
@@ -130,6 +131,9 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubclassOf
 
 object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<DiscordEvent, DiscordWebsocketEventBase<*>, DiscordWebsocketEventSubscription>(), EventListener {
+    override val priority: Priority
+        get() = Priority.Normal
+    
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): DiscordWebsocketEventSubscription? {
         if (!eventClass.isSubclassOf(DiscordWebsocketEventBase::class)) {
             return null
@@ -144,15 +148,11 @@ object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<Discord
     }
 
     override fun start() {
-        runBlocking {
-            initializeJDA()
-        }
+        initializeJDA()
     }
 
     override fun stop() {
-        runBlocking {
-            disposeJDA()
-        }
+        disposeJDA()
     }
 
     @Suppress("UNUSED")

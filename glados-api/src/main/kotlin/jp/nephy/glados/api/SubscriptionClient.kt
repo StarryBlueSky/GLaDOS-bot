@@ -79,7 +79,12 @@ interface SubscriptionClient<A: Annotation, E: Event, S: Subscription<A, E>>: Co
      * SubscriptionClient logger.
      */
     val logger: Logger
-    
+
+    /**
+     * SubscriptionClient start priority.
+     */
+    val priority: Priority
+
     /**
      * Coroutine context.
      */

@@ -28,6 +28,7 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.util.KtorExperimentalAPI
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 import jp.nephy.glados.clients.twitter.config.client
 import jp.nephy.glados.clients.twitter.event.*
@@ -50,6 +51,9 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubclassOf
 
 object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, TwitterEventBase, TwitterSubscription>() {
+    override val priority: Priority
+        get() = Priority.Highest
+    
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): TwitterSubscription? {
         if (!eventClass.isSubclassOf(TwitterEventBase::class)) {
             return null

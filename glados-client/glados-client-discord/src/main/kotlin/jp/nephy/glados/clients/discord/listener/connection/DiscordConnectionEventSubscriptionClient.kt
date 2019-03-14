@@ -26,6 +26,7 @@ package jp.nephy.glados.clients.discord.listener.connection
 
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
 import jp.nephy.glados.clients.discord.listener.connection.events.DiscordConnectionEventBase
 import jp.nephy.glados.clients.discord.listener.connection.events.DiscordConnectionStatusChangeEvent
@@ -48,6 +49,9 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubclassOf
 
 object DiscordConnectionEventSubscriptionClient: GLaDOSSubscriptionClient<DiscordEvent, DiscordConnectionEventBase, DiscordConnectionEventSubscription>() {
+    override val priority: Priority
+        get() = Priority.Normal
+    
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): DiscordConnectionEventSubscription? {
         if (!eventClass.isSubclassOf(DiscordConnectionEventBase::class)) {
             return null

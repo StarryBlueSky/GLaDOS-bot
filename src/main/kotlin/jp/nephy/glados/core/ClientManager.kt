@@ -88,7 +88,9 @@ internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Corout
     }
     
     fun startAll() {
-        val jobs = clients.map { client ->
+        val jobs = clients.sortedByDescending { 
+            it.priority
+        }.map { client ->
             launch {
                 runCatching {
                     client.start()

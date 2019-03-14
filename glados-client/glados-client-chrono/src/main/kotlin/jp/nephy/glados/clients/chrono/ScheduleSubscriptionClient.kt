@@ -26,6 +26,7 @@ package jp.nephy.glados.clients.chrono
 
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.invoke
 import jp.nephy.glados.clients.subscriptions
 import kotlinx.coroutines.*
@@ -35,6 +36,9 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 
 object ScheduleSubscriptionClient: GLaDOSSubscriptionClient<Schedule, ScheduleEvent, ScheduleSubscription>() {
+    override val priority: Priority
+        get() = Priority.Lower
+    
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): ScheduleSubscription? {
         if (eventClass != ScheduleEvent::class) {
             return null
