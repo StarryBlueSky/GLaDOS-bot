@@ -76,7 +76,6 @@ object LoopSubscriptionClient: GLaDOSSubscriptionClient<Loop, LoopEvent, LoopSub
                     val event = LoopEvent(++count)
 
                     subscription.invoke(event)
-                    subscription.logger.trace { "実行されました。" }
                 } catch (e: CancellationException) {
                     break
                 }
