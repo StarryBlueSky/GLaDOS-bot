@@ -35,6 +35,7 @@ import kotlinx.coroutines.launch
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.nio.file.NoSuchFileException
 import java.util.concurrent.CopyOnWriteArraySet
 
 internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope() {
@@ -54,7 +55,10 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
     private fun handleCreateEvent(path: Path) {
         for (listener in listeners) {
             launch {
-                listener.onCreated(path)
+                try {
+                    listener.onCreated(path)
+                } catch (e: NoSuchFileException) {
+                }
             }
         }
     }
@@ -62,7 +66,10 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
     private fun handleModifyEvent(path: Path) {
         for (listener in listeners) {
             launch {
-                listener.onModified(path)
+                try {
+                    listener.onModified(path)
+                } catch (e: NoSuchFileException) {
+                }
             }
         }
     }
@@ -70,7 +77,10 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
     private fun handleDeleteEvent(path: Path) {
         for (listener in listeners) {
             launch {
-                listener.onDeleted(path)
+                try {
+                    listener.onDeleted(path)
+                } catch (e: NoSuchFileException) {
+                }
             }
         }
     }
@@ -78,7 +88,10 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
     private fun handleOverflowEvent(path: Path) {
         for (listener in listeners) {
             launch {
-                listener.onOverflow(path)
+                try {
+                    listener.onOverflow(path)
+                } catch (e: NoSuchFileException) {
+                }
             }
         }
     }
