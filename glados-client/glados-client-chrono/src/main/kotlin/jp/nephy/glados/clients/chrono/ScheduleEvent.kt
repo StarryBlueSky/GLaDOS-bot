@@ -27,4 +27,12 @@ package jp.nephy.glados.clients.chrono
 import jp.nephy.glados.api.Event
 import java.util.*
 
-data class ScheduleEvent(val calendar: Calendar): Event
+/**
+ * ScheduleEvent.
+ */
+data class ScheduleEvent(
+    /**
+     * Scheduled calendar.
+     */
+    val calendar: Calendar
+): Event

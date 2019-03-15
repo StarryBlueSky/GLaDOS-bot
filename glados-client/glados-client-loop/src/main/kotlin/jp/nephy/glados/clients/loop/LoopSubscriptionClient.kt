@@ -27,6 +27,7 @@ package jp.nephy.glados.clients.loop
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
 import jp.nephy.glados.api.Priority
+import jp.nephy.glados.clients.fullName
 import jp.nephy.glados.clients.invoke
 import kotlinx.coroutines.*
 import java.util.concurrent.ConcurrentHashMap
@@ -34,6 +35,10 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 
+/**
+ * LoopSubscriptionClient.
+ */
+@Suppress("UNUSED")
 object LoopSubscriptionClient: GLaDOSSubscriptionClient<Loop, LoopEvent, LoopSubscription>() {
     override val priority: Priority
         get() = Priority.Lower
@@ -45,62 +50,62 @@ object LoopSubscriptionClient: GLaDOSSubscriptionClient<Loop, LoopEvent, LoopSub
 
         val annotation = function.findAnnotation<Loop>()
         if (annotation == null) {
-            logger.warn { "関数: \"${plugin.name}#${function.name}\" は @Loop が付与されていません。スキップします。" }
+            logger.warn { "関数: \"${plugin.fullName}#${function.name}\" は @Loop が付与されていません。スキップします。" }
             return null
         }
         
         return LoopSubscription(plugin, function, annotation)
     }
-
-    private val jobs = ConcurrentHashMap<LoopSubscription, Job>()
     
     override fun start() {
-        launch {
-            for (subscription in storage.subscriptions) {
-                startJob(subscription)
-            }
+        for (subscription in storage.subscriptions) {
+            subscription.start()
         }
     }
 
     override fun stop() {
-        for (job in jobs.values) {
-            job.cancel()
+        for (subscription in storage.subscriptions) {
+            subscription.stop()
         }
     }
 
-    private fun startJob(subscription: LoopSubscription) {
-        jobs[subscription] = launch {
-            var count = 0
-            while (isActive) {
-                try {
-                    val event = LoopEvent(++count)
+    override fun onSubscriptionLoaded(subscription: LoopSubscription) {
+        subscription.start()
+    }
 
-                    subscription.invoke(event)
-                } catch (e: CancellationException) {
+    override fun onSubscriptionUnloaded(subscription: LoopSubscription) {
+        subscription.stop()
+    }
+
+    private val jobs = ConcurrentHashMap<LoopSubscription, Job>()
+    
+    private fun LoopSubscription.start() {
+        jobs[this] = launch {
+            var count = 0
+
+            while (isActive) {
+                if (count == Int.MAX_VALUE) {
+                    logger.warn { "ループ回数が上限に達したため, 終了しました。" }
                     break
                 }
 
                 try {
-                    delay(subscription.intervalMillis)
+                    val event = LoopEvent(++count)
+
+                    invoke(event)
+                    delay(intervalMillis)
                 } catch (e: CancellationException) {
                     break
                 }
             }
 
-            subscription.logger.trace { "終了しました。" }
+            logger.trace { "終了しました。" }
         }
 
-        subscription.logger.trace { "開始しました。" }
+        logger.trace { "開始しました。" }
     }
-
-    override fun onSubscriptionLoaded(subscription: LoopSubscription) {
-        startJob(subscription)
-    }
-
-    override fun onSubscriptionUnloaded(subscription: LoopSubscription) {
-        jobs[subscription]?.also { 
-            it.cancelChildren()
-            it.cancel()
-        }
+    
+    private fun LoopSubscription.stop() {
+        jobs[this]?.cancel()
     }
 }

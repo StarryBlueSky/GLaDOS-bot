@@ -26,4 +26,12 @@ package jp.nephy.glados.clients.loop
 
 import jp.nephy.glados.api.Event
 
-data class LoopEvent(val count: Int): Event
+/**
+ * LoopEvent.
+ */
+data class LoopEvent(
+    /**
+     * Loop count.
+     */
+    val count: Int
+): Event

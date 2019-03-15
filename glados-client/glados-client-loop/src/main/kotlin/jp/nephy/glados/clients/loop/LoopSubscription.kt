@@ -29,12 +29,20 @@ import jp.nephy.glados.api.Priority
 import jp.nephy.glados.GLaDOSSubscription
 import kotlin.reflect.KFunction
 
-class LoopSubscription(
-    override val plugin: Plugin, override val function: KFunction<*>, override val annotation: Loop
+/**
+ * LoopSubscription.
+ */
+data class LoopSubscription(
+    override val plugin: Plugin,
+    override val function: KFunction<*>,
+    override val annotation: Loop
 ): GLaDOSSubscription<Loop, LoopEvent>() {
     override val priority: Priority
         get() = annotation.priority
 }
 
+/**
+ * Execution interval in millis seconds.
+ */
 val LoopSubscription.intervalMillis: Long
     get() = annotation.unit.toMillis(annotation.interval)

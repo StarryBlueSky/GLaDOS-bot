@@ -27,7 +27,23 @@ package jp.nephy.glados.clients.loop
 import jp.nephy.glados.api.Priority
 import java.util.concurrent.TimeUnit
 
+/**
+ * Indicates that its function should be executed in loop.
+ */
 @Target(AnnotationTarget.FUNCTION)
 annotation class Loop(
-    val interval: Long, val unit: TimeUnit, val priority: Priority = Priority.Normal
+    /**
+     * Execution interval.
+     */
+    val interval: Long,
+
+    /**
+     * Execution interval time unit.
+     */
+    val unit: TimeUnit,
+
+    /**
+     * Execution priority.
+     */
+    val priority: Priority = Priority.Normal
 )
