@@ -27,6 +27,7 @@ package jp.nephy.glados.clients.chrono
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
 import jp.nephy.glados.api.Priority
+import jp.nephy.glados.clients.fullName
 import jp.nephy.glados.clients.invoke
 import jp.nephy.glados.clients.subscriptions
 import kotlinx.coroutines.*
@@ -46,7 +47,7 @@ object ScheduleSubscriptionClient: GLaDOSSubscriptionClient<Schedule, ScheduleEv
         
         val annotation = function.findAnnotation<Schedule>()
         if (annotation == null) {
-            logger.warn { "関数: \"${plugin.name}#${function.name}\" は @Schedule が付与されていません。スキップします。" }
+            logger.warn { "関数: \"${plugin.fullName}#${function.name}\" は @Schedule が付与されていません。スキップします。" }
             return null
         }
         

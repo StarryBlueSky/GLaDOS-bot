@@ -27,6 +27,7 @@ package jp.nephy.glados.clients.web.error
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
 import jp.nephy.glados.api.Priority
+import jp.nephy.glados.clients.fullName
 import jp.nephy.glados.clients.web.event.WebErrorEvent
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -43,7 +44,7 @@ object WebErrorPageSubscriptionClient: GLaDOSSubscriptionClient<WebErrorPage, We
 
         val annotation = function.findAnnotation<WebErrorPage>()
         if (annotation == null) {
-            logger.warn { "関数: \"${plugin.name}#${function.name}\" は @WebErrorPage が付与されていません。スキップします。" }
+            logger.warn { "関数: \"${plugin.fullName}#${function.name}\" は @WebErrorPage が付与されていません。スキップします。" }
             return null
         }
         

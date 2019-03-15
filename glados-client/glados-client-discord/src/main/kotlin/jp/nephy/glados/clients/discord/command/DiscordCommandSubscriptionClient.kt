@@ -47,6 +47,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent
 import net.dv8tion.jda.api.hooks.SubscribeEvent
 import java.util.*
+import jp.nephy.glados.clients.fullName
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -63,7 +64,7 @@ object DiscordCommandSubscriptionClient: GLaDOSSubscriptionClient<DiscordCommand
 
         val annotation = function.findAnnotation<DiscordCommand>()
         if (annotation == null) {
-            logger.warn { "関数: \"${plugin.name}#${function.name}\" は @DiscordCommand が付与されていません。スキップします。" }
+            logger.warn { "関数: \"${plugin.fullName}#${function.name}\" は @DiscordCommand が付与されていません。スキップします。" }
             return null
         }
         

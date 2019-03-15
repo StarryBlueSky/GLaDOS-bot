@@ -27,6 +27,7 @@ package jp.nephy.glados.clients.web.routing
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
 import jp.nephy.glados.api.Priority
+import jp.nephy.glados.clients.fullName
 import jp.nephy.glados.clients.web.disposeWebApplication
 import jp.nephy.glados.clients.web.event.WebAccessEvent
 import jp.nephy.glados.clients.web.initializeWebApplication
@@ -46,7 +47,7 @@ object WebRoutingSubscriptionClient: GLaDOSSubscriptionClient<WebRouting, WebAcc
 
         val annotation = function.findAnnotation<WebRouting>()
         if (annotation == null) {
-            logger.warn { "関数: \"${plugin.name}#${function.name}\" は @WebRouting が付与されていません。スキップします。" }
+            logger.warn { "関数: \"${plugin.fullName}#${function.name}\" は @WebRouting が付与されていません。スキップします。" }
             return null
         }
         
