@@ -22,12 +22,29 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+package jp.nephy.glados.clients.discord.config
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+import jp.nephy.jsonkt.*
+import jp.nephy.jsonkt.delegation.*
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
+/**
+ * Represents Discord config json model defined in config.json.
+ * 
+ * ```json
+ * {
+ *     "discord": {
+ *         ...
+ *     },
+ *     ...
+ * }
+ * ```
+ */
+data class DiscordConfig(override val json: JsonObject): JsonModel {
+    val token by string
+    val ownerId by nullableLong("owner_id")
+    val prefix by string { "!" }
+
+    val guildMap by lambda("guilds") { it.jsonObject.map { guild -> guild.key to guild.value.jsonObject.parse<GuildConfig>() }.toMap() }
     
-    Disagree("❌", "キャンセル")
+    val guilds by lazy { guildMap.values.toList() }
 }

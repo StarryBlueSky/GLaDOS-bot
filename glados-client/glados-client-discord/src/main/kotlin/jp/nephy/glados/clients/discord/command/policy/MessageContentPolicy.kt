@@ -22,12 +22,8 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+package jp.nephy.glados.clients.discord.command.policy
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
-
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
+enum class MessageContentPolicy {
+    Display, Stripped, Raw
 }

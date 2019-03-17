@@ -22,12 +22,16 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+package jp.nephy.glados.clients.discord.command.error
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+import net.dv8tion.jda.api.entities.Message
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
+/**
+ * DiscordCommandError.
+ */
+abstract class DiscordCommandError(
+    @Suppress("UNUSED_PARAMETER") val commandName: String,
+    @Suppress("UNUSED_PARAMETER") val description: String
+): Error("コマンド: $commandName\n$description") {
+    abstract val jdaMessage: Message
 }

@@ -22,12 +22,32 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+@file:Suppress("UNUSED")
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+package jp.nephy.glados.clients.discord.extensions.result
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
+import jp.nephy.glados.api.Plugin
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
+
+@UseExperimental(ExperimentalContracts::class)
+inline fun Plugin.reject(value: Boolean, fallback: () -> Nothing) {
+    contract {
+        returns() implies !value
+    }
+
+    if (value) {
+        fallback()
+    }
+}
+
+@UseExperimental(ExperimentalContracts::class)
+inline fun <T> Plugin.rejectNull(value: T?, fallback: () -> Nothing) {
+    contract {
+        returns() implies (value != null)
+    }
+
+    if (value == null) {
+        fallback()
+    }
 }

@@ -28,11 +28,11 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame
-import jp.nephy.glados.clients.discord.config.intOption
-import jp.nephy.glados.clients.discord.extensions.config
+import jp.nephy.glados.clients.discord.config.config
 import jp.nephy.glados.clients.discord.listener.audio.DiscordAudioEventSubscriptionClient
 import jp.nephy.glados.clients.discord.listener.connection.DiscordConnectionEventSubscriptionClient
 import jp.nephy.glados.clients.discord.listener.receive.DiscordReceiveAudioEventSubscriptionClient
+import jp.nephy.jsonkt.delegation.*
 import net.dv8tion.jda.api.audio.AudioSendHandler
 import net.dv8tion.jda.api.entities.Guild
 import java.nio.ByteBuffer
@@ -42,7 +42,8 @@ private val players = ConcurrentHashMap<Guild, GuildPlayer>()
 
 val Guild.player: GuildPlayer
     get() = players.getOrPut(this) {
-        val initialVolume = config.intOption("player_volume", 10)
+        val initialVolume = config?.options?.intValueOrNull("player_volume") ?: 10
+        
         GuildPlayer(this, initialVolume)
     }
 

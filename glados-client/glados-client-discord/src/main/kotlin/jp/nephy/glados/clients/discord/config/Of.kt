@@ -22,12 +22,24 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+@file:Suppress("UNUSED")
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+package jp.nephy.glados.clients.discord.config
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
+import net.dv8tion.jda.api.entities.*
+
+inline fun <T> List<TextChannel>.textChannelOf(guild: Guild, block: (TextChannel) -> T?): T? {
+    return find { it.guild == guild }?.let(block)
+}
+
+inline fun <T> List<VoiceChannel>.voiceChannelOf(guild: Guild, block: (VoiceChannel) -> T?): T? {
+    return find { it.guild == guild }?.let(block)
+}
+
+inline fun <T> List<Role>.roleOf(guild: Guild, block: (Role) -> T?): T? {
+    return find { it.guild == guild }?.let(block)
+}
+
+inline fun <T> List<Emote>.emoteOf(guild: Guild, block: (Emote) -> T?): T? {
+    return find { it.guild == guild }?.let(block)
 }

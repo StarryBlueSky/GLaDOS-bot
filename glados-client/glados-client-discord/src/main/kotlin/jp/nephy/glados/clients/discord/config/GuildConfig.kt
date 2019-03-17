@@ -22,12 +22,24 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+package jp.nephy.glados.clients.discord.config
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+import jp.nephy.jsonkt.*
+import jp.nephy.jsonkt.delegation.*
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
+data class GuildConfig(override val json: JsonObject): JsonModel {
+    val id by long
+    val isMain by boolean("is_main") { false }
+
+    val textChannels by modelOrDefault<TextChannels>("text_channels")
+    val voiceChannels by modelOrDefault<VoiceChannels>("voice_channels")
+    val roles by modelOrDefault<Roles>()
+    val emotes by modelOrDefault<Emotes>()
+    val options by modelOrDefault<Options>()
+
+    data class TextChannels(override val json: JsonObject): JsonModel
+    data class VoiceChannels(override val json: JsonObject): JsonModel
+    data class Roles(override val json: JsonObject): JsonModel
+    data class Emotes(override val json: JsonObject): JsonModel
+    data class Options(override val json: JsonObject): JsonModel
 }

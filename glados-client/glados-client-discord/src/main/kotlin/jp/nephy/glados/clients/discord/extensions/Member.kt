@@ -22,12 +22,14 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+@file:Suppress("UNUSED")
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+package jp.nephy.glados.clients.discord.extensions
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
-}
+import net.dv8tion.jda.api.entities.Member
+
+val Member.fullName: String
+    get() = "$effectiveName (${user.displayName}, ${guild.name})"
+
+val Member.fullNameWithoutGuild: String
+    get() = "$effectiveName (${user.displayName})"

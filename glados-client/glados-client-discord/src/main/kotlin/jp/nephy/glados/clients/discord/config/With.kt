@@ -22,12 +22,40 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+@file:Suppress("UNUSED")
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+package jp.nephy.glados.clients.discord.config
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
+import net.dv8tion.jda.api.entities.*
+
+inline fun <T> GuildConfig?.withTextChannel(key: String, block: (TextChannel) -> T?): T? {
+    return block(textChannel(key) ?: return null)
+}
+
+inline fun <T> GuildConfig?.withVoiceChannel(key: String, block: (VoiceChannel) -> T?): T? {
+    return block(voiceChannel(key) ?: return null)
+}
+
+inline fun <T> GuildConfig?.withRole(key: String, block: (Role) -> T?): T? {
+    return block(role(key) ?: return null)
+}
+
+inline fun <T> GuildConfig?.withEmote(key: String, block: (Emote) -> T?): T? {
+    return block(emote(key) ?: return null)
+}
+
+inline fun <T> Guild?.withTextChannel(key: String, block: (TextChannel) -> T?): T? {
+    return config?.withTextChannel(key, block)
+}
+
+inline fun <T> Guild?.withVoiceChannel(key: String, block: (VoiceChannel) -> T?): T? {
+    return config?.withVoiceChannel(key, block)
+}
+
+inline fun <T> Guild?.withRole(key: String, block: (Role) -> T?): T? {
+    return config?.withRole(key, block)
+}
+
+inline fun <T> Guild?.withEmote(key: String, block: (Emote) -> T?): T? {
+    return config?.withEmote(key, block)
 }

@@ -22,12 +22,26 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+@file:Suppress("UNUSED")
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+package jp.nephy.glados.clients.discord.extensions
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
-}
+import net.dv8tion.jda.api.entities.User
+
+/**
+ * Returns "@username#tag" string.
+ */
+val User.displayName: String
+    get() = "@$name#$discriminator"
+
+/**
+ * Checks if this user is self user.
+ */
+val User.isSelfUser: Boolean
+    get() = this == jda.selfUser
+
+/**
+ * Checks if this user is bot or self user.
+ */
+val User.isBotOrSelfUser: Boolean
+    get() = isBot || isSelfUser

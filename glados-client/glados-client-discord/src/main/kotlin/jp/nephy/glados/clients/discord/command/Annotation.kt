@@ -22,12 +22,35 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.discord.command
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+import jp.nephy.glados.api.GLaDOS
+import jp.nephy.glados.api.config
+import jp.nephy.glados.clients.discord.config.discord
+import jp.nephy.glados.clients.name
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
-}
+val DiscordCommandSubscription.primaryCommandName: String
+    get() = annotation.command.ifBlank { name }
+
+val DiscordCommandSubscription.commandNames: List<String>
+    get() = listOf(primaryCommandName) + annotation.aliases
+
+val DiscordCommandSubscription.description: String?
+    get() = annotation.description.ifBlank { null }
+
+val DiscordCommandSubscription.arguments: List<String>
+    get() = annotation.arguments.toList()
+
+val DiscordCommandSubscription.category: String?
+    get() = annotation.category.ifBlank { null }
+
+val DiscordCommandSubscription.prefix: String
+    get() = annotation.prefix.ifBlank { GLaDOS.config.discord.prefix }
+
+val DiscordCommandSubscription.commandSyntaxes: List<String>
+    get() = commandNames.map { "$prefix$it" }
+
+val DiscordCommandSubscription.primaryCommandSyntax: String
+    get() = commandSyntaxes.first()

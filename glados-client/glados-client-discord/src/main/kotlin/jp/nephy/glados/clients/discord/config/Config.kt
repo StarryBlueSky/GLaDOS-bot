@@ -22,36 +22,46 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.discord.config
 
 import jp.nephy.glados.api.ConfigJson
+import jp.nephy.glados.api.GLaDOS
+import jp.nephy.glados.api.config
+import jp.nephy.glados.clients.discord.jda
 import jp.nephy.jsonkt.*
 import jp.nephy.jsonkt.delegation.*
+import net.dv8tion.jda.api.entities.*
 
-data class Discord(override val json: JsonObject): JsonModel {
-    val token by string
-    val ownerId by nullableLong("owner_id")
-    val prefix by string { "!" }
-
-    val guildMap by lambda("guilds") { it.jsonObject.map { guild -> guild.key to guild.value.jsonObject.parse<GuildConfig>() }.toMap() }
-    
-    val guilds by lazy { guildMap.values.toList() }
-
-    data class GuildConfig(override val json: JsonObject): JsonModel {
-        val id by long
-        val isMain by boolean("is_main") { false }
-
-        val textChannels by jsonObject("text_channels") { jsonObjectOf() }
-        val voiceChannels by jsonObject("voice_channels") { jsonObjectOf() }
-        val roles by jsonObject { jsonObjectOf() }
-        val emotes by jsonObject { jsonObjectOf() }
-        val options by jsonObject { jsonObjectOf() }
-    }
-}
-
-val ConfigJson.discord: Discord
+val ConfigJson.discord: DiscordConfig
     get() = json.getOrNull("discord").parseOrNull() ?: throw IllegalStateException("Key \"discord\" is not found in config.json.")
 
-fun Discord.guild(key: String): Discord.GuildConfig {
+fun DiscordConfig.guild(key: String): GuildConfig {
     return guildMap[key] ?: throw NoSuchElementException("Guild config \"$key\" is not found in config.json.")
+}
+
+val Guild?.config: GuildConfig?
+    get() {
+        if (this == null) {
+            return null
+        }
+
+        return GLaDOS.config.discord.guilds.find { it.id == idLong }
+    }
+
+fun GuildConfig?.textChannel(key: String): TextChannel? {
+    return GLaDOS.jda.getTextChannelById(this?.textChannels?.longValueOrNull(key) ?: return null)
+}
+
+fun GuildConfig?.voiceChannel(key: String): VoiceChannel? {
+    return GLaDOS.jda.getVoiceChannelById(this?.voiceChannels?.longValueOrNull(key) ?: return null)
+}
+
+fun GuildConfig?.role(key: String): Role? {
+    return GLaDOS.jda.getRoleById(this?.roles?.longValueOrNull(key) ?: return null)
+}
+
+fun GuildConfig?.emote(key: String): Emote? {
+    return GLaDOS.jda.getEmoteById(this?.emotes?.longValueOrNull(key) ?: return null)
 }

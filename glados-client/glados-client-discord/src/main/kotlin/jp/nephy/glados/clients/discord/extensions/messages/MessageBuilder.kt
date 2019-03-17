@@ -26,7 +26,7 @@
 
 package jp.nephy.glados.clients.discord.extensions.messages
 
-import jp.nephy.glados.clients.discord.command.DiscordCommandEvent
+import jp.nephy.glados.clients.discord.command.events.DiscordCommandEvent
 import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
 import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiPrompt
 import jp.nephy.glados.clients.discord.extensions.messages.prompt.ListPrompt

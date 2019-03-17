@@ -24,25 +24,28 @@
 
 package jp.nephy.glados.clients.discord
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withTimeout
-import net.dv8tion.jda.api.events.Event
-import net.dv8tion.jda.api.hooks.SubscribeEvent
+import kotlinx.coroutines.withTimeoutOrNull
+import net.dv8tion.jda.api.events.GenericEvent
+import net.dv8tion.jda.api.hooks.ListenerAdapter
 import java.io.Closeable
-import java.util.*
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-object DiscordEventWaiter: EventListener {
+/**
+ * DiscordEventWaiter.
+ */
+object DiscordEventWaiter {
     private val mutex = Mutex()
-    private val waitingEvents = CopyOnWriteArraySet<WaitingEvent<Event>>()
-
-    @Suppress("UNCHECKED_CAST")
-    data class WaitingEvent<T: Event>(val eventClass: KClass<T>, val predicate: (T) -> Boolean): Closeable {
+    private val waitingEvents = CopyOnWriteArraySet<WaitingEvent<GenericEvent>>()
+    
+    @PublishedApi
+    internal data class WaitingEvent<T: GenericEvent>(val eventClass: KClass<T>, val predicate: (T) -> Boolean): Closeable {
         private val mutex = Mutex()
 
         private object DummyOwner
@@ -53,16 +56,18 @@ object DiscordEventWaiter: EventListener {
             mutex.tryLock(DummyOwner)
         }
 
+        @Suppress("UNCHECKED_CAST")
         suspend fun start() {
             DiscordEventWaiter.mutex.withLock {
-                waitingEvents += this as WaitingEvent<Event>
+                waitingEvents += this as WaitingEvent<GenericEvent>
             }
         }
 
+        @Suppress("UNCHECKED_CAST")
         override fun close() {
             runBlocking {
                 DiscordEventWaiter.mutex.withLock {
-                    waitingEvents -= this@WaitingEvent as WaitingEvent<Event>
+                    waitingEvents -= this@WaitingEvent as WaitingEvent<GenericEvent>
                 }
             }
         }
@@ -77,34 +82,40 @@ object DiscordEventWaiter: EventListener {
             return event
         }
     }
-
-    @SubscribeEvent
-    fun onEvent(event: Event) {
-        if (waitingEvents.isEmpty()) {
-            return
-        }
-
-        for (waitingEvent in waitingEvents.filter { event::class.isSubclassOf(it.eventClass) && it.predicate(event) }) {
-            waitingEvent.provide(event)
-        }
-    }
-
+    
     @Suppress("ResultIsResult")
-    suspend inline fun <reified T: Event> waitCatching(timeout: Long? = null, unit: TimeUnit = TimeUnit.SECONDS, noinline predicate: (T) -> Boolean): Result<T> {
-        val waitingEvent = WaitingEvent(T::class, predicate)
+    suspend inline fun <reified E: GenericEvent> waitCatching(timeout: Long? = null, unit: TimeUnit = TimeUnit.SECONDS, noinline predicate: (E) -> Boolean): Result<E> {
+        val eventClass = E::class
+        val timeoutMillis = unit.toMillis(timeout ?: 0)
+        
+        val waitingEvent = WaitingEvent(eventClass, predicate)
 
         return waitingEvent.use {
             runCatching {
                 it.start()
-
-                val timeoutMillis = unit.toMillis(timeout ?: 0)
-                if (timeoutMillis > 0) {
-                    withTimeout(timeoutMillis) {
-                        it.await()
-                    }
-                } else {
+                
+                withTimeoutOrNull(timeoutMillis) {
                     it.await()
-                }
+                } ?: throw EventWaitingTimeoutException(eventClass, timeoutMillis)
+            }
+        }
+    }
+
+    /**
+     * Thrown when an event waiting was failed because of timeout.
+     */
+    class EventWaitingTimeoutException(val eventClass: KClass<out GenericEvent>, val timeoutMillis: Long): CancellationException("Event: ${eventClass.qualifiedName} waiting was failure because of timeout ($timeoutMillis ms).")
+    
+    internal object Listener: ListenerAdapter() {
+        override fun onGenericEvent(event: GenericEvent) {
+            if (waitingEvents.isEmpty()) {
+                return
+            }
+
+            waitingEvents.filter {
+                event::class.isSubclassOf(it.eventClass) && it.predicate(event)
+            }.forEach { waitingEvent ->
+                waitingEvent.provide(event)
             }
         }
     }

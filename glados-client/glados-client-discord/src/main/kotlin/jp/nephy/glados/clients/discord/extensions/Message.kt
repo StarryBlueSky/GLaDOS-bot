@@ -24,12 +24,10 @@
 
 package jp.nephy.glados.clients.discord.extensions
 
-import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.VoiceChannel
+import net.dv8tion.jda.api.entities.Message
 
-fun Guild.joinVoiceChannel(channel: VoiceChannel) {
-    audioManager.openAudioConnection(channel)
-}
+val Message.fullName: String
+    get() = "${member?.fullNameWithoutGuild ?: author.displayName} ${channel.fullName}"
 
-val Guild.currentVoiceChannel: VoiceChannel?
-    get() = audioManager.connectedChannel ?: audioManager.queuedAudioConnection
+val Message.fullNameWithoutGuild: String
+    get() = "${member?.fullNameWithoutGuild ?: author.displayName} ${channel.name}"

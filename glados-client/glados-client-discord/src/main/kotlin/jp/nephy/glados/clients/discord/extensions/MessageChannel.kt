@@ -22,12 +22,17 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+@file:Suppress("UNUSED")
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+package jp.nephy.glados.clients.discord.extensions
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
-}
+import net.dv8tion.jda.api.entities.MessageChannel
+import net.dv8tion.jda.api.entities.PrivateChannel
+import net.dv8tion.jda.api.entities.TextChannel
+
+val MessageChannel.fullName: String
+    get() = when (this) {
+        is TextChannel -> "#$name (${guild.name})"
+        is PrivateChannel -> "#$name (${user.displayName})"
+        else -> "#$name"
+    }

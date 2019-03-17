@@ -22,12 +22,18 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+package jp.nephy.glados.clients.discord.command.policy
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+import net.dv8tion.jda.api.entities.MessageChannel
+import kotlin.reflect.KClass
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
+private typealias JDATextChannel = net.dv8tion.jda.api.entities.TextChannel
+private typealias JDAPrivateChannel = net.dv8tion.jda.api.entities.PrivateChannel
+
+enum class ChannelTypePolicy(internal vararg val classes: KClass<out MessageChannel>) {
+    Any(JDATextChannel::class, JDAPrivateChannel::class),
+
+    TextChannel(JDATextChannel::class), BotChannel(JDATextChannel::class),
     
-    Disagree("❌", "キャンセル")
+    PrivateChannel(JDAPrivateChannel::class);
 }

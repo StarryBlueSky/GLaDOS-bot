@@ -22,15 +22,20 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.discord
 
 import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.events.message.*
-import net.dv8tion.jda.api.hooks.SubscribeEvent
-import java.util.*
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent
+import net.dv8tion.jda.api.hooks.ListenerAdapter
 import java.util.concurrent.ConcurrentHashMap
 
-object DiscordMessageManager: EventListener {
+/**
+ * DiscordMessageManager.
+ */
+object DiscordMessageManager {
     private val cache = ConcurrentHashMap<Long, Message>()
     private val history = ConcurrentHashMap<Long, Message?>()
 
@@ -50,14 +55,14 @@ object DiscordMessageManager: EventListener {
         return cache.values.filter(predicate)
     }
     
-    @SubscribeEvent
-    fun onMessageReceived(event: MessageReceivedEvent) {
-        add(event.message)
-    }
+    internal object Listener: ListenerAdapter() {
+        override fun onMessageReceived(event: MessageReceivedEvent) {
+            add(event.message)
+        }
 
-    @SubscribeEvent
-    fun onMessageUpdate(event: MessageUpdateEvent) {
-        history[event.message.idLong] = cache[event.message.idLong]
-        cache[event.message.idLong] = event.message
+        override fun onMessageUpdate(event: MessageUpdateEvent) {
+            history[event.message.idLong] = cache[event.message.idLong]
+            cache[event.message.idLong] = event.message
+        }
     }
 }

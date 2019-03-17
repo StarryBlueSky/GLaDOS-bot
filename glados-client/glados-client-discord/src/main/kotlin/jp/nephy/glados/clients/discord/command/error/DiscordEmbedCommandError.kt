@@ -22,45 +22,26 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+package jp.nephy.glados.clients.discord.command.error
 
 import jp.nephy.glados.clients.discord.extensions.launchAndDelete
 import jp.nephy.glados.clients.discord.extensions.messages.HexColor
-import jp.nephy.glados.clients.discord.extensions.messages.message
 import jp.nephy.glados.clients.discord.extensions.messages.reply
 import net.dv8tion.jda.api.entities.Message
 import java.util.concurrent.TimeUnit
 
-abstract class DiscordCommandError(val jdaMessage: Message, val commandName: String, val description: String): Throwable() {
-    override val message: String
-        get() = "コマンド: $commandName\n$description"
-
+/**
+ * DiscordEmbedCommandError.
+ */
+class DiscordEmbedCommandError(override val jdaMessage: Message, commandName: String, description: String): DiscordCommandError(commandName, description) {
     init {
-        @Suppress("LeakingThis") sendErrorReport()
-    }
-
-    abstract fun sendErrorReport()
-
-    class Embed(jdaMessage: Message, commandName: String, description: String): DiscordCommandError(jdaMessage, commandName, description) {
-        override fun sendErrorReport() {
-            jdaMessage.reply {
-                embed {
-                    title("コマンドエラー: $commandName")
-                    description { description }
-                    timestamp()
-                    color(HexColor.Bad)
-                }
-            }.launchAndDelete(30, TimeUnit.SECONDS)
-        }
-    }
-
-    class Simple(jdaMessage: Message, commandName: String, description: String): DiscordCommandError(jdaMessage, commandName, description) {
-        override fun sendErrorReport() {
-            jdaMessage.message {
-                text {
-                    append("${jdaMessage.author.asMention} $description")
-                }
-            }.launchAndDelete(30, TimeUnit.SECONDS)
-        }
+        jdaMessage.reply {
+            embed {
+                title("コマンドエラー: $commandName")
+                description { description }
+                timestamp()
+                color(HexColor.Bad)
+            }
+        }.launchAndDelete(30, TimeUnit.SECONDS)
     }
 }

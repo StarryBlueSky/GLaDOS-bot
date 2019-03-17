@@ -22,12 +22,14 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+package jp.nephy.glados.clients.discord.extensions
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.events.GenericEvent
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
-}
+val GenericEvent.guild: Guild?
+    get() = try {
+        this::class.java.getMethod("getGuild").invoke(this) as? Guild
+    } catch (e: NoSuchMethodException) {
+        null
+    }

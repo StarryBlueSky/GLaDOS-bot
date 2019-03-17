@@ -35,13 +35,14 @@ import net.dv8tion.jda.api.AccountType
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
-import net.dv8tion.jda.api.hooks.AnnotatedEventManager
+
+private const val jdaKey = "jda"
 
 val GLaDOS.Companion.jda: JDA
-    get() = GLaDOS.attributes["jda"]
+    get() = GLaDOS.attributes[jdaKey]
 
 internal fun initializeJDA() {
-    GLaDOS.attributes.getOrPut("jda") {
+    GLaDOS.attributes.getOrPut(jdaKey) {
         JDABuilder(AccountType.BOT).apply {
             setToken(GLaDOS.config.discord.token)
             setActivity(Activity.playing("Starting..."))
@@ -49,14 +50,18 @@ internal fun initializeJDA() {
             
             // setAudioSendFactory(NativeAudioSendFactory(5000))
             
-            setEventManager(AnnotatedEventManager())
-            addEventListeners(DiscordMessageManager, DiscordWebsocketEventSubscriptionClient, DiscordCommandSubscriptionClient, DiscordEventWaiter)
+            addEventListeners(
+                DiscordWebsocketEventSubscriptionClient.Listener,
+                DiscordCommandSubscriptionClient.Listener,
+                DiscordMessageManager.Listener,
+                DiscordEventWaiter.Listener
+            )
         }.build()
     }
 }
 
 internal fun disposeJDA() {
-    GLaDOS.attributes.remove<JDA>("jda")?.also { 
+    GLaDOS.attributes.remove<JDA>(jdaKey)?.also { 
         it.shutdown()
     }
 }

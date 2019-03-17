@@ -24,49 +24,15 @@
 
 @file:Suppress("UNUSED")
 
-package jp.nephy.glados.clients.discord.extensions
+package jp.nephy.glados.clients.discord.extensions.result
 
-import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.clients.discord.command.DiscordCommandError
-import jp.nephy.glados.clients.discord.command.DiscordCommandEvent
+import jp.nephy.glados.clients.discord.command.events.DiscordCommandEvent
 import jp.nephy.glados.clients.discord.command.primaryCommandSyntax
 import jp.nephy.glados.clients.discord.extensions.messages.HexColor
 import jp.nephy.glados.clients.discord.extensions.messages.message
 import jp.nephy.glados.clients.discord.extensions.messages.reply
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.requests.restaction.MessageAction
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
-
-@UseExperimental(ExperimentalContracts::class)
-inline fun Plugin.reject(value: Boolean, fallback: () -> Nothing) {
-    contract {
-        returns() implies !value
-    }
-
-    if (value) {
-        fallback()
-    }
-}
-
-@UseExperimental(ExperimentalContracts::class)
-inline fun <T> Plugin.rejectNull(value: T?, fallback: () -> Nothing) {
-    contract {
-        returns() implies (value != null)
-    }
-
-    if (value == null) {
-        fallback()
-    }
-}
-
-inline fun Message.embedError(commandName: String, description: () -> String): Nothing = throw DiscordCommandError.Embed(this, commandName, description.invoke())
-
-inline fun Message.simpleError(commandName: String, description: StringBuilder.() -> Unit): Nothing = throw DiscordCommandError.Simple(this, commandName, buildString(description))
-
-inline fun DiscordCommandEvent.embedError(description: () -> String): Nothing = throw DiscordCommandError.Embed(message, command.primaryCommandSyntax, description.invoke())
-
-inline fun DiscordCommandEvent.simpleError(description: StringBuilder.() -> Unit): Nothing = throw DiscordCommandError.Simple(message, command.primaryCommandSyntax, buildString(description))
 
 fun Message.embedResult(commandName: String, description: () -> String): MessageAction {
     return reply {
@@ -87,6 +53,10 @@ fun Message.simpleResult(description: () -> String): MessageAction {
     }
 }
 
-fun DiscordCommandEvent.embedResult(description: () -> String) = message.embedResult(command.primaryCommandSyntax, description)
+fun DiscordCommandEvent.embedResult(description: () -> String): MessageAction {
+    return message.embedResult(subscription.primaryCommandSyntax, description)
+}
 
-fun DiscordCommandEvent.simpleResult(description: () -> String) = message.simpleResult(description)
+fun DiscordCommandEvent.simpleResult(description: () -> String): MessageAction {
+    return message.simpleResult(description)
+}

@@ -22,12 +22,19 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+@file:Suppress("UNUSED")
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+package jp.nephy.glados.clients.discord.extensions
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
+import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.VoiceChannel
+
+fun Guild.joinVoiceChannel(channel: VoiceChannel) {
+    audioManager.openAudioConnection(channel)
 }
+
+val Guild.currentVoiceChannel: VoiceChannel?
+    get() = audioManager.connectedChannel ?: audioManager.queuedAudioConnection
+
+val VoiceChannel.isNoOneExceptSelfUser: Boolean
+    get() = members.count { !it.user.isSelfUser } == 0

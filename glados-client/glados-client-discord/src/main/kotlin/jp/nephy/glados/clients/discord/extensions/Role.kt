@@ -26,37 +26,56 @@
 
 package jp.nephy.glados.clients.discord.extensions
 
-import jp.nephy.glados.api.GLaDOS
-import jp.nephy.glados.api.config
-import jp.nephy.glados.clients.discord.config.config
-import jp.nephy.glados.clients.discord.config.discord
-import jp.nephy.glados.clients.discord.config.role
 import net.dv8tion.jda.api.entities.Member
-import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.Role
+import net.dv8tion.jda.api.requests.restaction.AuditableRestAction
 
 /**
- * Checks if this member has admin permission.
+ * Checks if this member has the role.
  */
-val Member.hasAdminPermission: Boolean
-    get() = isOwner || hasAdminRole || user.isGLaDOSOwner
+fun Member.hasRole(id: Long): Boolean {
+    return roles.any { it.idLong == id }
+}
 
 /**
- * Checks if this user has admin permission.
+ * Checks if this member has the role.
  */
-val User.hasAdminPermission: Boolean
-    get() = isGLaDOSOwner
+fun Member.hasRole(role: Role): Boolean {
+    return role in roles
+}
 
 /**
- * Checks if this member has admin role.
+ * Adds the role to this member.
  */
-val Member.hasAdminRole: Boolean
-    get() {
-        val role = guild.config.role("admin") ?: return false
-        return hasRole(role)
+fun Member.addRole(id: Long): AuditableRestAction<Void>? {
+    return addRole(jda.getRoleById(id) ?: return null)
+}
+
+/**
+ * Adds the role to this member.
+ */
+fun Member.addRole(role: Role): AuditableRestAction<Void>? {
+    if (hasRole(role)) {
+        return null
     }
+    
+    return guild.controller.addSingleRoleToMember(this, role)
+}
 
 /**
- * Checks if this user is GLaDOS owner.
+ * Removes the role from this member.
  */
-val User.isGLaDOSOwner: Boolean
-    get() = idLong == GLaDOS.config.discord.ownerId
+fun Member.removeRole(id: Long): AuditableRestAction<Void>? {
+    return removeRole(jda.getRoleById(id) ?: return null)
+}
+
+/**
+ * Removes the role from this member.
+ */
+fun Member.removeRole(role: Role): AuditableRestAction<Void>? {
+    if (!hasRole(role)) {
+        return null
+    }
+    
+    return guild.controller.removeSingleRoleFromMember(this, role)
+}

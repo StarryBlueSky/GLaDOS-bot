@@ -22,12 +22,22 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+package jp.nephy.glados.clients.discord.command.error
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+import jp.nephy.glados.clients.discord.extensions.launchAndDelete
+import jp.nephy.glados.clients.discord.extensions.messages.message
+import net.dv8tion.jda.api.entities.Message
+import java.util.concurrent.TimeUnit
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
+/**
+ * DiscordSimpleCommandError.
+ */
+class DiscordSimpleCommandError(override val jdaMessage: Message, commandName: String, description: String): DiscordCommandError(commandName, description) {
+    init {
+        jdaMessage.message {
+            text {
+                append("${jdaMessage.author.asMention} $description")
+            }
+        }.launchAndDelete(30, TimeUnit.SECONDS)
+    }
 }

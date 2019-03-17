@@ -25,39 +25,85 @@
 package jp.nephy.glados.clients.discord.command
 
 import jp.nephy.glados.api.Priority
-import net.dv8tion.jda.api.entities.ChannelType
+import jp.nephy.glados.clients.discord.command.policy.*
 
+/**
+ * Indicates that this function is executed as [DiscordCommandSubscription].
+ */
 @Target(AnnotationTarget.FUNCTION)
 annotation class DiscordCommand(
+    /**
+     * 
+     */
     val command: String = "",
+
+    /**
+     * 
+     */
     val aliases: Array<String> = [],
-    val priority: Priority = Priority.Normal,
+
+    /**
+     * 
+     */
     val permission: PermissionPolicy = PermissionPolicy.Anyone,
-    val channelType: TargetChannelType = TargetChannelType.Any,
+
+    /**
+     * 
+     */
+    val channelType: ChannelTypePolicy = ChannelTypePolicy.Any,
+
+    /**
+     * 
+     */
     val case: CasePolicy = CasePolicy.Ignore,
-    val condition: ConditionPolicy = ConditionPolicy.Anytime,
+
+    /**
+     * 
+     */
+    val condition: VoiceChannelConditionPolicy = VoiceChannelConditionPolicy.Anytime,
+
+    /**
+     * 
+     */
+    val content: MessageContentPolicy = MessageContentPolicy.Display,
+    
+    /**
+     * 
+     */
     val description: String = "",
-    val args: Array<String> = [],
-    val checkArgsCount: Boolean = true,
+
+    /**
+     * 
+     */
+    val arguments: Array<String> = [],
+
+    /**
+     * 
+     */
+    val checkArgumentsSize: Boolean = true,
+
+    /**
+     * 
+     */
     val prefix: String = "",
-    val category: String = ""
-) {
-    enum class PermissionPolicy {
 
-        Anyone, AdminOnly, MainGuildAdminOnly, OwnerOnly
-    }
+    /**
+     * 
+     */
+    val category: String = "",
 
-    enum class TargetChannelType(vararg val types: ChannelType) {
-        Any(ChannelType.TEXT, ChannelType.PRIVATE),
-        
-        TextChannel(ChannelType.TEXT), BotChannel(ChannelType.TEXT), PrivateMessage(ChannelType.PRIVATE)
-    }
+    /**
+     * 
+     */
+    val allowFromSelfUser: Boolean = false,
 
-    enum class CasePolicy {
-        Strict, Ignore
-    }
+    /**
+     * 
+     */
+    val allowFromBotAccount: Boolean = false,
 
-    enum class ConditionPolicy {
-        Anytime, WhileInAnyVoiceChannel, WhileInSameVoiceChannel
-    }
-}
+    /**
+     * Execution priority.
+     */
+    val priority: Priority = Priority.Normal
+)

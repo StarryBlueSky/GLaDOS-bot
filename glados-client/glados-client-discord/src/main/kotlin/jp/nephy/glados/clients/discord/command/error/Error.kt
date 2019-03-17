@@ -22,12 +22,26 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command
+@file:Suppress("UNUSED")
 
-import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
+package jp.nephy.glados.clients.discord.command.error
 
-enum class ExperimentalConsent(override val symbol: String, override val promptTitle: String): EmojiEnum {
-    Agree("✅", "OK"),
-    
-    Disagree("❌", "キャンセル")
+import jp.nephy.glados.clients.discord.command.events.DiscordCommandEvent
+import jp.nephy.glados.clients.discord.command.primaryCommandSyntax
+import net.dv8tion.jda.api.entities.Message
+
+inline fun Message.embedError(commandName: String, description: () -> String): Nothing {
+    throw DiscordEmbedCommandError(this, commandName, description.invoke())
+}
+
+inline fun Message.simpleError(commandName: String, description: StringBuilder.() -> Unit): Nothing {
+    throw DiscordSimpleCommandError(this, commandName, buildString(description))
+}
+
+inline fun DiscordCommandEvent.embedError(description: () -> String): Nothing {
+    throw DiscordEmbedCommandError(message, subscription.primaryCommandSyntax, description.invoke())
+}
+
+inline fun DiscordCommandEvent.simpleError(description: StringBuilder.() -> Unit): Nothing {
+    throw DiscordSimpleCommandError(message, subscription.primaryCommandSyntax, buildString(description))
 }

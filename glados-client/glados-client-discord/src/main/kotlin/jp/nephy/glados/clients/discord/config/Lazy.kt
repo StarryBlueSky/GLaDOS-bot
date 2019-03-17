@@ -27,41 +27,35 @@
 package jp.nephy.glados.clients.discord.config
 
 import jp.nephy.glados.api.GLaDOS
-import jp.nephy.glados.clients.discord.jda
-import kotlinx.serialization.json.longOrNull
+import jp.nephy.glados.api.Plugin
+import jp.nephy.glados.api.config
 import net.dv8tion.jda.api.entities.Emote
 import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.entities.TextChannel
 import net.dv8tion.jda.api.entities.VoiceChannel
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
-fun Discord.GuildConfig?.textChannel(key: String): TextChannel? {
-    return GLaDOS.jda.getTextChannelById(this?.textChannels?.getOrNull(key)?.longOrNull ?: return null)
+fun Plugin.textChannelsLazy(name: String): ReadOnlyProperty<Plugin, List<TextChannel>> = object: ReadOnlyProperty<Plugin, List<TextChannel>> {
+    override fun getValue(thisRef: Plugin, property: KProperty<*>): List<TextChannel> {
+        return GLaDOS.config.discord.guilds.mapNotNull { it.textChannel(name) }
+    }
 }
 
-fun Discord.GuildConfig?.voiceChannel(key: String): VoiceChannel? {
-    return GLaDOS.jda.getVoiceChannelById(this?.voiceChannels?.getOrNull(key)?.longOrNull ?: return null)
+fun Plugin.voiceChannelsLazy(name: String): ReadOnlyProperty<Plugin, List<VoiceChannel>> = object: ReadOnlyProperty<Plugin, List<VoiceChannel>> {
+    override fun getValue(thisRef: Plugin, property: KProperty<*>): List<VoiceChannel> {
+        return GLaDOS.config.discord.guilds.mapNotNull { it.voiceChannel(name) }
+    }
 }
 
-fun Discord.GuildConfig?.role(key: String): Role? {
-    return GLaDOS.jda.getRoleById(this?.roles?.getOrNull(key)?.longOrNull ?: return null)
+fun Plugin.rolesLazy(name: String): ReadOnlyProperty<Plugin, List<Role>> = object: ReadOnlyProperty<Plugin, List<Role>> {
+    override fun getValue(thisRef: Plugin, property: KProperty<*>): List<Role> {
+        return GLaDOS.config.discord.guilds.mapNotNull { it.role(name) }
+    }
 }
 
-fun Discord.GuildConfig?.emote(key: String): Emote? {
-    return GLaDOS.jda.getEmoteById(this?.emotes?.getOrNull(key)?.longOrNull ?: return null)
-}
-
-inline fun <T> Discord.GuildConfig?.withTextChannel(key: String, operation: (TextChannel) -> T?): T? {
-    return operation(textChannel(key) ?: return null)
-}
-
-inline fun <T> Discord.GuildConfig?.withVoiceChannel(key: String, operation: (VoiceChannel) -> T?): T? {
-    return operation(voiceChannel(key) ?: return null)
-}
-
-inline fun <T> Discord.GuildConfig?.withRole(key: String, operation: (Role) -> T?): T? {
-    return operation(role(key) ?: return null)
-}
-
-inline fun <T> Discord.GuildConfig?.withEmote(key: String, operation: (Emote) -> T?): T? {
-    return operation(emote(key) ?: return null)
+fun Plugin.emotesLazy(name: String): ReadOnlyProperty<Plugin, List<Emote>> = object: ReadOnlyProperty<Plugin, List<Emote>> {
+    override fun getValue(thisRef: Plugin, property: KProperty<*>): List<Emote> {
+        return GLaDOS.config.discord.guilds.mapNotNull { it.emote(name) }
+    }
 }
