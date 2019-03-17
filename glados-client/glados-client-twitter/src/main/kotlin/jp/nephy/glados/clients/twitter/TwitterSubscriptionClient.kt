@@ -125,8 +125,10 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
     }
     
     private fun createListener(account: TwitterAccount) = object: TweetstormListener {
+        private val filter: (TwitterSubscription) -> Boolean = { account in it.accounts }
+        
         override suspend fun onConnect() {
-            runEvent {
+            runEvent(filter) {
                 ConnectEvent(account, it)
             }
 
@@ -134,7 +136,7 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
         }
 
         override suspend fun onDisconnect(cause: Throwable?) {
-            runEvent {
+            runEvent(filter) {
                 DisconnectEvent(account, it, cause)
             }
 
@@ -146,61 +148,61 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
         }
 
         override suspend fun onStatus(status: Status) {
-            runEvent {
+            runEvent(filter) {
                 StatusEvent(account, it, status)
             }
         }
 
         override suspend fun onDirectMessage(message: DirectMessage) {
-            runEvent {
+            runEvent(filter) {
                 DirectMessageEvent(account, it, message)
             }
         }
 
         override suspend fun onFriends(friends: Stream.Friends) {
-            runEvent {
+            runEvent(filter) {
                 FriendsEvent(account, it, friends)
             }
         }
 
         override suspend fun onDelete(delete: Stream.Delete) {
-            runEvent {
+            runEvent(filter) {
                 DeleteEvent(account, it, delete)
             }
         }
 
         override suspend fun onHeartbeat() {
-            runEvent {
+            runEvent(filter) {
                 HeartbeatEvent(account, it)
             }
         }
 
         override suspend fun onLength(length: Int) {
-            runEvent {
+            runEvent(filter) {
                 LengthEvent(account, it, length)
             }
         }
 
         override suspend fun onAnyJson(json: JsonObject) {
-            runEvent {
+            runEvent(filter) {
                 AnyJsonEvent(account, it, json)
             }
         }
 
         override suspend fun onUnhandledJson(json: JsonObject) {
-            runEvent {
+            runEvent(filter) {
                 UnhandledJsonEvent(account, it, json)
             }
         }
 
         override suspend fun onUnknownData(data: String) {
-            runEvent {
+            runEvent(filter) {
                 UnknownDataEvent(account, it, data)
             }
         }
 
         override suspend fun onRawData(data: String) {
-            runEvent {
+            runEvent(filter) {
                 RawDataEvent(account, it, data)
             }
         }
