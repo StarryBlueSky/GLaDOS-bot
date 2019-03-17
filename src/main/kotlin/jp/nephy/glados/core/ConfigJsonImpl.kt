@@ -87,15 +87,15 @@ internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
 
     override val userAgent: String by string("user_agent") { "GLaDOS-bot (+https://github.com/NephyProject/GLaDOS-bot)" }
     
-    override val paths: ConfigJson.Paths by model<PathsImpl>()
+    override val paths: ConfigJson.Paths by modelOrDefault<PathsImpl>()
     
     data class PathsImpl(override val json: JsonObject): ConfigJson.Paths {
-        override val tmp: Path by lambda("tmp", { java.nio.file.Paths.get("tmp") }) { java.nio.file.Paths.get(it.string) }
-        override val resources: Path by lambda("resources", { java.nio.file.Paths.get("resources") }) { java.nio.file.Paths.get(it.string) }
-        override val plugins: Path by lambda("plugins", { java.nio.file.Paths.get("plugins") }) { java.nio.file.Paths.get(it.string) }
+        override val tmp: Path by lambda("tmp", { Paths.get("tmp") }) { Paths.get(it.string) }
+        override val resources: Path by lambda("resources", { Paths.get("resources") }) { Paths.get(it.string) }
+        override val plugins: Path by lambda("plugins", { Paths.get("plugins") }) { Paths.get(it.string) }
     }
     
-    override val logging: ConfigJson.Logging by model<LoggingImpl>()
+    override val logging: ConfigJson.Logging by modelOrDefault<LoggingImpl>()
             
     data class LoggingImpl(override val json: JsonObject): ConfigJson.Logging {
         override val level: Level by lambda("level", { Level.INFO }) { Level.toLevel(it.stringOrNull, Level.INFO) }
