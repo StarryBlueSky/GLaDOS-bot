@@ -88,22 +88,16 @@ internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Corout
     }
     
     fun startAll() {
-        val jobs = clients.sortedBy { 
+        clients.sortedBy { 
             it.priority
         }.map { client ->
-            launch {
-                runCatching {
-                    client.start()
-                }.onSuccess {
-                    client.logger.info { "開始しました。" }
-                }.onFailure { e ->
-                    client.logger.error(e) { "開始中に例外が発生しました。" }
-                }
+            runCatching {
+                client.start()
+            }.onSuccess {
+                client.logger.info { "開始しました。" }
+            }.onFailure { e ->
+                client.logger.error(e) { "開始中に例外が発生しました。" }
             }
-        }
-        
-        runBlocking { 
-            jobs.joinAll()
         }
     }
 
