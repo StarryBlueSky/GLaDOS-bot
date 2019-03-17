@@ -24,9 +24,11 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket.events.guild
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import net.dv8tion.jda.api.events.guild.GuildUnavailableEvent
 
 data class DiscordGuildUnavailableEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildUnavailableEvent
 ): DiscordWebsocketEventBase<GuildUnavailableEvent>

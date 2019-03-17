@@ -32,8 +32,8 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.category.Discor
 import jp.nephy.glados.clients.discord.listener.websocket.events.category.update.DiscordCategoryUpdateNameEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.category.update.DiscordCategoryUpdatePermissionsEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.category.update.DiscordCategoryUpdatePositionEvent
-import jp.nephy.glados.clients.discord.listener.websocket.events.channel.priv.DiscordPrivateChannelCreateEvent
-import jp.nephy.glados.clients.discord.listener.websocket.events.channel.priv.DiscordPrivateChannelDeleteEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.private.DiscordPrivateChannelCreateEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.private.DiscordPrivateChannelDeleteEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.DiscordTextChannelCreateEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.DiscordTextChannelDeleteEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.update.*
@@ -51,7 +51,7 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.guild.update.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.guild.voice.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.message.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.message.guild.*
-import jp.nephy.glados.clients.discord.listener.websocket.events.message.priv.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.message.private.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.message.reaction.DiscordMessageReactionAddEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.message.reaction.DiscordMessageReactionRemoveAllEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.message.reaction.DiscordMessageReactionRemoveEvent
@@ -64,7 +64,7 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUse
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.self.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.*
 
-interface ListenerAdapterModel: EventModel {
+interface DiscordWebsocketEventModel: EventModel {
     suspend fun onDiscordReady(event: DiscordReadyEvent) {}
     suspend fun onDiscordResume(event: DiscordResumedEvent) {}
     suspend fun onDiscordReconnect(event: DiscordReconnectedEvent) {}

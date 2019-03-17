@@ -28,9 +28,16 @@ import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.util.pipeline.PipelineContext
 import jp.nephy.glados.api.Event
+import jp.nephy.glados.clients.web.routing.WebRoutingSubscription
 
 data class WebAccessEvent(
-    val context: PipelineContext<*, ApplicationCall>, val matchResult: MatchResult?, val fragments: Map<String, String>
+    override val subscription: WebRoutingSubscription,
+    
+    val context: PipelineContext<*, ApplicationCall>,
+    
+    val matchResult: MatchResult?,
+    
+    val fragments: Map<String, String>
 ): Event
 
 val WebAccessEvent.call: ApplicationCall

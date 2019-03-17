@@ -35,8 +35,13 @@ import jp.nephy.glados.clients.twitter.config.twitterAccount
 import jp.nephy.glados.clients.twitter.event.TwitterEventBase
 import kotlin.reflect.KFunction
 
-class TwitterSubscription(
-    override val plugin: Plugin, override val function: KFunction<*>, override val annotation: TwitterEvent
+/**
+ * TwitterSubscription.
+ */
+data class TwitterSubscription(
+    override val plugin: Plugin,
+    override val function: KFunction<*>,
+    override val annotation: TwitterEvent
 ): GLaDOSSubscription<TwitterEvent, TwitterEventBase>() {
     override val priority: Priority
         get() = annotation.priority

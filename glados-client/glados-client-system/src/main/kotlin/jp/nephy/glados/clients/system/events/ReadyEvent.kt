@@ -24,4 +24,11 @@
 
 package jp.nephy.glados.clients.system.events
 
-object ReadyEvent: SystemEventBase
+import jp.nephy.glados.clients.system.SystemSubscription
+
+/**
+ * ReadyEvent.
+ */
+data class ReadyEvent(
+    override val subscription: SystemSubscription
+): SystemEventBase

@@ -24,9 +24,11 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket.events.channel.text
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import net.dv8tion.jda.api.events.channel.text.TextChannelDeleteEvent
 
 data class DiscordTextChannelDeleteEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: TextChannelDeleteEvent
 ): DiscordWebsocketEventBase<TextChannelDeleteEvent>

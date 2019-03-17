@@ -22,11 +22,13 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.channel.priv
+package jp.nephy.glados.clients.discord.listener.websocket.events.channel.private
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import net.dv8tion.jda.api.events.channel.priv.PrivateChannelDeleteEvent
 
 data class DiscordPrivateChannelDeleteEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: PrivateChannelDeleteEvent
 ): DiscordWebsocketEventBase<PrivateChannelDeleteEvent>

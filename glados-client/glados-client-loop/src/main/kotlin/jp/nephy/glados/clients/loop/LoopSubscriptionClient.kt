@@ -24,8 +24,8 @@
 
 package jp.nephy.glados.clients.loop
 
-import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.fullName
 import jp.nephy.glados.clients.invoke
@@ -90,7 +90,7 @@ object LoopSubscriptionClient: GLaDOSSubscriptionClient<Loop, LoopEvent, LoopSub
                 }
 
                 try {
-                    val event = LoopEvent(++count)
+                    val event = LoopEvent(++count, this@start)
 
                     invoke(event)
                     delay(intervalMillis)

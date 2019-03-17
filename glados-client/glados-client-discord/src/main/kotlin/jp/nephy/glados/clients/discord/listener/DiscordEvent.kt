@@ -26,7 +26,14 @@ package jp.nephy.glados.clients.discord.listener
 
 import jp.nephy.glados.api.Priority
 
+/**
+ * Indicates that this function is executed as Discord Subscription.
+ * This annotation is optional.
+ */
 @Target(AnnotationTarget.FUNCTION)
 annotation class DiscordEvent(
+    /**
+     * Execution priority.
+     */
     val priority: Priority = Priority.Normal
 )

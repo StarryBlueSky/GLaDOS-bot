@@ -25,8 +25,17 @@
 package jp.nephy.glados.clients.twitter.event
 
 import jp.nephy.glados.api.Event
+import jp.nephy.glados.clients.twitter.TwitterSubscription
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 
+/**
+ * TwitterEventBase.
+ */
 interface TwitterEventBase: Event {
+    /**
+     * Executed [TwitterAccount].
+     */
     val account: TwitterAccount
+
+    override val subscription: TwitterSubscription
 }

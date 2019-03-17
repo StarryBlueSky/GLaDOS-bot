@@ -34,5 +34,6 @@ data class ScheduleEvent(
     /**
      * Scheduled calendar.
      */
-    val calendar: Calendar
+    val calendar: Calendar,
+    override val subscription: ScheduleSubscription
 ): Event

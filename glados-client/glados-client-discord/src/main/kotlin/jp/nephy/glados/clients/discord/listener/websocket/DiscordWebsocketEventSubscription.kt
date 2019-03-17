@@ -24,15 +24,17 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket
 
+import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.Priority
-import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import kotlin.reflect.KFunction
 
 class DiscordWebsocketEventSubscription(
-    override val plugin: Plugin, override val function: KFunction<*>, override val annotation: DiscordEvent
+    override val plugin: Plugin,
+    override val function: KFunction<*>,
+    override val annotation: DiscordEvent
 ): GLaDOSSubscription<DiscordEvent, DiscordWebsocketEventBase<*>>() {
     override val priority: Priority
         get() = annotation.priority

@@ -28,13 +28,16 @@ import com.sedmelluq.discord.lavaplayer.player.event.TrackEndEvent
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason
 import jp.nephy.glados.clients.discord.GuildPlayer
+import jp.nephy.glados.clients.discord.listener.audio.DiscordAudioEventSubscription
 
 data class DiscordAudioTrackEndEvent(
-    override val guildPlayer: GuildPlayer, override val jdaEvent: TrackEndEvent
+    override val subscription: DiscordAudioEventSubscription,
+    override val guildPlayer: GuildPlayer,
+    override val lavaPlayerEvent: TrackEndEvent
 ): DiscordAudioEventBase
 
 val DiscordAudioTrackEndEvent.track: AudioTrack
-    get() = jdaEvent.track
+    get() = lavaPlayerEvent.track
 
 val DiscordAudioTrackEndEvent.endReason: AudioTrackEndReason
-    get() = jdaEvent.endReason
+    get() = lavaPlayerEvent.endReason

@@ -30,6 +30,9 @@ import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.system.events.SystemEventBase
 import kotlin.reflect.KFunction
 
+/**
+ * SystemSubscription.
+ */
 data class SystemSubscription(
     override val plugin: Plugin,
     override val function: KFunction<*>,

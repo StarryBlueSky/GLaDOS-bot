@@ -25,8 +25,11 @@
 package jp.nephy.glados.clients.discord.listener.receive.events
 
 import jp.nephy.glados.clients.discord.GuildPlayer
+import jp.nephy.glados.clients.discord.listener.receive.DiscordReceiveAudioEventSubscription
 import net.dv8tion.jda.api.audio.UserAudio
 
 data class DiscordUserAudioReceiveEvent(
-    override val guildPlayer: GuildPlayer, val audio: UserAudio
+    override val subscription: DiscordReceiveAudioEventSubscription,
+    override val guildPlayer: GuildPlayer,
+    val audio: UserAudio
 ): DiscordReceiveAudioEventBase

@@ -24,8 +24,18 @@
 
 package jp.nephy.glados.clients.twitter.event
 
+import jp.nephy.glados.clients.twitter.TwitterSubscription
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 
+/**
+ * UnknownDataEvent.
+ */
 data class UnknownDataEvent(
-    override val account: TwitterAccount, val data: String
+    override val account: TwitterAccount,
+    override val subscription: TwitterSubscription,
+
+    /**
+     * Unknown data string.
+     */
+    val data: String
 ): TwitterEventBase

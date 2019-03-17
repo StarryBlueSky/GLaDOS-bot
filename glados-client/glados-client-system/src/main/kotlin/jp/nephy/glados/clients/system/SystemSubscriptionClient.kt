@@ -24,22 +24,22 @@
 
 package jp.nephy.glados.clients.system
 
-import jp.nephy.glados.api.Event
-import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.Priority
-import jp.nephy.glados.clients.eventClass
-import jp.nephy.glados.clients.invoke
+import jp.nephy.glados.clients.runEvent
 import jp.nephy.glados.clients.system.events.ReadyEvent
 import jp.nephy.glados.clients.system.events.ShutdownEvent
 import jp.nephy.glados.clients.system.events.SystemEventBase
-import jp.nephy.glados.clients.subscriptions
-import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubclassOf
 
+/**
+ * SystemSubscriptionClient.
+ */
+@Suppress("UNUSED")
 object SystemSubscriptionClient: GLaDOSSubscriptionClient<SystemEvent, SystemEventBase, SystemSubscription>() {
     override val priority: Priority
         get() = Priority.Lowest
@@ -53,23 +53,15 @@ object SystemSubscriptionClient: GLaDOSSubscriptionClient<SystemEvent, SystemEve
         return SystemSubscription(plugin, function, annotation)
     }
 
-    override fun canHandle(event: Event): Boolean {
-        return event is SystemEventBase
-    }
-
     override fun start() {
-        subscriptions.filter { it.eventClass == ReadyEvent::class }.forEach {
-            launch {
-                it.invoke(ReadyEvent)
-            }
+        runEvent { 
+            ReadyEvent(it)
         }
     }
 
     override fun stop() {
-        subscriptions.filter { it.eventClass == ShutdownEvent::class }.forEach {
-            launch {
-                it.invoke(ShutdownEvent)
-            }
+        runEvent { 
+            ShutdownEvent(it)
         }
     }
 }

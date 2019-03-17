@@ -117,7 +117,7 @@ class WebRoutingSubscription(
             null
         }.orEmpty()
 
-        return WebAccessEvent(context, matchResult, fragments)
+        return WebAccessEvent(this, context, matchResult, fragments)
     }
 
     override val priority: Priority

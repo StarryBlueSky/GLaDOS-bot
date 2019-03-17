@@ -25,8 +25,11 @@
 package jp.nephy.glados.clients.discord.listener.connection.events
 
 import jp.nephy.glados.clients.discord.listener.DiscordEventBase
+import jp.nephy.glados.clients.discord.listener.connection.DiscordConnectionEventSubscription
 import net.dv8tion.jda.api.entities.Guild
 
 interface DiscordConnectionEventBase: DiscordEventBase {
     val guild: Guild
+
+    override val subscription: DiscordConnectionEventSubscription
 }

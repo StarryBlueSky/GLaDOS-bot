@@ -27,10 +27,13 @@ package jp.nephy.glados.clients.discord.listener.audio.events
 import com.sedmelluq.discord.lavaplayer.player.event.TrackStartEvent
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import jp.nephy.glados.clients.discord.GuildPlayer
+import jp.nephy.glados.clients.discord.listener.audio.DiscordAudioEventSubscription
 
 data class DiscordAudioTrackStartEvent(
-    override val guildPlayer: GuildPlayer, override val jdaEvent: TrackStartEvent
+    override val subscription: DiscordAudioEventSubscription,
+    override val guildPlayer: GuildPlayer,
+    override val lavaPlayerEvent: TrackStartEvent
 ): DiscordAudioEventBase
 
 val DiscordAudioTrackStartEvent.track: AudioTrack
-    get() = jdaEvent.track
+    get() = lavaPlayerEvent.track

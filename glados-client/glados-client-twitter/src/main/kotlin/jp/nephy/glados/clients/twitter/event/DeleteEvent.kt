@@ -24,9 +24,19 @@
 
 package jp.nephy.glados.clients.twitter.event
 
+import jp.nephy.glados.clients.twitter.TwitterSubscription
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 import jp.nephy.penicillin.models.Stream
 
+/**
+ * DeleteEvent.
+ */
 data class DeleteEvent(
-    override val account: TwitterAccount, val delete: Stream.Delete
+    override val account: TwitterAccount,
+    override val subscription: TwitterSubscription,
+
+    /**
+     * The [Stream.Delete] object.
+     */
+    val delete: Stream.Delete
 ): TwitterEventBase

@@ -24,9 +24,12 @@
 
 package jp.nephy.glados.clients.discord.listener.connection.events
 
+import jp.nephy.glados.clients.discord.listener.connection.DiscordConnectionEventSubscription
 import net.dv8tion.jda.api.audio.hooks.ConnectionStatus
 import net.dv8tion.jda.api.entities.Guild
 
 data class DiscordConnectionStatusChangeEvent(
-    override val guild: Guild, val status: ConnectionStatus
+    override val subscription: DiscordConnectionEventSubscription,
+    override val guild: Guild,
+    val status: ConnectionStatus
 ): DiscordConnectionEventBase

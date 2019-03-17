@@ -22,11 +22,13 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.message.priv
+package jp.nephy.glados.clients.discord.listener.websocket.events.message.private
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionRemoveEvent
+import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent
 
-data class DiscordPrivateMessageReactionRemoveEvent(
-    override val jdaEvent: PrivateMessageReactionRemoveEvent
-): DiscordWebsocketEventBase<PrivateMessageReactionRemoveEvent>
+data class DiscordPrivateMessageReactionAddEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
+    override val jdaEvent: PrivateMessageReactionAddEvent
+): DiscordWebsocketEventBase<PrivateMessageReactionAddEvent>

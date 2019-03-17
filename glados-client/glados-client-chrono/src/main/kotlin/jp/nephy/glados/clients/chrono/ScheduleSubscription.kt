@@ -30,50 +30,53 @@ import jp.nephy.glados.GLaDOSSubscription
 import java.util.*
 import kotlin.reflect.KFunction
 
-class ScheduleSubscription(
-    override val plugin: Plugin, override val function: KFunction<*>, override val annotation: Schedule
+/**
+ * ScheduleSubscription.
+ */
+data class ScheduleSubscription(
+    override val plugin: Plugin,
+    override val function: KFunction<*>,
+    override val annotation: Schedule
 ): GLaDOSSubscription<Schedule, ScheduleEvent>() {
     override val priority: Priority
         get() = annotation.priority
 
-    private val timing = object {
-        val hours: Set<Int>
-        val minutes: Set<Int>
-
-        init {
-            val hoursADay = 0 until 24
-            val h = annotation.hours.toMutableSet()
-            if (annotation.multipleHours.isNotEmpty()) {
-                annotation.multipleHours.forEach { multipleHour ->
-                    hoursADay.map {
-                        it * multipleHour
-                    }.filter {
-                        it in hoursADay
-                    }.forEach {
-                        h.add(it)
-                    }
-                }
+    /**
+     * Scheduled hours.
+     */
+    val hours: Set<Int> by lazy {
+        val hoursADay = 0 until 24
+        val h = annotation.hours.toSet() + annotation.multipleHours.flatMap { multipleHour ->
+            hoursADay.map {
+                it * multipleHour
+            }.filter {
+                it in hoursADay
             }
-            hours = h.ifEmpty { hoursADay }.toSortedSet()
-
-            val minutesAnHour = 0 until 60
-            val m = annotation.minutes.toMutableSet()
-            if (annotation.multipleMinutes.isNotEmpty()) {
-                annotation.multipleMinutes.forEach { multipleMinute ->
-                    minutesAnHour.map {
-                        it * multipleMinute
-                    }.filter {
-                        it in minutesAnHour
-                    }.forEach {
-                        m.add(it)
-                    }
-                }
-            }
-            minutes = m.ifEmpty { minutesAnHour }.toSortedSet()
         }
+
+        h.ifEmpty { hoursADay }.toSortedSet()
     }
 
-    fun matches(calendar: Calendar): Boolean {
-        return calendar.get(Calendar.HOUR_OF_DAY) in timing.hours && calendar.get(Calendar.MINUTE) in timing.minutes
+    /**
+     * Scheduled minutes.
+     */
+    val minutes: Set<Int> by lazy {
+        val minutesAnHour = 0 until 60
+        val m = annotation.minutes.toSet() + annotation.multipleMinutes.flatMap { multipleMinute ->
+            minutesAnHour.map {
+                it * multipleMinute
+            }.filter {
+                it in minutesAnHour
+            }
+        }
+
+        m.ifEmpty { minutesAnHour }.toSortedSet()
     }
+}
+
+/**
+ * Checks if the subscription matches a calendar.
+ */
+fun ScheduleSubscription.matches(calendar: Calendar): Boolean {
+    return calendar.get(Calendar.HOUR_OF_DAY) in hours && calendar.get(Calendar.MINUTE) in minutes
 }

@@ -24,9 +24,11 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket.events.message.reaction
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveAllEvent
 
 data class DiscordMessageReactionRemoveAllEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: MessageReactionRemoveAllEvent
 ): DiscordWebsocketEventBase<MessageReactionRemoveAllEvent>

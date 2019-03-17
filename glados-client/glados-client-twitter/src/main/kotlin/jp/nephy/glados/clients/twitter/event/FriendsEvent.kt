@@ -24,9 +24,19 @@
 
 package jp.nephy.glados.clients.twitter.event
 
+import jp.nephy.glados.clients.twitter.TwitterSubscription
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 import jp.nephy.penicillin.models.Stream
 
+/**
+ * FriendsEvent.
+ */
 data class FriendsEvent(
-    override val account: TwitterAccount, val friends: Stream.Friends
+    override val account: TwitterAccount,
+    override val subscription: TwitterSubscription,
+
+    /**
+     * The [Stream.Friends] object.
+     */
+    val friends: Stream.Friends
 ): TwitterEventBase

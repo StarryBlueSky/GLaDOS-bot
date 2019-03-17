@@ -24,8 +24,11 @@
 
 package jp.nephy.glados.clients.discord.listener.connection.events
 
+import jp.nephy.glados.clients.discord.listener.connection.DiscordConnectionEventSubscription
 import net.dv8tion.jda.api.entities.Guild
 
 data class DiscordPingEvent(
-    override val guild: Guild, val ping: Long
+    override val subscription: DiscordConnectionEventSubscription,
+    override val guild: Guild,
+    val ping: Long
 ): DiscordConnectionEventBase

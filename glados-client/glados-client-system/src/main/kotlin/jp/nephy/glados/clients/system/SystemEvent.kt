@@ -26,6 +26,12 @@ package jp.nephy.glados.clients.system
 
 import jp.nephy.glados.api.Priority
 
+/**
+ * Indicates that its function should be executed as [SystemSubscription].
+ */
 annotation class SystemEvent(
+    /**
+     * Execution priority.
+     */
     val priority: Priority = Priority.Normal
 )

@@ -26,15 +26,14 @@ package jp.nephy.glados.clients.twitter
 
 import io.ktor.client.engine.cio.CIO
 import io.ktor.util.KtorExperimentalAPI
-import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.Priority
+import jp.nephy.glados.clients.runEvent
+import jp.nephy.glados.clients.subscriptions
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 import jp.nephy.glados.clients.twitter.config.client
 import jp.nephy.glados.clients.twitter.event.*
-import jp.nephy.glados.clients.eventClass
-import jp.nephy.glados.clients.invoke
-import jp.nephy.glados.clients.subscriptions
 import jp.nephy.jsonkt.*
 import jp.nephy.penicillin.endpoints.stream
 import jp.nephy.penicillin.extensions.endpoints.TweetstormListener
@@ -50,6 +49,10 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubclassOf
 
+/**
+ * TwitterSubscriptionClient.
+ */
+@Suppress("UNUSED")
 object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, TwitterEventBase, TwitterSubscription>() {
     override val priority: Priority
         get() = Priority.Highest
@@ -63,21 +66,27 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
         return TwitterSubscription(plugin, function, annotation)
     }
     
-    private val jobs = ConcurrentHashMap<TwitterAccount, Job>()
-    
     override fun start() {
         subscriptions.flatMap { it.accounts }.distinct().forEach { account ->
             account.startJob()
         }
     }
 
+    override fun stop() {
+        for (account in jobs.keys) {
+            account.stopJob()
+        }
+    }
+
+    private val jobs = ConcurrentHashMap<TwitterAccount, Job>()
+    
     @UseExperimental(KtorExperimentalAPI::class)
     private fun TwitterAccount.startJob() {
         jobs[this] = launch {
             while (isActive) {
                 try {
                     client(engine = CIO).use {
-                        // TODO
+                        // TODO: Change UserStream endpoint
                         it.stream.tweetstorm().listen(createListener(this@startJob)).await(reconnect = false)
                     }
                 } catch (e: CancellationException) {
@@ -93,19 +102,15 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
         logger.trace { "開始しました。(@${user.screenName})" }
     }
 
-    override fun stop() {
-        for (account in jobs.keys) {
-            account.stopJob()
-        }
-    }
+    
     
     private fun TwitterAccount.stopJob() {
         jobs[this]?.cancel()
     }
 
     override fun onSubscriptionLoaded(subscription: TwitterSubscription) {
-        subscription.accounts.filter { 
-            !jobs.containsKey(it) 
+        subscription.accounts.filter { account ->
+            !jobs.containsKey(account) 
         }.forEach { account ->
             account.startJob()
         }
@@ -121,13 +126,17 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
     
     private fun createListener(account: TwitterAccount) = object: TweetstormListener {
         override suspend fun onConnect() {
-            runEvent(ConnectEvent(account))
+            runEvent {
+                ConnectEvent(account, it)
+            }
 
             logger.info { "Tweetstorm (@${account.user.screenName}) が開始されました。" }
         }
 
         override suspend fun onDisconnect(cause: Throwable?) {
-            runEvent(DisconnectEvent(account, cause))
+            runEvent {
+                DisconnectEvent(account, it, cause)
+            }
 
             if (cause != null) {
                 logger.warn(cause) { "Tweetstorm (@${account.user.screenName}) から切断されました。" }
@@ -137,51 +146,62 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
         }
 
         override suspend fun onStatus(status: Status) {
-            runEvent(StatusEvent(account, status))
+            runEvent {
+                StatusEvent(account, it, status)
+            }
         }
 
         override suspend fun onDirectMessage(message: DirectMessage) {
-            runEvent(DirectMessageEvent(account, message))
+            runEvent {
+                DirectMessageEvent(account, it, message)
+            }
         }
 
         override suspend fun onFriends(friends: Stream.Friends) {
-            runEvent(FriendsEvent(account, friends))
+            runEvent {
+                FriendsEvent(account, it, friends)
+            }
         }
 
         override suspend fun onDelete(delete: Stream.Delete) {
-            runEvent(DeleteEvent(account, delete))
+            runEvent {
+                DeleteEvent(account, it, delete)
+            }
         }
 
         override suspend fun onHeartbeat() {
-            runEvent(HeartbeatEvent(account))
+            runEvent {
+                HeartbeatEvent(account, it)
+            }
         }
 
         override suspend fun onLength(length: Int) {
-            runEvent(LengthEvent(account, length))
+            runEvent {
+                LengthEvent(account, it, length)
+            }
         }
 
         override suspend fun onAnyJson(json: JsonObject) {
-            runEvent(AnyJsonEvent(account, json))
+            runEvent {
+                AnyJsonEvent(account, it, json)
+            }
         }
 
         override suspend fun onUnhandledJson(json: JsonObject) {
-            runEvent(UnhandledJsonEvent(account, json))
+            runEvent {
+                UnhandledJsonEvent(account, it, json)
+            }
         }
 
         override suspend fun onUnknownData(data: String) {
-            runEvent(UnknownDataEvent(account, data))
+            runEvent {
+                UnknownDataEvent(account, it, data)
+            }
         }
 
         override suspend fun onRawData(data: String) {
-            runEvent(RawDataEvent(account, data))
-        }
-
-        private fun runEvent(event: TwitterEventBase) {
-            subscriptions.filter { event.account in it.accounts && it.eventClass == event::class }.forEach {
-                launch {
-                    it.invoke(event)
-                    it.logger.trace { "実行されました。(@${event.account.user.screenName})" }
-                }
+            runEvent {
+                RawDataEvent(account, it, data)
             }
         }
     }

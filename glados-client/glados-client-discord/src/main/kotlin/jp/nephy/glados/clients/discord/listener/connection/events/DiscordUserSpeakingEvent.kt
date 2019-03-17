@@ -24,6 +24,7 @@
 
 package jp.nephy.glados.clients.discord.listener.connection.events
 
+import jp.nephy.glados.clients.discord.listener.connection.DiscordConnectionEventSubscription
 import net.dv8tion.jda.api.audio.SpeakingMode
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
@@ -31,7 +32,10 @@ import net.dv8tion.jda.api.entities.User
 import java.util.*
 
 data class DiscordUserSpeakingEvent(
-    override val guild: Guild, val user: User, val modes: EnumSet<SpeakingMode>
+    override val subscription: DiscordConnectionEventSubscription,
+    override val guild: Guild,
+    val user: User,
+    val modes: EnumSet<SpeakingMode>
 ): DiscordConnectionEventBase
 
 val DiscordUserSpeakingEvent.member: Member

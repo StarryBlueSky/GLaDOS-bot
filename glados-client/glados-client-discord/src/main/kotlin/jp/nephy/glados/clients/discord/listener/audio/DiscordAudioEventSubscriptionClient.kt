@@ -25,26 +25,22 @@
 package jp.nephy.glados.clients.discord.listener.audio
 
 import com.sedmelluq.discord.lavaplayer.player.event.*
-import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
-import jp.nephy.glados.api.Priority
+import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.clients.discord.GuildPlayer
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
 import jp.nephy.glados.clients.discord.listener.audio.events.*
 import jp.nephy.glados.clients.discord.listener.defaultDiscordEventAnnotation
-import jp.nephy.glados.clients.eventClass
-import jp.nephy.glados.clients.invoke
-import jp.nephy.glados.clients.subscriptions
-import kotlinx.coroutines.launch
+import jp.nephy.glados.clients.runEvent
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubclassOf
 
+/**
+ * DiscordAudioEventSubscriptionClient.
+ */
 object DiscordAudioEventSubscriptionClient: GLaDOSSubscriptionClient<DiscordEvent, DiscordAudioEventBase, DiscordAudioEventSubscription>() {
-    override val priority: Priority
-        get() = Priority.Normal
-    
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): DiscordAudioEventSubscription? {
         if (!eventClass.isSubclassOf(DiscordAudioEventBase::class)) {
             return null
@@ -54,46 +50,31 @@ object DiscordAudioEventSubscriptionClient: GLaDOSSubscriptionClient<DiscordEven
         return DiscordAudioEventSubscription(plugin, function, annotation)
     }
     
-    override fun start() {}
-
-    override fun stop() {}
-
-    class Listener(private val guildPlayer: GuildPlayer): AudioEventListener {
-        private fun <E: DiscordAudioEventBase> runEvent(event: E) {
-            DiscordAudioEventSubscriptionClient.subscriptions.filter {
-                it.eventClass == event::class
-            }.forEach {
-                launch {
-                    it.invoke(event)
-                    it.logger.trace { "実行されました。(${guildPlayer.guild.name})" }
+    internal class Listener(private val guildPlayer: GuildPlayer): AudioEventListener {
+        override fun onEvent(event: AudioEvent) {
+            when (event) {
+                is PlayerPauseEvent -> runEvent {
+                    DiscordAudioPlayerPauseEvent(it, guildPlayer, event)
+                }
+                is PlayerResumeEvent -> runEvent {
+                    DiscordAudioPlayerResumeEvent(it, guildPlayer, event)
+                }
+                is TrackStartEvent -> runEvent {
+                    DiscordAudioTrackStartEvent(it, guildPlayer, event)
+                }
+                is TrackEndEvent -> runEvent {
+                    DiscordAudioTrackEndEvent(it, guildPlayer, event)
+                }
+                is TrackExceptionEvent -> runEvent {
+                    DiscordAudioTrackExceptionEvent(it, guildPlayer, event)
+                }
+                is TrackStuckEvent -> runEvent {
+                    DiscordAudioTrackStuckEvent(it, guildPlayer, event)
+                }
+                else -> return logger.trace {
+                    "未対応のイベントです。(${event::class.qualifiedName})"
                 }
             }
-        }
-
-        override fun onEvent(event: AudioEvent) {
-            runEvent(
-                when (event) {
-                    is PlayerPauseEvent -> {
-                        DiscordAudioPlayerPauseEvent(guildPlayer, event)
-                    }
-                    is PlayerResumeEvent -> {
-                        DiscordAudioPlayerResumeEvent(guildPlayer, event)
-                    }
-                    is TrackStartEvent -> {
-                        DiscordAudioTrackStartEvent(guildPlayer, event)
-                    }
-                    is TrackEndEvent -> {
-                        DiscordAudioTrackEndEvent(guildPlayer, event)
-                    }
-                    is TrackExceptionEvent -> {
-                        DiscordAudioTrackExceptionEvent(guildPlayer, event)
-                    }
-                    is TrackStuckEvent -> {
-                        DiscordAudioTrackStuckEvent(guildPlayer, event)
-                    }
-                    else -> return
-                }
-            )
         }
     }
 }

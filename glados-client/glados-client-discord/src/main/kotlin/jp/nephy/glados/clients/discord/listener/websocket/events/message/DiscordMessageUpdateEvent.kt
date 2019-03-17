@@ -24,9 +24,11 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket.events.message
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent
 
 data class DiscordMessageUpdateEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: MessageUpdateEvent
 ): DiscordWebsocketEventBase<MessageUpdateEvent>

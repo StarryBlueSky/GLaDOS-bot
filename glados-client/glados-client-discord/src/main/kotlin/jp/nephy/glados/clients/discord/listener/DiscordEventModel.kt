@@ -26,10 +26,13 @@
 
 package jp.nephy.glados.clients.discord.listener
 
-import jp.nephy.glados.clients.discord.listener.audio.AudioEventAdapterModel
-import jp.nephy.glados.clients.discord.listener.connection.ConnectionListenerModel
-import jp.nephy.glados.clients.discord.listener.receive.AudioReceiveHandlerModel
-import jp.nephy.glados.clients.discord.listener.websocket.ListenerAdapterModel
 import jp.nephy.glados.api.EventModel
+import jp.nephy.glados.clients.discord.listener.audio.DiscordAudioEventModel
+import jp.nephy.glados.clients.discord.listener.connection.DiscordConnectionEventModel
+import jp.nephy.glados.clients.discord.listener.receive.DiscordReceiveAudioEventModel
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventModel
 
-interface DiscordEventModel: EventModel, ListenerAdapterModel, ConnectionListenerModel, AudioEventAdapterModel, AudioReceiveHandlerModel
+/**
+ * DiscordEventModel.
+ */
+interface DiscordEventModel: EventModel, DiscordWebsocketEventModel, DiscordConnectionEventModel, DiscordAudioEventModel, DiscordReceiveAudioEventModel

@@ -24,8 +24,8 @@
 
 package jp.nephy.glados.clients.chrono
 
-import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.fullName
 import jp.nephy.glados.clients.invoke
@@ -36,6 +36,10 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 
+/**
+ * ScheduleSubscriptionClient.
+ */
+@Suppress("UNUSED")
 object ScheduleSubscriptionClient: GLaDOSSubscriptionClient<Schedule, ScheduleEvent, ScheduleSubscription>() {
     override val priority: Priority
         get() = Priority.Lower
@@ -64,13 +68,13 @@ object ScheduleSubscriptionClient: GLaDOSSubscriptionClient<Schedule, ScheduleEv
                     delay(60000L - calendar.get(Calendar.SECOND) * 1000L - calendar.get(Calendar.MILLISECOND))
                     
                     calendar = Calendar.getInstance()
-                    val event = ScheduleEvent(calendar)
                     
-                    subscriptions.filter {
-                        it.matches(calendar)
-                    }.forEach {
+                    subscriptions.filter { subscription ->
+                        subscription.matches(calendar)
+                    }.forEach { subscription ->
                         launch {
-                            it.invoke(event)
+                            val event = ScheduleEvent(calendar, subscription)
+                            subscription.invoke(event)
                         }
                     }
 
@@ -84,6 +88,10 @@ object ScheduleSubscriptionClient: GLaDOSSubscriptionClient<Schedule, ScheduleEv
     }
 
     override fun stop() {
+        if (!::job.isInitialized) {
+            return
+        }
+        
         job.cancel()
     }
 }

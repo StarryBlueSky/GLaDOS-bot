@@ -28,13 +28,16 @@ import com.sedmelluq.discord.lavaplayer.player.event.TrackExceptionEvent
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import jp.nephy.glados.clients.discord.GuildPlayer
+import jp.nephy.glados.clients.discord.listener.audio.DiscordAudioEventSubscription
 
 data class DiscordAudioTrackExceptionEvent(
-    override val guildPlayer: GuildPlayer, override val jdaEvent: TrackExceptionEvent
+    override val subscription: DiscordAudioEventSubscription,
+    override val guildPlayer: GuildPlayer,
+    override val lavaPlayerEvent: TrackExceptionEvent
 ): DiscordAudioEventBase
 
 val DiscordAudioTrackExceptionEvent.track: AudioTrack
-    get() = jdaEvent.track
+    get() = lavaPlayerEvent.track
 
 val DiscordAudioTrackExceptionEvent.exception: FriendlyException
-    get() = jdaEvent.exception
+    get() = lavaPlayerEvent.exception

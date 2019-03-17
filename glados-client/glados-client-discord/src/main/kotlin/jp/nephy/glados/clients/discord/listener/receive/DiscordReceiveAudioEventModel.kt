@@ -22,11 +22,14 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.message.priv
+package jp.nephy.glados.clients.discord.listener.receive
 
-import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageUpdateEvent
+import jp.nephy.glados.api.EventModel
+import jp.nephy.glados.clients.discord.listener.receive.events.DiscordCombinedAudioReceiveEvent
+import jp.nephy.glados.clients.discord.listener.receive.events.DiscordUserAudioReceiveEvent
 
-data class DiscordPrivateMessageUpdateEvent(
-    override val jdaEvent: PrivateMessageUpdateEvent
-): DiscordWebsocketEventBase<PrivateMessageUpdateEvent>
+interface DiscordReceiveAudioEventModel: EventModel {
+    suspend fun onDiscordCombinedAudioReceive(event: DiscordCombinedAudioReceiveEvent) {}
+
+    suspend fun onDiscordUserAudioReceive(event: DiscordUserAudioReceiveEvent) {}
+}

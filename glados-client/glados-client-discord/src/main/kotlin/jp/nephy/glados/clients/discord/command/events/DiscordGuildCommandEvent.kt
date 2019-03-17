@@ -22,11 +22,20 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.message.priv
+package jp.nephy.glados.clients.discord.command.events
 
-import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageEmbedEvent
+import jp.nephy.glados.clients.discord.command.DiscordCommandSubscription
+import net.dv8tion.jda.api.entities.*
 
-data class DiscordPrivateMessageEmbedEvent(
-    override val jdaEvent: PrivateMessageEmbedEvent
-): DiscordWebsocketEventBase<PrivateMessageEmbedEvent>
+/**
+ * DiscordGuildCommandEvent.
+ */
+class DiscordGuildCommandEvent(
+    subscription: DiscordCommandSubscription,
+    arguments: List<String>,
+    message: Message,
+    author: User,
+    override val member: Member,
+    override val guild: Guild,
+    override val channel: TextChannel
+): DiscordCommandEvent(subscription, arguments, message, author, member, guild, channel)

@@ -22,12 +22,17 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.system
 
 import jp.nephy.glados.api.EventModel
 import jp.nephy.glados.clients.system.events.ReadyEvent
 import jp.nephy.glados.clients.system.events.ShutdownEvent
 
+/**
+ * SystemEventModel.
+ */
 interface SystemEventModel: EventModel {
     /**
      * Called when GLaDOS is ready.

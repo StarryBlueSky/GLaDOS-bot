@@ -24,9 +24,11 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket.events.guild.update
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateNameEvent
 
 data class DiscordGuildUpdateNameEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildUpdateNameEvent
 ): DiscordWebsocketEventBase<GuildUpdateNameEvent>

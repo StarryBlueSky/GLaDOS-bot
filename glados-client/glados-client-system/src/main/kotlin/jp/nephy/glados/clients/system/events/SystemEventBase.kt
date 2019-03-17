@@ -25,5 +25,11 @@
 package jp.nephy.glados.clients.system.events
 
 import jp.nephy.glados.api.Event
+import jp.nephy.glados.clients.system.SystemSubscription
 
-interface SystemEventBase: Event
+/**
+ * SystemEventBase.
+ */
+interface SystemEventBase: Event {
+    override val subscription: SystemSubscription
+}

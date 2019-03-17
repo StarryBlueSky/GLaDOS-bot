@@ -27,4 +27,9 @@ package jp.nephy.glados.api
 /**
  * GLaDOS Event base.
  */
-interface Event
+interface Event {
+    /**
+     * Executed subscription.
+     */
+    val subscription: Subscription<*, *>
+}

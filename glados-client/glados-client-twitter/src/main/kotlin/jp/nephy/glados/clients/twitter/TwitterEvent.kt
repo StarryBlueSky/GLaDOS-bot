@@ -24,9 +24,21 @@
 
 package jp.nephy.glados.clients.twitter
 
+import jp.nephy.glados.clients.twitter.config.TwitterAccount
 import jp.nephy.glados.api.Priority
 
+/**
+ * Indicates that its function should be executed as [TwitterSubscription].
+ */
 @Target(AnnotationTarget.FUNCTION)
 annotation class TwitterEvent(
-    val accounts: Array<String> = [], val priority: Priority = Priority.Normal
+    /**
+     * [TwitterAccount] key in config.json.
+     */
+    val accounts: Array<String> = [],
+
+    /**
+     * Execution priority.
+     */
+    val priority: Priority = Priority.Normal
 )

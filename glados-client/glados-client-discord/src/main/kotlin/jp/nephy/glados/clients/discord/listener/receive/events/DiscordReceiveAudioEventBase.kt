@@ -26,7 +26,10 @@ package jp.nephy.glados.clients.discord.listener.receive.events
 
 import jp.nephy.glados.clients.discord.GuildPlayer
 import jp.nephy.glados.clients.discord.listener.DiscordEventBase
+import jp.nephy.glados.clients.discord.listener.receive.DiscordReceiveAudioEventSubscription
 
 interface DiscordReceiveAudioEventBase: DiscordEventBase {
     val guildPlayer: GuildPlayer
+
+    override val subscription: DiscordReceiveAudioEventSubscription
 }

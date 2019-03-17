@@ -24,9 +24,11 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket.events.category
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import net.dv8tion.jda.api.events.channel.category.CategoryCreateEvent
 
 data class DiscordCategoryCreateEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: CategoryCreateEvent
 ): DiscordWebsocketEventBase<CategoryCreateEvent>

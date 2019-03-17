@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.discord.listener
 
 import jp.nephy.glados.api.Event
@@ -29,8 +31,13 @@ import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.clients.discord.jda
 import net.dv8tion.jda.api.JDA
 
+/**
+ * DiscordEventBase.
+ */
 interface DiscordEventBase: Event
 
-@Suppress("UNUSED")
+/**
+ * Shortcut for [GLaDOS.Companion.jda].
+ */
 val DiscordEventBase.jda: JDA
     get() = GLaDOS.jda

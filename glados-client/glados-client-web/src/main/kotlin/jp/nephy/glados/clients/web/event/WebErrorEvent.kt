@@ -25,12 +25,19 @@
 package jp.nephy.glados.clients.web.event
 
 import io.ktor.application.ApplicationCall
+import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
+import io.ktor.util.pipeline.PipelineContext
 import jp.nephy.glados.api.Event
+import jp.nephy.glados.clients.web.error.WebErrorPageSubscription
 
 data class WebErrorEvent(
-    val access: WebAccessEvent, val status: HttpStatusCode
+    override val subscription: WebErrorPageSubscription,
+
+    val context: PipelineContext<*, ApplicationCall>,
+
+    val status: HttpStatusCode
 ): Event
 
 val WebErrorEvent.call: ApplicationCall
-    get() = access.call
+    get() = context.call

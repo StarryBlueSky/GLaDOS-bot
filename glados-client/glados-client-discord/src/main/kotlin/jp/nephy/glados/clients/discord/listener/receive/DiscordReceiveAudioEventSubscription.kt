@@ -24,15 +24,17 @@
 
 package jp.nephy.glados.clients.discord.listener.receive
 
+import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.Priority
-import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
 import jp.nephy.glados.clients.discord.listener.receive.events.DiscordReceiveAudioEventBase
 import kotlin.reflect.KFunction
 
 class DiscordReceiveAudioEventSubscription(
-    override val plugin: Plugin, override val function: KFunction<*>, override val annotation: DiscordEvent
+    override val plugin: Plugin,
+    override val function: KFunction<*>,
+    override val annotation: DiscordEvent
 ): GLaDOSSubscription<DiscordEvent, DiscordReceiveAudioEventBase>() {
     override val priority: Priority
         get() = annotation.priority

@@ -22,21 +22,13 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.audio
+package jp.nephy.glados.clients.discord.listener.websocket.events.channel.private
 
-import jp.nephy.glados.clients.discord.listener.audio.events.*
-import jp.nephy.glados.api.EventModel
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
+import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
+import net.dv8tion.jda.api.events.channel.priv.PrivateChannelCreateEvent
 
-interface AudioEventAdapterModel: EventModel {
-    suspend fun onDiscordAudioPlayerPause(event: DiscordAudioPlayerPauseEvent) {}
-
-    suspend fun onDiscordAudioPlayerResume(event: DiscordAudioPlayerResumeEvent) {}
-    
-    suspend fun onDiscordAudioTrackStart(event: DiscordAudioTrackStartEvent) {}
-    
-    suspend fun onDiscordAudioTrackEnd(event: DiscordAudioTrackEndEvent) {}
-    
-    suspend fun onDiscordAudioTrackException(event: DiscordAudioTrackExceptionEvent) {}
-    
-    suspend fun onDiscordAudioTrackStuck(event: DiscordAudioTrackStuckEvent) {}
-}
+data class DiscordPrivateChannelCreateEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
+    override val jdaEvent: PrivateChannelCreateEvent
+): DiscordWebsocketEventBase<PrivateChannelCreateEvent>

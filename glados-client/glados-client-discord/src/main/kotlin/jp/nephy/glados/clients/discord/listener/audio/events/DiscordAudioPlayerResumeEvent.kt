@@ -26,7 +26,10 @@ package jp.nephy.glados.clients.discord.listener.audio.events
 
 import com.sedmelluq.discord.lavaplayer.player.event.PlayerResumeEvent
 import jp.nephy.glados.clients.discord.GuildPlayer
+import jp.nephy.glados.clients.discord.listener.audio.DiscordAudioEventSubscription
 
 data class DiscordAudioPlayerResumeEvent(
-    override val guildPlayer: GuildPlayer, override val jdaEvent: PlayerResumeEvent
+    override val subscription: DiscordAudioEventSubscription,
+    override val guildPlayer: GuildPlayer,
+    override val lavaPlayerEvent: PlayerResumeEvent
 ): DiscordAudioEventBase

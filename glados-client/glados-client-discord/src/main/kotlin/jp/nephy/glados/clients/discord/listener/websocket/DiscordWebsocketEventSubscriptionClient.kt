@@ -24,13 +24,11 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket
 
-import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
-import jp.nephy.glados.api.Priority
+import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.clients.discord.disposeJDA
 import jp.nephy.glados.clients.discord.initializeJDA
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
-import jp.nephy.glados.clients.discord.listener.DiscordEventBase
 import jp.nephy.glados.clients.discord.listener.defaultDiscordEventAnnotation
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import jp.nephy.glados.clients.discord.listener.websocket.events.category.DiscordCategoryCreateEvent
@@ -38,8 +36,8 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.category.Discor
 import jp.nephy.glados.clients.discord.listener.websocket.events.category.update.DiscordCategoryUpdateNameEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.category.update.DiscordCategoryUpdatePermissionsEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.category.update.DiscordCategoryUpdatePositionEvent
-import jp.nephy.glados.clients.discord.listener.websocket.events.channel.priv.DiscordPrivateChannelCreateEvent
-import jp.nephy.glados.clients.discord.listener.websocket.events.channel.priv.DiscordPrivateChannelDeleteEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.private.DiscordPrivateChannelCreateEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.private.DiscordPrivateChannelDeleteEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.DiscordTextChannelCreateEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.DiscordTextChannelDeleteEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.update.*
@@ -57,7 +55,7 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.guild.update.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.guild.voice.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.message.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.message.guild.*
-import jp.nephy.glados.clients.discord.listener.websocket.events.message.priv.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.message.private.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.message.reaction.DiscordMessageReactionAddEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.message.reaction.DiscordMessageReactionRemoveAllEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.message.reaction.DiscordMessageReactionRemoveEvent
@@ -69,12 +67,7 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUse
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUserTypingEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.self.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.*
-import jp.nephy.glados.clients.eventClass
-import jp.nephy.glados.clients.invoke
-import jp.nephy.glados.clients.subscriptions
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import net.dv8tion.jda.api.entities.Guild
+import jp.nephy.glados.clients.runEvent
 import net.dv8tion.jda.api.events.*
 import net.dv8tion.jda.api.events.channel.category.CategoryCreateEvent
 import net.dv8tion.jda.api.events.channel.category.CategoryDeleteEvent
@@ -123,17 +116,16 @@ import net.dv8tion.jda.api.events.user.UserActivityEndEvent
 import net.dv8tion.jda.api.events.user.UserActivityStartEvent
 import net.dv8tion.jda.api.events.user.UserTypingEvent
 import net.dv8tion.jda.api.events.user.update.*
-import net.dv8tion.jda.api.hooks.SubscribeEvent
-import java.util.*
+import net.dv8tion.jda.api.hooks.ListenerAdapter
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubclassOf
 
-object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<DiscordEvent, DiscordWebsocketEventBase<*>, DiscordWebsocketEventSubscription>(), EventListener {
-    override val priority: Priority
-        get() = Priority.Normal
-    
+/**
+ * DiscordWebsocketEventSubscriptionClient.
+ */
+object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<DiscordEvent, DiscordWebsocketEventBase<*>, DiscordWebsocketEventSubscription>() {
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): DiscordWebsocketEventSubscription? {
         if (!eventClass.isSubclassOf(DiscordWebsocketEventBase::class)) {
             return null
@@ -141,10 +133,6 @@ object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<Discord
 
         val annotation = function.findAnnotation() ?: defaultDiscordEventAnnotation
         return DiscordWebsocketEventSubscription(plugin, function, annotation)
-    }
-
-    override fun canHandle(event: jp.nephy.glados.api.Event): Boolean {
-        return event is DiscordEventBase
     }
 
     override fun start() {
@@ -155,170 +143,373 @@ object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<Discord
         disposeJDA()
     }
 
-    @Suppress("UNUSED")
-    @SubscribeEvent
-    fun onEvent(jdaEvent: Event) {
-        val event = jdaEvent.toGLaDOSEvent() ?: return logger.trace { 
-            "未対応のイベントです。(${jdaEvent::class.qualifiedName})"
-        }
+    internal object Listener: ListenerAdapter() {
+        override fun onGenericEvent(event: GenericEvent) {
+            when (event) {
+                is ReadyEvent -> runEvent {
+                    DiscordReadyEvent(it, event)
+                }
+                is ResumedEvent -> runEvent {
+                    DiscordResumedEvent(it, event)
+                }
+                is ReconnectedEvent -> runEvent {
+                    DiscordReconnectedEvent(it, event)
+                }
+                is DisconnectEvent -> runEvent {
+                    DiscordDisconnectEvent(it, event)
+                }
+                is ShutdownEvent -> runEvent {
+                    DiscordShutdownEvent(it, event)
+                }
+                is StatusChangeEvent -> runEvent {
+                    DiscordStatusChangeEvent(it, event)
+                }
+                is ExceptionEvent -> runEvent {
+                    DiscordExceptionEvent(it, event)
+                }
+                is HttpRequestEvent -> runEvent {
+                    DiscordHttpRequestEvent(it, event)
+                }
 
-        launch {
-            val targets = subscriptions.filter { it.eventClass == event::class }
-            if (targets.isEmpty()) {
-                return@launch
-            }
-            
-            targets.forEach {
-                launch {
-                    it.invoke(event)
-                    it.logger.trace {
-                        val guild = try {
-                            event::class.java.getMethod("getGuild").invoke(event) as? Guild
-                        } catch (e: NoSuchMethodException) {
-                            null
-                        }
-                        
-                        "実行されました。(${guild?.name})" 
-                    }
+                is UserUpdateNameEvent -> runEvent {
+                    DiscordUserUpdateNameEvent(it, event)
+                }
+                is UserUpdateDiscriminatorEvent -> runEvent {
+                    DiscordUserUpdateDiscriminatorEvent(it, event)
+                }
+                is UserUpdateAvatarEvent -> runEvent {
+                    DiscordUserUpdateAvatarEvent(it, event)
+                }
+                is UserUpdateOnlineStatusEvent -> runEvent {
+                    DiscordUserUpdateOnlineStatusEvent(it, event)
+                }
+                is UserUpdateActivityOrderEvent -> runEvent {
+                    DiscordUserUpdateActivityOrderEvent(it, event)
+                }
+                is UserTypingEvent -> runEvent {
+                    DiscordUserTypingEvent(it, event)
+                }
+                is UserActivityStartEvent -> runEvent {
+                    DiscordUserActivityStartEvent(it, event)
+                }
+                is UserActivityEndEvent -> runEvent {
+                    DiscordUserActivityEndEvent(it, event)
+                }
+
+                is SelfUpdateAvatarEvent -> runEvent {
+                    DiscordSelfUpdateAvatarEvent(it, event)
+                }
+                is SelfUpdateEmailEvent -> runEvent {
+                    DiscordSelfUpdateEmailEvent(it, event)
+                }
+                is SelfUpdateMFAEvent -> runEvent {
+                    DiscordSelfUpdateMFAEvent(it, event)
+                }
+                is SelfUpdateNameEvent -> runEvent {
+                    DiscordSelfUpdateNameEvent(it, event)
+                }
+                is SelfUpdateVerifiedEvent -> runEvent {
+                    DiscordSelfUpdateVerifiedEvent(it, event)
+                }
+
+                is GuildMessageReceivedEvent -> runEvent {
+                    DiscordGuildMessageReceivedEvent(it, event)
+                }
+                is GuildMessageUpdateEvent -> runEvent {
+                    DiscordGuildMessageUpdateEvent(it, event)
+                }
+                is GuildMessageDeleteEvent -> runEvent {
+                    DiscordGuildMessageDeleteEvent(it, event)
+                }
+                is GuildMessageEmbedEvent -> runEvent {
+                    DiscordGuildMessageEmbedEvent(it, event)
+                }
+                is GuildMessageReactionAddEvent -> runEvent {
+                    DiscordGuildMessageReactionAddEvent(it, event)
+                }
+                is GuildMessageReactionRemoveEvent -> runEvent {
+                    DiscordGuildMessageReactionRemoveEvent(it, event)
+                }
+                is GuildMessageReactionRemoveAllEvent -> runEvent {
+                    DiscordGuildMessageReactionRemoveAllEvent(it, event)
+                }
+
+                is PrivateMessageReceivedEvent -> runEvent {
+                    DiscordPrivateMessageReceivedEvent(it, event)
+                }
+                is PrivateMessageUpdateEvent -> runEvent {
+                    DiscordPrivateMessageUpdateEvent(it, event)
+                }
+                is PrivateMessageDeleteEvent -> runEvent {
+                    DiscordPrivateMessageDeleteEvent(it, event)
+                }
+                is PrivateMessageEmbedEvent -> runEvent {
+                    DiscordPrivateMessageEmbedEvent(it, event)
+                }
+                is PrivateMessageReactionAddEvent -> runEvent {
+                    DiscordPrivateMessageReactionAddEvent(it, event)
+                }
+                is PrivateMessageReactionRemoveEvent -> runEvent {
+                    DiscordPrivateMessageReactionRemoveEvent(it, event)
+                }
+
+                is MessageReceivedEvent -> runEvent {
+                    DiscordMessageReceivedEvent(it, event)
+                }
+                is MessageUpdateEvent -> runEvent {
+                    DiscordMessageUpdateEvent(it, event)
+                }
+                is MessageDeleteEvent -> runEvent {
+                    DiscordMessageDeleteEvent(it, event)
+                }
+                is MessageBulkDeleteEvent -> runEvent {
+                    DiscordMessageBulkDeleteEvent(it, event)
+                }
+                is MessageEmbedEvent -> runEvent {
+                    DiscordMessageEmbedEvent(it, event)
+                }
+                is MessageReactionAddEvent -> runEvent {
+                    DiscordMessageReactionAddEvent(it, event)
+                }
+                is MessageReactionRemoveEvent -> runEvent {
+                    DiscordMessageReactionRemoveEvent(it, event)
+                }
+                is MessageReactionRemoveAllEvent -> runEvent {
+                    DiscordMessageReactionRemoveAllEvent(it, event)
+                }
+
+                is TextChannelDeleteEvent -> runEvent {
+                    DiscordTextChannelDeleteEvent(it, event)
+                }
+                is TextChannelUpdateNameEvent -> runEvent {
+                    DiscordTextChannelUpdateNameEvent(it, event)
+                }
+                is TextChannelUpdateTopicEvent -> runEvent {
+                    DiscordTextChannelUpdateTopicEvent(it, event)
+                }
+                is TextChannelUpdatePositionEvent -> runEvent {
+                    DiscordTextChannelUpdatePositionEvent(it, event)
+                }
+                is TextChannelUpdatePermissionsEvent -> runEvent {
+                    DiscordTextChannelUpdatePermissionsEvent(it, event)
+                }
+                is TextChannelUpdateNSFWEvent -> runEvent {
+                    DiscordTextChannelUpdateNSFWEvent(it, event)
+                }
+                is TextChannelUpdateParentEvent -> runEvent {
+                    DiscordTextChannelUpdateParentEvent(it, event)
+                }
+                is TextChannelUpdateSlowmodeEvent -> runEvent {
+                    DiscordTextChannelUpdateSlowmodeEvent(it, event)
+                }
+                is TextChannelCreateEvent -> runEvent {
+                    DiscordTextChannelCreateEvent(it, event)
+                }
+
+                is VoiceChannelDeleteEvent -> runEvent {
+                    DiscordVoiceChannelDeleteEvent(it, event)
+                }
+                is VoiceChannelUpdateNameEvent -> runEvent {
+                    DiscordVoiceChannelUpdateNameEvent(it, event)
+                }
+                is VoiceChannelUpdatePositionEvent -> runEvent {
+                    DiscordVoiceChannelUpdatePositionEvent(it, event)
+                }
+                is VoiceChannelUpdateUserLimitEvent -> runEvent {
+                    DiscordVoiceChannelUpdateUserLimitEvent(it, event)
+                }
+                is VoiceChannelUpdateBitrateEvent -> runEvent {
+                    DiscordVoiceChannelUpdateBitrateEvent(it, event)
+                }
+                is VoiceChannelUpdatePermissionsEvent -> runEvent {
+                    DiscordVoiceChannelUpdatePermissionsEvent(it, event)
+                }
+                is VoiceChannelUpdateParentEvent -> runEvent {
+                    DiscordVoiceChannelUpdateParentEvent(it, event)
+                }
+                is VoiceChannelCreateEvent -> runEvent {
+                    DiscordVoiceChannelCreateEvent(it, event)
+                }
+
+                is CategoryDeleteEvent -> runEvent {
+                    DiscordCategoryDeleteEvent(it, event)
+                }
+                is CategoryUpdateNameEvent -> runEvent {
+                    DiscordCategoryUpdateNameEvent(it, event)
+                }
+                is CategoryUpdatePositionEvent -> runEvent {
+                    DiscordCategoryUpdatePositionEvent(it, event)
+                }
+                is CategoryUpdatePermissionsEvent -> runEvent {
+                    DiscordCategoryUpdatePermissionsEvent(it, event)
+                }
+                is CategoryCreateEvent -> runEvent {
+                    DiscordCategoryCreateEvent(it, event)
+                }
+
+                is PrivateChannelCreateEvent -> runEvent {
+                    DiscordPrivateChannelCreateEvent(it, event)
+                }
+                is PrivateChannelDeleteEvent -> runEvent {
+                    DiscordPrivateChannelDeleteEvent(it, event)
+                }
+
+                is GuildReadyEvent -> runEvent {
+                    DiscordGuildReadyEvent(it, event)
+                }
+                is GuildJoinEvent -> runEvent {
+                    DiscordGuildJoinEvent(it, event)
+                }
+                is GuildLeaveEvent -> runEvent {
+                    DiscordGuildLeaveEvent(it, event)
+                }
+                is GuildAvailableEvent -> runEvent {
+                    DiscordGuildAvailableEvent(it, event)
+                }
+                is GuildUnavailableEvent -> runEvent {
+                    DiscordGuildUnavailableEvent(it, event)
+                }
+                is UnavailableGuildJoinedEvent -> runEvent {
+                    DiscordUnavailableGuildJoinedEvent(it, event)
+                }
+                is GuildBanEvent -> runEvent {
+                    DiscordGuildBanEvent(it, event)
+                }
+                is GuildUnbanEvent -> runEvent {
+                    DiscordGuildUnbanEvent(it, event)
+                }
+                is GuildUpdateAfkChannelEvent -> runEvent {
+                    DiscordGuildUpdateAfkChannelEvent(it, event)
+                }
+                is GuildUpdateSystemChannelEvent -> runEvent {
+                    DiscordGuildUpdateSystemChannelEvent(it, event)
+                }
+                is GuildUpdateAfkTimeoutEvent -> runEvent {
+                    DiscordGuildUpdateAfkTimeoutEvent(it, event)
+                }
+                is GuildUpdateExplicitContentLevelEvent -> runEvent {
+                    DiscordGuildUpdateExplicitContentLevelEvent(it, event)
+                }
+                is GuildUpdateIconEvent -> runEvent {
+                    DiscordGuildUpdateIconEvent(it, event)
+                }
+                is GuildUpdateMFALevelEvent -> runEvent {
+                    DiscordGuildUpdateMFALevelEvent(it, event)
+                }
+                is GuildUpdateNameEvent -> runEvent {
+                    DiscordGuildUpdateNameEvent(it, event)
+                }
+                is GuildUpdateNotificationLevelEvent -> runEvent {
+                    DiscordGuildUpdateNotificationLevelEvent(it, event)
+                }
+                is GuildUpdateOwnerEvent -> runEvent {
+                    DiscordGuildUpdateOwnerEvent(it, event)
+                }
+                is GuildUpdateRegionEvent -> runEvent {
+                    DiscordGuildUpdateRegionEvent(it, event)
+                }
+                is GuildUpdateSplashEvent -> runEvent {
+                    DiscordGuildUpdateSplashEvent(it, event)
+                }
+                is GuildUpdateVerificationLevelEvent -> runEvent {
+                    DiscordGuildUpdateVerificationLevelEvent(it, event)
+                }
+                is GuildUpdateFeaturesEvent -> runEvent {
+                    DiscordGuildUpdateFeaturesEvent(it, event)
+                }
+
+                is GuildMemberJoinEvent -> runEvent {
+                    DiscordGuildMemberJoinEvent(it, event)
+                }
+                is GuildMemberLeaveEvent -> runEvent {
+                    DiscordGuildMemberLeaveEvent(it, event)
+                }
+                is GuildMemberRoleAddEvent -> runEvent {
+                    DiscordGuildMemberRoleAddEvent(it, event)
+                }
+                is GuildMemberRoleRemoveEvent -> runEvent {
+                    DiscordGuildMemberRoleRemoveEvent(it, event)
+                }
+                is GuildMemberNickChangeEvent -> runEvent {
+                    DiscordGuildMemberNickChangeEvent(it, event)
+                }
+
+                is GuildVoiceUpdateEvent -> runEvent {
+                    DiscordGuildVoiceUpdateEvent(it, event)
+                }
+                is GuildVoiceJoinEvent -> runEvent {
+                    DiscordGuildVoiceJoinEvent(it, event)
+                }
+                is GuildVoiceMoveEvent -> runEvent {
+                    DiscordGuildVoiceMoveEvent(it, event)
+                }
+                is GuildVoiceLeaveEvent -> runEvent {
+                    DiscordGuildVoiceLeaveEvent(it, event)
+                }
+                is GuildVoiceMuteEvent -> runEvent {
+                    DiscordGuildVoiceMuteEvent(it, event)
+                }
+                is GuildVoiceDeafenEvent -> runEvent {
+                    DiscordGuildVoiceDeafenEvent(it, event)
+                }
+                is GuildVoiceGuildMuteEvent -> runEvent {
+                    DiscordGuildVoiceGuildMuteEvent(it, event)
+                }
+                is GuildVoiceGuildDeafenEvent -> runEvent {
+                    DiscordGuildVoiceGuildDeafenEvent(it, event)
+                }
+                is GuildVoiceSelfMuteEvent -> runEvent {
+                    DiscordGuildVoiceSelfMuteEvent(it, event)
+                }
+                is GuildVoiceSelfDeafenEvent -> runEvent {
+                    DiscordGuildVoiceSelfDeafenEvent(it, event)
+                }
+                is GuildVoiceSuppressEvent -> runEvent {
+                    DiscordGuildVoiceSuppressEvent(it, event)
+                }
+
+                is RoleCreateEvent -> runEvent {
+                    DiscordRoleCreateEvent(it, event)
+                }
+                is RoleDeleteEvent -> runEvent {
+                    DiscordRoleDeleteEvent(it, event)
+                }
+                is RoleUpdateColorEvent -> runEvent {
+                    DiscordRoleUpdateColorEvent(it, event)
+                }
+                is RoleUpdateHoistedEvent -> runEvent {
+                    DiscordRoleUpdateHoistedEvent(it, event)
+                }
+                is RoleUpdateMentionableEvent -> runEvent {
+                    DiscordRoleUpdateMentionableEvent(it, event)
+                }
+                is RoleUpdateNameEvent -> runEvent {
+                    DiscordRoleUpdateNameEvent(it, event)
+                }
+                is RoleUpdatePermissionsEvent -> runEvent {
+                    DiscordRoleUpdatePermissionsEvent(it, event)
+                }
+                is RoleUpdatePositionEvent -> runEvent {
+                    DiscordRoleUpdatePositionEvent(it, event)
+                }
+
+                is EmoteAddedEvent -> runEvent {
+                    DiscordEmoteAddedEvent(it, event)
+                }
+                is EmoteRemovedEvent -> runEvent {
+                    DiscordEmoteRemovedEvent(it, event)
+                }
+                is EmoteUpdateNameEvent -> runEvent {
+                    DiscordEmoteUpdateNameEvent(it, event)
+                }
+                is EmoteUpdateRolesEvent -> runEvent {
+                    DiscordEmoteUpdateRolesEvent(it, event)
+                }
+
+                else -> {
+                    logger.trace { "未対応のイベントです。(${event::class.qualifiedName})" }
                 }
             }
         }
-    }
-    
-    @Suppress("UNCHECKED_CAST")
-    private fun <E: Event> E.toGLaDOSEvent(): DiscordWebsocketEventBase<E>? {
-        return when (this) {
-            is ReadyEvent -> DiscordReadyEvent(this)
-            is ResumedEvent -> DiscordResumedEvent(this)
-            is ReconnectedEvent -> DiscordReconnectedEvent(this)
-            is DisconnectEvent -> DiscordDisconnectEvent(this)
-            is ShutdownEvent -> DiscordShutdownEvent(this)
-            is StatusChangeEvent -> DiscordStatusChangeEvent(this)
-            is ExceptionEvent -> DiscordExceptionEvent(this)
-            is HttpRequestEvent -> DiscordHttpRequestEvent(this)
-
-            is UserUpdateNameEvent -> DiscordUserUpdateNameEvent(this)
-            is UserUpdateDiscriminatorEvent -> DiscordUserUpdateDiscriminatorEvent(this)
-            is UserUpdateAvatarEvent -> DiscordUserUpdateAvatarEvent(this)
-            is UserUpdateOnlineStatusEvent -> DiscordUserUpdateOnlineStatusEvent(this)
-            is UserUpdateActivityOrderEvent -> DiscordUserUpdateActivityOrderEvent(this)
-            is UserTypingEvent -> DiscordUserTypingEvent(this)
-            is UserActivityStartEvent -> DiscordUserActivityStartEvent(this)
-            is UserActivityEndEvent -> DiscordUserActivityEndEvent(this)
-
-            is SelfUpdateAvatarEvent -> DiscordSelfUpdateAvatarEvent(this)
-            is SelfUpdateEmailEvent -> DiscordSelfUpdateEmailEvent(this)
-            is SelfUpdateMFAEvent -> DiscordSelfUpdateMFAEvent(this)
-            is SelfUpdateNameEvent -> DiscordSelfUpdateNameEvent(this)
-            is SelfUpdateVerifiedEvent -> DiscordSelfUpdateVerifiedEvent(this)
-
-            is GuildMessageReceivedEvent -> DiscordGuildMessageReceivedEvent(this)
-            is GuildMessageUpdateEvent -> DiscordGuildMessageUpdateEvent(this)
-            is GuildMessageDeleteEvent -> DiscordGuildMessageDeleteEvent(this)
-            is GuildMessageEmbedEvent -> DiscordGuildMessageEmbedEvent(this)
-            is GuildMessageReactionAddEvent -> DiscordGuildMessageReactionAddEvent(this)
-            is GuildMessageReactionRemoveEvent -> DiscordGuildMessageReactionRemoveEvent(this)
-            is GuildMessageReactionRemoveAllEvent -> DiscordGuildMessageReactionRemoveAllEvent(this)
-
-            is PrivateMessageReceivedEvent -> DiscordPrivateMessageReceivedEvent(this)
-            is PrivateMessageUpdateEvent -> DiscordPrivateMessageUpdateEvent(this)
-            is PrivateMessageDeleteEvent -> DiscordPrivateMessageDeleteEvent(this)
-            is PrivateMessageEmbedEvent -> DiscordPrivateMessageEmbedEvent(this)
-            is PrivateMessageReactionAddEvent -> DiscordPrivateMessageReactionAddEvent(this)
-            is PrivateMessageReactionRemoveEvent -> DiscordPrivateMessageReactionRemoveEvent(this)
-
-            is MessageReceivedEvent -> DiscordMessageReceivedEvent(this)
-            is MessageUpdateEvent -> DiscordMessageUpdateEvent(this)
-            is MessageDeleteEvent -> DiscordMessageDeleteEvent(this)
-            is MessageBulkDeleteEvent -> DiscordMessageBulkDeleteEvent(this)
-            is MessageEmbedEvent -> DiscordMessageEmbedEvent(this)
-            is MessageReactionAddEvent -> DiscordMessageReactionAddEvent(this)
-            is MessageReactionRemoveEvent -> DiscordMessageReactionRemoveEvent(this)
-            is MessageReactionRemoveAllEvent -> DiscordMessageReactionRemoveAllEvent(this)
-
-            is TextChannelDeleteEvent -> DiscordTextChannelDeleteEvent(this)
-            is TextChannelUpdateNameEvent -> DiscordTextChannelUpdateNameEvent(this)
-            is TextChannelUpdateTopicEvent -> DiscordTextChannelUpdateTopicEvent(this)
-            is TextChannelUpdatePositionEvent -> DiscordTextChannelUpdatePositionEvent(this)
-            is TextChannelUpdatePermissionsEvent -> DiscordTextChannelUpdatePermissionsEvent(this)
-            is TextChannelUpdateNSFWEvent -> DiscordTextChannelUpdateNSFWEvent(this)
-            is TextChannelUpdateParentEvent -> DiscordTextChannelUpdateParentEvent(this)
-            is TextChannelUpdateSlowmodeEvent -> DiscordTextChannelUpdateSlowmodeEvent(this)
-            is TextChannelCreateEvent -> DiscordTextChannelCreateEvent(this)
-
-            is VoiceChannelDeleteEvent -> DiscordVoiceChannelDeleteEvent(this)
-            is VoiceChannelUpdateNameEvent -> DiscordVoiceChannelUpdateNameEvent(this)
-            is VoiceChannelUpdatePositionEvent -> DiscordVoiceChannelUpdatePositionEvent(this)
-            is VoiceChannelUpdateUserLimitEvent -> DiscordVoiceChannelUpdateUserLimitEvent(this)
-            is VoiceChannelUpdateBitrateEvent -> DiscordVoiceChannelUpdateBitrateEvent(this)
-            is VoiceChannelUpdatePermissionsEvent -> DiscordVoiceChannelUpdatePermissionsEvent(this)
-            is VoiceChannelUpdateParentEvent -> DiscordVoiceChannelUpdateParentEvent(this)
-            is VoiceChannelCreateEvent -> DiscordVoiceChannelCreateEvent(this)
-
-            is CategoryDeleteEvent -> DiscordCategoryDeleteEvent(this)
-            is CategoryUpdateNameEvent -> DiscordCategoryUpdateNameEvent(this)
-            is CategoryUpdatePositionEvent -> DiscordCategoryUpdatePositionEvent(this)
-            is CategoryUpdatePermissionsEvent -> DiscordCategoryUpdatePermissionsEvent(this)
-            is CategoryCreateEvent -> DiscordCategoryCreateEvent(this)
-
-            is PrivateChannelCreateEvent -> DiscordPrivateChannelCreateEvent(this)
-            is PrivateChannelDeleteEvent -> DiscordPrivateChannelDeleteEvent(this)
-
-            is GuildReadyEvent -> DiscordGuildReadyEvent(this)
-            is GuildJoinEvent -> DiscordGuildJoinEvent(this)
-            is GuildLeaveEvent -> DiscordGuildLeaveEvent(this)
-            is GuildAvailableEvent -> DiscordGuildAvailableEvent(this)
-            is GuildUnavailableEvent -> DiscordGuildUnavailableEvent(this)
-            is UnavailableGuildJoinedEvent -> DiscordUnavailableGuildJoinedEvent(this)
-            is GuildBanEvent -> DiscordGuildBanEvent(this)
-            is GuildUnbanEvent -> DiscordGuildUnbanEvent(this)
-            is GuildUpdateAfkChannelEvent -> DiscordGuildUpdateAfkChannelEvent(this)
-            is GuildUpdateSystemChannelEvent -> DiscordGuildUpdateSystemChannelEvent(this)
-            is GuildUpdateAfkTimeoutEvent -> DiscordGuildUpdateAfkTimeoutEvent(this)
-            is GuildUpdateExplicitContentLevelEvent -> DiscordGuildUpdateExplicitContentLevelEvent(this)
-            is GuildUpdateIconEvent -> DiscordGuildUpdateIconEvent(this)
-            is GuildUpdateMFALevelEvent -> DiscordGuildUpdateMFALevelEvent(this)
-            is GuildUpdateNameEvent -> DiscordGuildUpdateNameEvent(this)
-            is GuildUpdateNotificationLevelEvent -> DiscordGuildUpdateNotificationLevelEvent(this)
-            is GuildUpdateOwnerEvent -> DiscordGuildUpdateOwnerEvent(this)
-            is GuildUpdateRegionEvent -> DiscordGuildUpdateRegionEvent(this)
-            is GuildUpdateSplashEvent -> DiscordGuildUpdateSplashEvent(this)
-            is GuildUpdateVerificationLevelEvent -> DiscordGuildUpdateVerificationLevelEvent(this)
-            is GuildUpdateFeaturesEvent -> DiscordGuildUpdateFeaturesEvent(this)
-
-            is GuildMemberJoinEvent -> DiscordGuildMemberJoinEvent(this)
-            is GuildMemberLeaveEvent -> DiscordGuildMemberLeaveEvent(this)
-            is GuildMemberRoleAddEvent -> DiscordGuildMemberRoleAddEvent(this)
-            is GuildMemberRoleRemoveEvent -> DiscordGuildMemberRoleRemoveEvent(this)
-            is GuildMemberNickChangeEvent -> DiscordGuildMemberNickChangeEvent(this)
-
-            is GuildVoiceUpdateEvent -> DiscordGuildVoiceUpdateEvent(this)
-            is GuildVoiceJoinEvent -> DiscordGuildVoiceJoinEvent(this)
-            is GuildVoiceMoveEvent -> DiscordGuildVoiceMoveEvent(this)
-            is GuildVoiceLeaveEvent -> DiscordGuildVoiceLeaveEvent(this)
-            is GuildVoiceMuteEvent -> DiscordGuildVoiceMuteEvent(this)
-            is GuildVoiceDeafenEvent -> DiscordGuildVoiceDeafenEvent(this)
-            is GuildVoiceGuildMuteEvent -> DiscordGuildVoiceGuildMuteEvent(this)
-            is GuildVoiceGuildDeafenEvent -> DiscordGuildVoiceGuildDeafenEvent(this)
-            is GuildVoiceSelfMuteEvent -> DiscordGuildVoiceSelfMuteEvent(this)
-            is GuildVoiceSelfDeafenEvent -> DiscordGuildVoiceSelfDeafenEvent(this)
-            is GuildVoiceSuppressEvent -> DiscordGuildVoiceSuppressEvent(this)
-
-            is RoleCreateEvent -> DiscordRoleCreateEvent(this)
-            is RoleDeleteEvent -> DiscordRoleDeleteEvent(this)
-            is RoleUpdateColorEvent -> DiscordRoleUpdateColorEvent(this)
-            is RoleUpdateHoistedEvent -> DiscordRoleUpdateHoistedEvent(this)
-            is RoleUpdateMentionableEvent -> DiscordRoleUpdateMentionableEvent(this)
-            is RoleUpdateNameEvent -> DiscordRoleUpdateNameEvent(this)
-            is RoleUpdatePermissionsEvent -> DiscordRoleUpdatePermissionsEvent(this)
-            is RoleUpdatePositionEvent -> DiscordRoleUpdatePositionEvent(this)
-
-            is EmoteAddedEvent -> DiscordEmoteAddedEvent(this)
-            is EmoteRemovedEvent -> DiscordEmoteRemovedEvent(this)
-            is EmoteUpdateNameEvent -> DiscordEmoteUpdateNameEvent(this)
-            is EmoteUpdateRolesEvent -> DiscordEmoteUpdateRolesEvent(this)
-            
-            else -> return null
-        } as DiscordWebsocketEventBase<E>
     }
 }

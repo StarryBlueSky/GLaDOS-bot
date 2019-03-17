@@ -22,14 +22,19 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.receive
+@file:Suppress("UNUSED")
 
-import jp.nephy.glados.clients.discord.listener.receive.events.DiscordCombinedAudioReceiveEvent
-import jp.nephy.glados.clients.discord.listener.receive.events.DiscordUserAudioReceiveEvent
+package jp.nephy.glados.clients.discord.listener.connection
+
 import jp.nephy.glados.api.EventModel
+import jp.nephy.glados.clients.discord.listener.connection.events.DiscordConnectionStatusChangeEvent
+import jp.nephy.glados.clients.discord.listener.connection.events.DiscordPingEvent
+import jp.nephy.glados.clients.discord.listener.connection.events.DiscordUserSpeakingEvent
 
-interface AudioReceiveHandlerModel: EventModel {
-    suspend fun onDiscordCombinedAudioReceive(event: DiscordCombinedAudioReceiveEvent) {}
-
-    suspend fun onDiscordUserAudioReceive(event: DiscordUserAudioReceiveEvent) {}
+interface DiscordConnectionEventModel: EventModel {
+    suspend fun onDiscordPing(event: DiscordPingEvent) {}
+    
+    suspend fun onDiscordConnectionStatusChange(event: DiscordConnectionStatusChangeEvent) {}
+    
+    suspend fun onDiscordUserSpeaking(event: DiscordUserSpeakingEvent) {}
 }

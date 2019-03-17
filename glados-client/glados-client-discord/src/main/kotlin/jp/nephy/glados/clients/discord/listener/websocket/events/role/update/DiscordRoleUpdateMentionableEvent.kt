@@ -24,9 +24,11 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket.events.role.update
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import net.dv8tion.jda.api.events.role.update.RoleUpdateMentionableEvent
 
 data class DiscordRoleUpdateMentionableEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: RoleUpdateMentionableEvent
 ): DiscordWebsocketEventBase<RoleUpdateMentionableEvent>

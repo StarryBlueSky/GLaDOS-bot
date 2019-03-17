@@ -48,7 +48,6 @@ import jp.nephy.glados.clients.web.config.web
 import jp.nephy.glados.clients.web.error.WebErrorPageSubscriptionClient
 import jp.nephy.glados.clients.web.error.domain
 import jp.nephy.glados.clients.web.error.statuses
-import jp.nephy.glados.clients.web.event.WebAccessEvent
 import jp.nephy.glados.clients.web.event.WebErrorEvent
 import jp.nephy.glados.clients.web.extensions.effectiveHost
 import jp.nephy.glados.clients.web.features.DynamicResolver
@@ -58,11 +57,13 @@ import jp.nephy.glados.clients.web.routing.WebRoutingSubscriptionClient
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 
+private const val webServerKey = "web"
+
 val GLaDOS.Companion.webServer: ApplicationEngine
-    get() = GLaDOS.attributes["web"]
+    get() = GLaDOS.attributes[webServerKey]
 
 internal fun initializeWebApplication() {
-    GLaDOS.attributes.getOrPut("web") {
+    GLaDOS.attributes.getOrPut(webServerKey) {
         embeddedServer(Netty, host = GLaDOS.config.web.host, port = GLaDOS.config.web.port) {
             install(XForwardedHeaderSupport)
             install(AutoHeadResponse)
@@ -80,9 +81,8 @@ internal fun initializeWebApplication() {
                 for (status in WebErrorPageSubscriptionClient.subscriptions.flatMap { it.statuses }.distinct()) {
                     status(status) {
                         val subscription = WebErrorPageSubscriptionClient.subscriptions.firstOrNull { status in it.statuses && (it.domain == null || it.domain == call.request.effectiveHost) } ?: return@status call.respond(status)
-
-                        val accessEvent = WebAccessEvent(this, null, emptyMap())
-                        subscription.invoke(WebErrorEvent(accessEvent, status))
+                        
+                        subscription.invoke(WebErrorEvent(subscription, this, status))
                     }
                 }
             }
@@ -106,7 +106,7 @@ internal fun initializeWebApplication() {
 }
 
 internal fun disposeWebApplication() {
-    GLaDOS.attributes.remove<ApplicationEngine>("web")?.also {
+    GLaDOS.attributes.remove<ApplicationEngine>(webServerKey)?.also {
         it.stop(1, 5, TimeUnit.SECONDS)
     }
 }

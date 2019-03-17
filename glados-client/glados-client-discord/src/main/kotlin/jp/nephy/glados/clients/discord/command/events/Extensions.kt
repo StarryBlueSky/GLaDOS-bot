@@ -22,11 +22,7 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.channel.priv
+package jp.nephy.glados.clients.discord.command.events
 
-import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.events.channel.priv.PrivateChannelCreateEvent
-
-data class DiscordPrivateChannelCreateEvent(
-    override val jdaEvent: PrivateChannelCreateEvent
-): DiscordWebsocketEventBase<PrivateChannelCreateEvent>
+val DiscordCommandEvent.argumentString: String
+    get() = arguments.joinToString(" ")

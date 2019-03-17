@@ -28,12 +28,15 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEvent
 import jp.nephy.glados.clients.discord.GuildPlayer
 import jp.nephy.glados.clients.discord.listener.DiscordEventBase
+import jp.nephy.glados.clients.discord.listener.audio.DiscordAudioEventSubscription
 
 interface DiscordAudioEventBase: DiscordEventBase {
     val guildPlayer: GuildPlayer
     
-    val jdaEvent: AudioEvent
+    val lavaPlayerEvent: AudioEvent
+
+    override val subscription: DiscordAudioEventSubscription
 }
 
 val DiscordAudioEventBase.audioPlayer: AudioPlayer
-    get() = jdaEvent.player
+    get() = lavaPlayerEvent.player

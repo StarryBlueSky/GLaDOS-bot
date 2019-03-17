@@ -22,19 +22,24 @@
  * SOFTWARE.
  */
 
-@file:Suppress("UNUSED")
+package jp.nephy.glados.clients.discord.command.events
 
-package jp.nephy.glados.clients.discord.listener.connection
+operator fun DiscordCommandEvent.component1(): String = arguments[0]
 
-import jp.nephy.glados.clients.discord.listener.connection.events.DiscordConnectionStatusChangeEvent
-import jp.nephy.glados.clients.discord.listener.connection.events.DiscordPingEvent
-import jp.nephy.glados.clients.discord.listener.connection.events.DiscordUserSpeakingEvent
-import jp.nephy.glados.api.EventModel
+operator fun DiscordCommandEvent.component2(): String = arguments[1]
 
-interface ConnectionListenerModel: EventModel {
-    suspend fun onDiscordPing(event: DiscordPingEvent) {}
-    
-    suspend fun onDiscordConnectionStatusChange(event: DiscordConnectionStatusChangeEvent) {}
-    
-    suspend fun onDiscordUserSpeaking(event: DiscordUserSpeakingEvent) {}
-}
+operator fun DiscordCommandEvent.component3(): String = arguments[2]
+
+operator fun DiscordCommandEvent.component4(): String = arguments[3]
+
+operator fun DiscordCommandEvent.component5(): String = arguments[4]
+
+operator fun DiscordCommandEvent.component6(): String = arguments[5]
+
+operator fun DiscordCommandEvent.component7(): String = arguments[6]
+
+operator fun DiscordCommandEvent.component8(): String = arguments[7]
+
+operator fun DiscordCommandEvent.component9(): String = arguments[8]
+
+operator fun DiscordCommandEvent.component10(): String = arguments[9]

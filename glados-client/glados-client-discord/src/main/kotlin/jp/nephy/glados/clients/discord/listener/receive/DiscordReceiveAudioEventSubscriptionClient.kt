@@ -24,19 +24,15 @@
 
 package jp.nephy.glados.clients.discord.listener.receive
 
-import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
-import jp.nephy.glados.api.Priority
+import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.clients.discord.GuildPlayer
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
 import jp.nephy.glados.clients.discord.listener.defaultDiscordEventAnnotation
 import jp.nephy.glados.clients.discord.listener.receive.events.DiscordCombinedAudioReceiveEvent
 import jp.nephy.glados.clients.discord.listener.receive.events.DiscordReceiveAudioEventBase
 import jp.nephy.glados.clients.discord.listener.receive.events.DiscordUserAudioReceiveEvent
-import jp.nephy.glados.clients.eventClass
-import jp.nephy.glados.clients.invoke
-import jp.nephy.glados.clients.subscriptions
-import kotlinx.coroutines.launch
+import jp.nephy.glados.clients.runEvent
 import net.dv8tion.jda.api.audio.AudioReceiveHandler
 import net.dv8tion.jda.api.audio.CombinedAudio
 import net.dv8tion.jda.api.audio.UserAudio
@@ -45,10 +41,10 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubclassOf
 
+/**
+ * DiscordReceiveAudioEventSubscriptionClient.
+ */
 object DiscordReceiveAudioEventSubscriptionClient: GLaDOSSubscriptionClient<DiscordEvent, DiscordReceiveAudioEventBase, DiscordReceiveAudioEventSubscription>() {
-    override val priority: Priority
-        get() = Priority.Normal
-    
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): DiscordReceiveAudioEventSubscription? {
         if (!eventClass.isSubclassOf(DiscordReceiveAudioEventBase::class)) {
             return null
@@ -58,31 +54,20 @@ object DiscordReceiveAudioEventSubscriptionClient: GLaDOSSubscriptionClient<Disc
         return DiscordReceiveAudioEventSubscription(plugin, function, annotation)
     }
 
-    override fun start() {}
-
-    override fun stop() {}
-    
-    class Listener(private val guildPlayer: GuildPlayer): AudioReceiveHandler {
+    internal class Listener(private val guildPlayer: GuildPlayer): AudioReceiveHandler {
         override fun canReceiveUser(): Boolean = true
 
         override fun handleUserAudio(userAudio: UserAudio) {
-            runEvent(DiscordUserAudioReceiveEvent(guildPlayer, userAudio))
+            runEvent {
+                DiscordUserAudioReceiveEvent(it, guildPlayer, userAudio)
+            }
         }
 
         override fun canReceiveCombined(): Boolean = true
 
         override fun handleCombinedAudio(combinedAudio: CombinedAudio) {
-            runEvent(DiscordCombinedAudioReceiveEvent(guildPlayer, combinedAudio))
-        }
-
-        private fun <E: DiscordReceiveAudioEventBase> runEvent(event: E) {
-            subscriptions.filter {
-                it.eventClass == event::class
-            }.forEach {
-                launch {
-                    it.invoke(event)
-                    it.logger.trace { "実行されました。(${guildPlayer.guild.name})" }
-                }
+            runEvent {
+                DiscordCombinedAudioReceiveEvent(it, guildPlayer, combinedAudio)
             }
         }
     }

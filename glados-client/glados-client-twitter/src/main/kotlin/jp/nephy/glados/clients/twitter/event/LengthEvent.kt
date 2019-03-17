@@ -24,8 +24,18 @@
 
 package jp.nephy.glados.clients.twitter.event
 
+import jp.nephy.glados.clients.twitter.TwitterSubscription
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 
+/**
+ * LengthEvent.
+ */
 data class LengthEvent(
-    override val account: TwitterAccount, val length: Int
+    override val account: TwitterAccount,
+    override val subscription: TwitterSubscription,
+
+    /**
+     * The length.
+     */
+    val length: Int
 ): TwitterEventBase

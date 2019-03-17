@@ -22,11 +22,21 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.message.priv
+package jp.nephy.glados.clients.discord.listener.audio
 
-import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent
+import jp.nephy.glados.api.EventModel
+import jp.nephy.glados.clients.discord.listener.audio.events.*
 
-data class DiscordPrivateMessageReactionAddEvent(
-    override val jdaEvent: PrivateMessageReactionAddEvent
-): DiscordWebsocketEventBase<PrivateMessageReactionAddEvent>
+interface DiscordAudioEventModel: EventModel {
+    suspend fun onDiscordAudioPlayerPause(event: DiscordAudioPlayerPauseEvent) {}
+
+    suspend fun onDiscordAudioPlayerResume(event: DiscordAudioPlayerResumeEvent) {}
+    
+    suspend fun onDiscordAudioTrackStart(event: DiscordAudioTrackStartEvent) {}
+    
+    suspend fun onDiscordAudioTrackEnd(event: DiscordAudioTrackEndEvent) {}
+    
+    suspend fun onDiscordAudioTrackException(event: DiscordAudioTrackExceptionEvent) {}
+    
+    suspend fun onDiscordAudioTrackStuck(event: DiscordAudioTrackStuckEvent) {}
+}

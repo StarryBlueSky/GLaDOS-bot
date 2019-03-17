@@ -24,9 +24,11 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket.events.guild.voice
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceDeafenEvent
 
 data class DiscordGuildVoiceDeafenEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildVoiceDeafenEvent
 ): DiscordWebsocketEventBase<GuildVoiceDeafenEvent>

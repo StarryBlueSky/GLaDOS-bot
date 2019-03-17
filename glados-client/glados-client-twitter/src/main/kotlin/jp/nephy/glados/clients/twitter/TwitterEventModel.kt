@@ -29,6 +29,9 @@ package jp.nephy.glados.clients.twitter
 import jp.nephy.glados.api.EventModel
 import jp.nephy.glados.clients.twitter.event.*
 
+/**
+ * TwitterEventModel.
+ */
 interface TwitterEventModel: EventModel {
     suspend fun onConnect(event: ConnectEvent) {}
     

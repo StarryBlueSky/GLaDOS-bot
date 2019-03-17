@@ -24,4 +24,11 @@
 
 package jp.nephy.glados.clients.system.events
 
-object ShutdownEvent: SystemEventBase
+import jp.nephy.glados.clients.system.SystemSubscription
+
+/**
+ * ShutdownEvent.
+ */
+data class ShutdownEvent(
+    override val subscription: SystemSubscription
+): SystemEventBase

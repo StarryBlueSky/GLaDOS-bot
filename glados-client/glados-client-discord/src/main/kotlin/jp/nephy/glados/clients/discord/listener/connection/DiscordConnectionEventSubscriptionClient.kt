@@ -24,19 +24,15 @@
 
 package jp.nephy.glados.clients.discord.listener.connection
 
-import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
-import jp.nephy.glados.api.Priority
+import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.clients.discord.listener.DiscordEvent
 import jp.nephy.glados.clients.discord.listener.connection.events.DiscordConnectionEventBase
 import jp.nephy.glados.clients.discord.listener.connection.events.DiscordConnectionStatusChangeEvent
 import jp.nephy.glados.clients.discord.listener.connection.events.DiscordPingEvent
 import jp.nephy.glados.clients.discord.listener.connection.events.DiscordUserSpeakingEvent
 import jp.nephy.glados.clients.discord.listener.defaultDiscordEventAnnotation
-import jp.nephy.glados.clients.eventClass
-import jp.nephy.glados.clients.invoke
-import jp.nephy.glados.clients.subscriptions
-import kotlinx.coroutines.launch
+import jp.nephy.glados.clients.runEvent
 import net.dv8tion.jda.api.audio.SpeakingMode
 import net.dv8tion.jda.api.audio.hooks.ConnectionListener
 import net.dv8tion.jda.api.audio.hooks.ConnectionStatus
@@ -48,10 +44,10 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubclassOf
 
+/**
+ * DiscordConnectionEventSubscriptionClient.
+ */
 object DiscordConnectionEventSubscriptionClient: GLaDOSSubscriptionClient<DiscordEvent, DiscordConnectionEventBase, DiscordConnectionEventSubscription>() {
-    override val priority: Priority
-        get() = Priority.Normal
-    
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): DiscordConnectionEventSubscription? {
         if (!eventClass.isSubclassOf(DiscordConnectionEventBase::class)) {
             return null
@@ -60,34 +56,25 @@ object DiscordConnectionEventSubscriptionClient: GLaDOSSubscriptionClient<Discor
         val annotation = function.findAnnotation() ?: defaultDiscordEventAnnotation
         return DiscordConnectionEventSubscription(plugin, function, annotation)
     }
-
-    override fun start() {}
-
-    override fun stop() {}
-
-    class Listener(private val guild: Guild): ConnectionListener {
+    
+    internal class Listener(private val guild: Guild): ConnectionListener {
         override fun onPing(ping: Long) {
-            runEvent(DiscordPingEvent(guild, ping))
+            runEvent {
+                DiscordPingEvent(it, guild, ping)
+            }
         }
 
         override fun onStatusChange(status: ConnectionStatus) {
-            runEvent(DiscordConnectionStatusChangeEvent(guild, status))
+            runEvent {
+                DiscordConnectionStatusChangeEvent(it, guild, status)
+            }
         }
 
         override fun onUserSpeaking(user: User, speaking: Boolean) {}
 
         override fun onUserSpeaking(user: User, modes: EnumSet<SpeakingMode>) {
-            runEvent(DiscordUserSpeakingEvent(guild, user, modes))
-        }
-
-        private fun <E: DiscordConnectionEventBase> runEvent(event: E) {
-            subscriptions.filter {
-                it.eventClass == event::class
-            }.forEach {
-                launch {
-                    it.invoke(event)
-                    it.logger.trace { "実行されました。(${event.guild.name})" }
-                }
+            runEvent {
+                DiscordUserSpeakingEvent(it, guild, user, modes)
             }
         }
     }

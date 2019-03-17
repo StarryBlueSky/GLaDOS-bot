@@ -24,9 +24,11 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.update
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import net.dv8tion.jda.api.events.channel.text.update.TextChannelUpdateNSFWEvent
 
 data class DiscordTextChannelUpdateNSFWEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: TextChannelUpdateNSFWEvent
 ): DiscordWebsocketEventBase<TextChannelUpdateNSFWEvent>
