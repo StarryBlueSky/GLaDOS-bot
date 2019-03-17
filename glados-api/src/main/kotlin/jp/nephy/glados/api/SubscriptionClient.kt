@@ -43,22 +43,16 @@ interface SubscriptionClient<A: Annotation, E: Event, S: Subscription<A, E>>: Co
      * Registers function as Subscription.
      */
     suspend fun register(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): Boolean
-
-    /**
-     * If true, this SubscriptionClient can handle the event.
-     * Constantly returning false means SubscriptionClient does not use EventBus.
-     */
-    fun canHandle(event: Event): Boolean = false
     
     /**
      * Starts SubscriptionClient.
      */
-    fun start()
+    fun start() {}
 
     /**
      * Stops SubscriptionClient.
      */
-    fun stop()
+    fun stop() {}
 
     /**
      * Called when new Subscription was registered.
@@ -84,6 +78,7 @@ interface SubscriptionClient<A: Annotation, E: Event, S: Subscription<A, E>>: Co
      * SubscriptionClient start priority.
      */
     val priority: Priority
+        get() = Priority.Normal
 
     /**
      * Coroutine context.
