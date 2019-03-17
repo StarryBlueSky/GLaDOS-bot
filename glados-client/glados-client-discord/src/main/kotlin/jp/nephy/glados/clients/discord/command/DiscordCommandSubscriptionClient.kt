@@ -53,7 +53,7 @@ import kotlin.reflect.full.isSubclassOf
  */
 object DiscordCommandSubscriptionClient: GLaDOSSubscriptionClient<DiscordCommand, DiscordCommandEvent, DiscordCommandSubscription>() {
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): DiscordCommandSubscription? {
-        if (eventClass.isSubclassOf(DiscordCommandEvent::class)) {
+        if (!eventClass.isSubclassOf(DiscordCommandEvent::class)) {
             return null
         }
 
