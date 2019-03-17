@@ -45,7 +45,7 @@ val Subscription<*, *>.name: String
 /**
  * Full name of Subscription.
  */
-val Subscription<*, *>.fullname: String
+val Subscription<*, *>.fullName: String
     get() = "${plugin.fullName}#$name"
 
 /**

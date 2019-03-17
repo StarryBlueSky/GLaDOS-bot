@@ -28,7 +28,7 @@ import jp.nephy.glados.api.Event
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.Subscription
 import jp.nephy.glados.api.of
-import jp.nephy.glados.clients.fullname
+import jp.nephy.glados.clients.fullName
 import java.lang.reflect.InvocationTargetException
 
 /**
@@ -37,7 +37,7 @@ import java.lang.reflect.InvocationTargetException
 abstract class GLaDOSSubscription<A: Annotation, E: Event>: Subscription<A, E> {
     final override val logger: Logger by lazy {
         // filename requires Plugin
-        Logger.of("GLaDOS.Plugin.$fullname")
+        Logger.of("GLaDOS.Plugin.$fullName")
     }
     
     override fun onFailure(throwable: Throwable, event: E) {
