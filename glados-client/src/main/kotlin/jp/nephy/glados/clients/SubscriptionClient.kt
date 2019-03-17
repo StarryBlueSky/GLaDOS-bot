@@ -29,6 +29,8 @@ package jp.nephy.glados.clients
 import jp.nephy.glados.api.Event
 import jp.nephy.glados.api.Subscription
 import jp.nephy.glados.api.SubscriptionClient
+import kotlinx.coroutines.launch
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * The name of SubscriptionClient.
@@ -41,3 +43,18 @@ val SubscriptionClient<*, *, *>.name: String
  */
 val <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionClient<A, E, S>.subscriptions: Set<S>
     get() = storage.subscriptions
+
+/**
+ * Runs Subscriptions.
+ */
+inline fun <A: Annotation, reified E: Event, S: Subscription<A, E>> SubscriptionClient<A, E, S>.runEvent(crossinline block: (S) -> E) {
+    subscriptions.filter { subscription ->
+        subscription.eventClass.isSubclassOf(E::class)
+    }.forEach { subscription ->
+        launch {
+            val event = block(subscription)
+
+            subscription.invoke(event)
+        }
+    }
+}
