@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 object DiscordMessageManager {
     private val cache = ConcurrentHashMap<Long, Message>()
-    private val history = ConcurrentHashMap<Long, Message?>()
+    private val history = ConcurrentHashMap<Long, Message>()
 
     fun add(message: Message) {
         cache[message.idLong] = message
@@ -57,12 +57,16 @@ object DiscordMessageManager {
     
     internal object Listener: ListenerAdapter() {
         override fun onMessageReceived(event: MessageReceivedEvent) {
-            add(event.message)
+            add(event.message ?: return)
         }
 
         override fun onMessageUpdate(event: MessageUpdateEvent) {
-            history[event.message.idLong] = cache[event.message.idLong]
-            cache[event.message.idLong] = event.message
+            val message = event.message ?: return
+
+            cache[message.idLong]?.also {
+                history[message.idLong] = it
+            }
+            cache[message.idLong] = message
         }
     }
 }
