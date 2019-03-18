@@ -71,8 +71,8 @@ object DiscordAudioEventSubscriptionClient: GLaDOSSubscriptionClient<DiscordEven
                 is TrackStuckEvent -> runEvent {
                     DiscordAudioTrackStuckEvent(it, guildPlayer, event)
                 }
-                else -> return logger.trace {
-                    "未対応のイベントです。(${event::class.qualifiedName})"
+                else -> {
+                    logger.trace { "未対応のイベントです。(${event::class.qualifiedName})" }
                 }
             }
         }
