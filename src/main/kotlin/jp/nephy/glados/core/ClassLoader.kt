@@ -27,7 +27,6 @@ package jp.nephy.glados.core
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.of
-import java.io.File
 import java.net.JarURLConnection
 import java.net.URL
 import java.net.URLClassLoader
@@ -56,10 +55,6 @@ internal inline fun <reified T: Any> loadClassesFromJar(path: Path): List<KClass
                 if (it.canonicalName == null) {
                     return@mapNotNull null
                 }
-                
-                logger.trace { "クラス: \"${it.canonicalName}\" をロードしました。($path)" }
-            }.onFailure {  e ->
-                logger.trace(e) { "クラス: \"$it\" のロードに失敗しました。($path)" }
             }.getOrNull()
         }.filter { 
             T::class.java.isAssignableFrom(it) && !it.isInterface
