@@ -29,9 +29,9 @@ package jp.nephy.glados.api
  */
 interface SubscriptionStorage<A: Annotation, E: Event, S: Subscription<A, E>> {
     /**
-     * The set of Subscriptions.
+     * The list of Subscriptions.
      */
-    val subscriptions: Set<S>
+    val subscriptions: List<S>
 
     /**
      * Adds Subscription to storage.

@@ -39,12 +39,10 @@ abstract class GLaDOSSubscriptionClient<A: Annotation, E: Event, S: Subscription
 
     final override val storage: SubscriptionStorage<A, E, S> = object: SubscriptionStorage<A, E, S> {
         private val mutex = Mutex()
-        private val underlyingStorage = sortedSetOf<S>(Comparator { o1, o2 ->
-            o1.priority.compareTo(o2.priority)
-        })
+        private val underlyingStorage = mutableListOf<S>()
 
-        override val subscriptions: Set<S>
-            get() = underlyingStorage.toSet()
+        override val subscriptions: List<S>
+            get() = underlyingStorage.sortedBy { it.priority }
 
         override suspend fun add(subscription: S): Boolean {
             return mutex.withLock {
