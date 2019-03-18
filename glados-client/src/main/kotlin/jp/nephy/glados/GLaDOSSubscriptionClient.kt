@@ -47,25 +47,25 @@ abstract class GLaDOSSubscriptionClient<A: Annotation, E: Event, S: Subscription
             get() = underlyingStorage.toSet()
 
         override suspend fun add(subscription: S): Boolean {
-            return mutex.withLock(underlyingStorage) {
+            return mutex.withLock {
                 underlyingStorage.add(subscription)
             }
         }
 
         override suspend fun add(subscriptions: Collection<S>): Boolean {
-            return mutex.withLock(underlyingStorage) {
+            return mutex.withLock {
                 underlyingStorage.addAll(subscriptions)
             }
         }
 
         override suspend fun remove(subscription: S): Boolean {
-            return mutex.withLock(underlyingStorage) {
+            return mutex.withLock {
                 underlyingStorage.remove(subscription)
             }
         }
 
         override suspend fun remove(subscriptions: Collection<S>): Boolean {
-            return mutex.withLock(underlyingStorage) {
+            return mutex.withLock {
                 underlyingStorage.removeAll(subscriptions)
             }
         }
