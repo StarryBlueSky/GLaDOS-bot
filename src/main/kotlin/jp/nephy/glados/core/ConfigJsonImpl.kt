@@ -64,7 +64,7 @@ internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
         }
         
         fun installFileSystemListener() {
-            FileSystemWatcherImpl.addListener(object: FileSystemEventListener {
+            GLaDOS.fileSystemWatcher.addListener(object: FileSystemEventListener {
                 override fun onCreated(path: Path) {
                     handleFileChange(path)
                 }
