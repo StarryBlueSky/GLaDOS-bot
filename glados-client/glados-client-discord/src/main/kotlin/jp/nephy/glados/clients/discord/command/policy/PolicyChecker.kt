@@ -24,6 +24,7 @@
 
 package jp.nephy.glados.clients.discord.command.policy
 
+import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.of
 import jp.nephy.glados.clients.discord.command.arguments
@@ -35,6 +36,7 @@ import jp.nephy.glados.clients.discord.config.textChannel
 import jp.nephy.glados.clients.discord.extensions.*
 import jp.nephy.glados.clients.discord.extensions.messages.HexColor
 import jp.nephy.glados.clients.discord.extensions.messages.reply
+import jp.nephy.glados.clients.discord.jda
 import jp.nephy.jsonkt.delegation.*
 import net.dv8tion.jda.api.entities.TextChannel
 import java.util.concurrent.TimeUnit
@@ -137,7 +139,7 @@ private fun DiscordCommandEvent.rejectCommandAvailabilityPolicy() {
     reply {
         embed {
             title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
-            description { "`${guild?.name}` では GLaDOS のコマンド機能は利用できません。Admin または GLaDOS 開発者にご連絡ください。" }
+            description { "`${guild?.name}` では ${GLaDOS.jda.selfUser.asMention} のコマンド機能は利用できません。Admin または GLaDOS 開発者にご連絡ください。" }
             color(HexColor.Bad)
             timestamp()
         }
@@ -155,7 +157,7 @@ private fun DiscordCommandEvent.rejectArgumentsSizePolicy() {
         embed {
             title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
             descriptionBuilder {
-                appendln("コマンドの引数の数が一致しません。`!help`コマンドも必要に応じてご確認ください。")
+                appendln("コマンドの引数の数が一致しません。`!help` コマンドも必要に応じてご確認ください。")
                 append("実行例: `${subscription.primaryCommandSyntax} ${subscription.arguments.joinToString(" ") { "<$it>" }}`")
             }
             color(HexColor.Bad)
@@ -191,7 +193,7 @@ private fun DiscordCommandEvent.rejectWhileInSameVoiceChannelConditionPolicy() {
     reply {
         embed {
             title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
-            description { "このコマンドはGLaDOSと同じボイスチャンネルに参加中のみ実行できます。" }
+            description { "このコマンドは ${GLaDOS.jda.selfUser.asMention} と同じボイスチャンネルに参加中のみ実行できます。" }
             color(HexColor.Bad)
             timestamp()
         }
@@ -268,7 +270,7 @@ private fun DiscordCommandEvent.rejectOwnerOnlyPermissionPolicy() {
     reply {
         embed {
             title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
-            description { "このコマンドは GLaDOS のオーナーのみが実行できます。" }
+            description { "このコマンドは ${GLaDOS.jda.selfUser.asMention} のオーナーのみが実行できます。" }
             color(HexColor.Bad)
             timestamp()
         }
