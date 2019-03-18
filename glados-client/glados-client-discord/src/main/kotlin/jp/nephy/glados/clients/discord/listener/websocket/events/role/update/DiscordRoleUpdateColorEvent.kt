@@ -27,8 +27,15 @@ package jp.nephy.glados.clients.discord.listener.websocket.events.role.update
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import net.dv8tion.jda.api.events.role.update.RoleUpdateColorEvent
+import java.awt.Color
 
 data class DiscordRoleUpdateColorEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: RoleUpdateColorEvent
 ): DiscordWebsocketEventBase<RoleUpdateColorEvent>
+
+val DiscordRoleUpdateColorEvent.oldColor: Color?
+    get() = jdaEvent.oldColor
+
+val DiscordRoleUpdateColorEvent.newColor: Color?
+    get() = jdaEvent.newColor
