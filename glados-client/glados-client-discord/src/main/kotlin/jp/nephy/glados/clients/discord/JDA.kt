@@ -61,9 +61,7 @@ internal fun initializeJDA() {
                 DiscordEventWaiter.Listener
             )
         }.build()
-    }.also { jda ->
-        jda.presence.status = OnlineStatus.ONLINE
-    }   
+    }
 }
 
 internal fun disposeJDA() {

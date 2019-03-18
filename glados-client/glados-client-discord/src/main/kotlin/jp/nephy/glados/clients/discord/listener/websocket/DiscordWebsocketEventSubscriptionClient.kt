@@ -72,6 +72,7 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.Dis
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.DiscordUserUpdateDiscriminatorEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.DiscordUserUpdateNameEvent
 import jp.nephy.glados.clients.runEvent
+import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.events.*
 import net.dv8tion.jda.api.events.channel.category.CategoryCreateEvent
 import net.dv8tion.jda.api.events.channel.category.CategoryDeleteEvent
@@ -148,6 +149,10 @@ object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<Discord
     }
 
     internal object Listener: ListenerAdapter() {
+        override fun onReady(event: ReadyEvent) {
+            event.jda.presence.status = OnlineStatus.ONLINE
+        }
+        
         override fun onGenericEvent(event: GenericEvent) {
             when (event) {
                 is ReadyEvent -> runEvent {
