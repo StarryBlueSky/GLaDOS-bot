@@ -50,8 +50,10 @@ inline fun <A: Annotation, reified E: Event, S: Subscription<A, E>> Subscription
     noinline filter: (S) -> Boolean = { true },
     crossinline block: (S) -> E
 ) {
-    subscriptions.asSequence().filter(filter).filter { 
-        it.eventClass == E::class
+    subscriptions.asSequence().filter(filter).filter { subscription ->
+        println("${this::class.simpleName} -> ${E::class.simpleName}")
+        
+        subscription.eventClass == E::class
     }.forEach { subscription ->
         launch {
             val event = block(subscription)
