@@ -36,7 +36,7 @@ import kotlin.reflect.full.isSubclassOf
  * The name of SubscriptionClient.
  */
 val SubscriptionClient<*, *, *>.name: String
-    get() = this::class.simpleName!!
+    get() = this::class.simpleName.orEmpty()
 
 /**
  * The set of Subscriptions.
