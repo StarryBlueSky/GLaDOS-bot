@@ -30,6 +30,7 @@ import jp.nephy.glados.api.Event
 import jp.nephy.glados.api.Subscription
 import jp.nephy.glados.api.SubscriptionClient
 import kotlinx.coroutines.launch
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * The name of SubscriptionClient.
@@ -46,14 +47,12 @@ val <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionClient<A, E, S>
 /**
  * Runs Subscriptions.
  */
-inline fun <A: Annotation, reified E: Event, S: Subscription<A, E>> SubscriptionClient<A, E, S>.runEvent(
+inline fun <A: Annotation, E: Event, S: Subscription<A, E>, reified T: E> SubscriptionClient<A, E, S>.runEvent(
     noinline filter: (S) -> Boolean = { true },
-    crossinline block: (S) -> E
+    crossinline block: (S) -> T
 ) {
     subscriptions.asSequence().filter(filter).filter { subscription ->
-        println("${this::class.simpleName} -> ${E::class.simpleName}")
-        
-        subscription.eventClass == E::class
+        subscription.eventClass.isSubclassOf(T::class)
     }.forEach { subscription ->
         launch {
             val event = block(subscription)
