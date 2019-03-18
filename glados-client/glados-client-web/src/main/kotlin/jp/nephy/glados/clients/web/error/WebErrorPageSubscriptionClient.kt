@@ -50,8 +50,4 @@ object WebErrorPageSubscriptionClient: GLaDOSSubscriptionClient<WebErrorPage, We
         
         return WebErrorPageSubscription(plugin, function, annotation)
     }
-
-    override fun start() {}
-
-    override fun stop() {}
 }
