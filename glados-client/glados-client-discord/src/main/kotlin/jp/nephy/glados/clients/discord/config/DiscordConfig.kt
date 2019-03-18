@@ -40,11 +40,19 @@ import jp.nephy.jsonkt.delegation.*
  * ```
  */
 data class DiscordConfig(override val json: JsonObject): JsonModel {
-    val token by string
-    val ownerId by nullableLong("owner_id")
-    val prefix by string { "!" }
-
-    val guildMap by lambda("guilds") { it.jsonObject.map { guild -> guild.key to guild.value.jsonObject.parse<GuildConfig>() }.toMap() }
+    val token: String by string
+    val ownerId: Long? by nullableLong("owner_id")
+    val prefix: String by string { "!" }
     
-    val guilds by lazy { guildMap.values.toList() }
+    val defaultActivity: String by string("default_activity") { "Initializing..." }
+    
+    val enableJDAShutdownHook: Boolean by boolean("enable_jda_shutdown_hook") { true }
+
+    val guildMap: Map<String, GuildConfig> by lambda("guilds") { 
+        it.jsonObject.map { guild ->
+            guild.key to guild.value.jsonObject.parse<GuildConfig>()
+        }.toMap() 
+    }
+    
+    val guilds: List<GuildConfig> by lazy { guildMap.values.toList() }
 }

@@ -34,6 +34,7 @@ import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventS
 import net.dv8tion.jda.api.AccountType
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
+import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.entities.Activity
 
 private const val jdaKey = "jda"
@@ -45,8 +46,11 @@ internal fun initializeJDA() {
     GLaDOS.attributes.getOrPut(jdaKey) {
         JDABuilder(AccountType.BOT).apply {
             setToken(GLaDOS.config.discord.token)
-            setActivity(Activity.playing("Starting..."))
-            setEnableShutdownHook(false)
+
+            setStatus(OnlineStatus.DO_NOT_DISTURB)
+            setActivity(Activity.playing(GLaDOS.config.discord.defaultActivity))
+
+            setEnableShutdownHook(GLaDOS.config.discord.enableJDAShutdownHook)
             
             // setAudioSendFactory(NativeAudioSendFactory(5000))
             
@@ -57,7 +61,9 @@ internal fun initializeJDA() {
                 DiscordEventWaiter.Listener
             )
         }.build()
-    }
+    }.also { jda ->
+        jda.presence.status = OnlineStatus.ONLINE
+    }   
 }
 
 internal fun disposeJDA() {
