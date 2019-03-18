@@ -33,8 +33,8 @@ data class DiscordGuildMemberNickChangeEvent(
     override val jdaEvent: GuildMemberNickChangeEvent
 ): DiscordWebsocketEventBase<GuildMemberNickChangeEvent>
 
-val DiscordGuildMemberNickChangeEvent.new: String
+val DiscordGuildMemberNickChangeEvent.new: String?
     get() = jdaEvent.newNick
 
-val DiscordGuildMemberNickChangeEvent.old: String
+val DiscordGuildMemberNickChangeEvent.old: String?
     get() = jdaEvent.prevNick
