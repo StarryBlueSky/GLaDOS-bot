@@ -24,6 +24,22 @@
 
 package jp.nephy.glados.clients.discord.command.policy
 
+/**
+ * The policy whether GLaDOS should handle messages as display or stripped or raw format.
+ */
 enum class MessageContentPolicy {
-    Display, Stripped, Raw
+    /**
+     * Resolves mention formats.
+     */
+    Display,
+
+    /**
+     * In addition to "Display", Removes MarkDown formats.
+     */
+    Stripped,
+
+    /**
+     * No escapes. Original messages.
+     */
+    Raw
 }

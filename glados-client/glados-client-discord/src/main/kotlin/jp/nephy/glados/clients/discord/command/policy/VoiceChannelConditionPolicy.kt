@@ -24,6 +24,22 @@
 
 package jp.nephy.glados.clients.discord.command.policy
 
+/**
+ * The policy whether GLaDOS should allow execution about voice condition.
+ */
 enum class VoiceChannelConditionPolicy {
-    Anytime, WhileInAnyVoiceChannel, WhileInSameVoiceChannel
+    /**
+     * No limits. Allows anytime.
+     */
+    Anytime,
+
+    /**
+     * Allows while the member is in any voice channels.
+     */
+    WhileInAnyVoiceChannel,
+
+    /**
+     * Allows while the member is in a voice channel that GLaDOS is connecting.
+     */
+    WhileInSameVoiceChannel
 }

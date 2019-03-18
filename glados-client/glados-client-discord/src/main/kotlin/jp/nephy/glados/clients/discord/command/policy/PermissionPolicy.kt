@@ -24,6 +24,27 @@
 
 package jp.nephy.glados.clients.discord.command.policy
 
+/**
+ * The policy whether GLaDOS should allow execution from user.
+ */
 enum class PermissionPolicy {
-    Anyone, AdminOnly, MainGuildAdminOnly, OwnerOnly
+    /**
+     * No limits. Allows from anyone.
+     */
+    Anyone,
+
+    /**
+     * Allows from admin.
+     */
+    AdminOnly,
+
+    /**
+     * Allows from main guild's admin.
+     */
+    MainGuildAdminOnly,
+
+    /**
+     * Allows from GLaDOS owner.
+     */
+    OwnerOnly
 }

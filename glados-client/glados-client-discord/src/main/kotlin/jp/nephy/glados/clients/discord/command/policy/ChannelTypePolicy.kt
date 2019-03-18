@@ -30,10 +30,27 @@ import kotlin.reflect.KClass
 private typealias JDATextChannel = net.dv8tion.jda.api.entities.TextChannel
 private typealias JDAPrivateChannel = net.dv8tion.jda.api.entities.PrivateChannel
 
+/**
+ * The policy whether GLaDOS should allow command execution from text channels or private channels.
+ */
 enum class ChannelTypePolicy(internal vararg val classes: KClass<out MessageChannel>) {
+    /**
+     * No limit. Allows from any message channels.
+     */
     Any(JDATextChannel::class, JDAPrivateChannel::class),
 
-    TextChannel(JDATextChannel::class), BotChannel(JDATextChannel::class),
-    
-    PrivateChannel(JDAPrivateChannel::class);
+    /**
+     * Allows from text channels.
+     */
+    TextChannel(JDATextChannel::class),
+
+    /**
+     * Allows from text channels for "bot".
+     */
+    BotChannel(JDATextChannel::class),
+
+    /**
+     * Allows from private channels.
+     */
+    PrivateChannel(JDAPrivateChannel::class)
 }

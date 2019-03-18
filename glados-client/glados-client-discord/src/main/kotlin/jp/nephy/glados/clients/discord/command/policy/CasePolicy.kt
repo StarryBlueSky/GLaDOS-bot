@@ -24,6 +24,17 @@
 
 package jp.nephy.glados.clients.discord.command.policy
 
+/**
+ * The policy whether GLaDOS should check command case.
+ */
 enum class CasePolicy {
-    Strict, Ignore
+    /**
+     * Checks command case strictly.
+     */
+    Strict,
+
+    /**
+     * Ignores command case.
+     */
+    Ignore
 }
