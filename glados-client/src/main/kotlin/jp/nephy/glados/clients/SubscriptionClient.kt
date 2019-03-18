@@ -39,9 +39,9 @@ val SubscriptionClient<*, *, *>.name: String
     get() = this::class.simpleName.orEmpty()
 
 /**
- * The set of Subscriptions.
+ * The list of Subscriptions.
  */
-val <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionClient<A, E, S>.subscriptions: Set<S>
+val <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionClient<A, E, S>.subscriptions: List<S>
     get() = storage.subscriptions
 
 /**
