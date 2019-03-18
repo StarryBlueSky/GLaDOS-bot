@@ -26,9 +26,17 @@ package jp.nephy.glados.clients.discord.listener.websocket.events.channel.privat
 
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
+import net.dv8tion.jda.api.entities.PrivateChannel
+import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.channel.priv.PrivateChannelDeleteEvent
 
 data class DiscordPrivateChannelDeleteEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: PrivateChannelDeleteEvent
 ): DiscordWebsocketEventBase<PrivateChannelDeleteEvent>
+
+val DiscordPrivateChannelDeleteEvent.channel: PrivateChannel
+    get() = jdaEvent.channel
+
+val DiscordPrivateChannelDeleteEvent.user: User
+    get() = jdaEvent.user

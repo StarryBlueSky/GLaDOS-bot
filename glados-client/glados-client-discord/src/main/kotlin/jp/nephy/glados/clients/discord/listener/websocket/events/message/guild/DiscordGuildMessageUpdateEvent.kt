@@ -26,9 +26,21 @@ package jp.nephy.glados.clients.discord.listener.websocket.events.message.guild
 
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
+import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.Message
+import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent
 
 data class DiscordGuildMessageUpdateEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildMessageUpdateEvent
 ): DiscordWebsocketEventBase<GuildMessageUpdateEvent>
+
+val DiscordGuildMessageUpdateEvent.message: Message
+    get() = jdaEvent.message
+
+val DiscordGuildMessageUpdateEvent.author: User
+    get() = jdaEvent.author
+
+val DiscordGuildMessageUpdateEvent.member: Member
+    get() = jdaEvent.member

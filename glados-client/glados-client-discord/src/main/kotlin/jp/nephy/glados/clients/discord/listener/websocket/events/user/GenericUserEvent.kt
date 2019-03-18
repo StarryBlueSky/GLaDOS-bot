@@ -24,11 +24,9 @@
 
 package jp.nephy.glados.clients.discord.listener.websocket.events.user
 
-import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.events.user.UserActivityEndEvent
+import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.events.user.GenericUserEvent
 
-data class DiscordUserActivityEndEvent(
-    override val subscription: DiscordWebsocketEventSubscription,
-    override val jdaEvent: UserActivityEndEvent
-): DiscordWebsocketEventBase<UserActivityEndEvent>
+val DiscordWebsocketEventBase<out GenericUserEvent>.user: User
+    get() = jdaEvent.user

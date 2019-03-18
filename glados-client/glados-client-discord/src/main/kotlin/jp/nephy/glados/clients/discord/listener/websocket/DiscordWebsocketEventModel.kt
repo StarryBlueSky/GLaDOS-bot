@@ -58,9 +58,11 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.message.reactio
 import jp.nephy.glados.clients.discord.listener.websocket.events.role.DiscordRoleCreateEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.role.DiscordRoleDeleteEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.role.update.*
-import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUserActivityEndEvent
-import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUserActivityStartEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.presence.DiscordUserActivityEndEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.presence.DiscordUserActivityStartEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUserTypingEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.presence.DiscordUserUpdateActivityOrderEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.presence.DiscordUserUpdateOnlineStatusEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.self.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.*
 

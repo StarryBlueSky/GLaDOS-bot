@@ -22,13 +22,15 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.user.update
+package jp.nephy.glados.clients.discord.listener.websocket.events.user.presence
 
-import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.events.user.update.UserUpdateOnlineStatusEvent
+import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.events.user.update.GenericUserPresenceEvent
 
-data class DiscordUserUpdateOnlineStatusEvent(
-    override val subscription: DiscordWebsocketEventSubscription,
-    override val jdaEvent: UserUpdateOnlineStatusEvent
-): DiscordWebsocketEventBase<UserUpdateOnlineStatusEvent>
+val DiscordWebsocketEventBase<out GenericUserPresenceEvent>.guild: Guild?
+    get() = jdaEvent.guild
+
+val DiscordWebsocketEventBase<out GenericUserPresenceEvent>.member: Member?
+    get() = jdaEvent.member

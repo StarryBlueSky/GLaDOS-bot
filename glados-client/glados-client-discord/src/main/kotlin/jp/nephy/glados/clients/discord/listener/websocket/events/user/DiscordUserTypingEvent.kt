@@ -26,9 +26,33 @@ package jp.nephy.glados.clients.discord.listener.websocket.events.user
 
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
+import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.events.user.UserTypingEvent
+import java.time.OffsetDateTime
 
 data class DiscordUserTypingEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: UserTypingEvent
 ): DiscordWebsocketEventBase<UserTypingEvent>
+
+val DiscordUserTypingEvent.timestamp: OffsetDateTime
+    get() = jdaEvent.timestamp
+
+val DiscordUserTypingEvent.channel: MessageChannel
+    get() = jdaEvent.channel
+
+val DiscordUserTypingEvent.channelType: ChannelType
+    get() = jdaEvent.type
+
+val DiscordUserTypingEvent.privateChannel: PrivateChannel?
+    get() = jdaEvent.privateChannel
+
+val DiscordUserTypingEvent.textChannel: TextChannel?
+    get() = jdaEvent.textChannel
+
+val DiscordUserTypingEvent.guild: Guild?
+    get() = jdaEvent.guild
+
+val DiscordUserTypingEvent.member: Member?
+    get() = jdaEvent.member
+

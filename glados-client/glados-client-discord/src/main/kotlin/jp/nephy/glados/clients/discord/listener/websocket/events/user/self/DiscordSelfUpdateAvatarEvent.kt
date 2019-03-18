@@ -32,3 +32,9 @@ data class DiscordSelfUpdateAvatarEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: SelfUpdateAvatarEvent
 ): DiscordWebsocketEventBase<SelfUpdateAvatarEvent>
+
+val DiscordSelfUpdateAvatarEvent.newAvatarUrl: String?
+    get() = jdaEvent.newAvatarUrl
+
+val DiscordSelfUpdateAvatarEvent.oldAvatarUrl: String?
+    get() = jdaEvent.oldAvatarUrl

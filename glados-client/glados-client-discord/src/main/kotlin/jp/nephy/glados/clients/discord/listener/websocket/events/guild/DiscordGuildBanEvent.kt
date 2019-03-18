@@ -26,9 +26,13 @@ package jp.nephy.glados.clients.discord.listener.websocket.events.guild
 
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
+import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.guild.GuildBanEvent
 
 data class DiscordGuildBanEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildBanEvent
 ): DiscordWebsocketEventBase<GuildBanEvent>
+
+val DiscordGuildBanEvent.user: User
+    get() = jdaEvent.user

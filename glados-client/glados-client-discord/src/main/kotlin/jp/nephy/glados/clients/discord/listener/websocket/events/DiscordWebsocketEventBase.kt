@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.discord.listener.websocket.events
 
 import jp.nephy.glados.clients.discord.listener.DiscordEventBase

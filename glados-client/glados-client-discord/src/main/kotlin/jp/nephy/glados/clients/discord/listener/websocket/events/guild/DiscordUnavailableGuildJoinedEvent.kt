@@ -32,3 +32,6 @@ data class DiscordUnavailableGuildJoinedEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: UnavailableGuildJoinedEvent
 ): DiscordWebsocketEventBase<UnavailableGuildJoinedEvent>
+
+val DiscordUnavailableGuildJoinedEvent.guildId: Long
+    get() = jdaEvent.guildIdLong

@@ -32,3 +32,9 @@ data class DiscordExceptionEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: ExceptionEvent
 ): DiscordWebsocketEventBase<ExceptionEvent>
+
+val DiscordExceptionEvent.isLogged: Boolean
+    get() = jdaEvent.isLogged
+
+val DiscordExceptionEvent.cause: Throwable
+    get() = jdaEvent.cause

@@ -32,3 +32,6 @@ data class DiscordGuildVoiceMuteEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildVoiceMuteEvent
 ): DiscordWebsocketEventBase<GuildVoiceMuteEvent>
+
+val DiscordGuildVoiceMuteEvent.isMuted: Boolean
+    get() = jdaEvent.isMuted

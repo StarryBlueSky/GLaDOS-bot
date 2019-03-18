@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.discord.listener.audio.events
 
 import com.sedmelluq.discord.lavaplayer.player.event.TrackStuckEvent
@@ -38,5 +40,5 @@ data class DiscordAudioTrackStuckEvent(
 val DiscordAudioTrackStuckEvent.track: AudioTrack
     get() = lavaPlayerEvent.track
 
-val DiscordAudioTrackStuckEvent.thresholdMs: Long
+val DiscordAudioTrackStuckEvent.thresholdMillis: Long
     get() = lavaPlayerEvent.thresholdMs

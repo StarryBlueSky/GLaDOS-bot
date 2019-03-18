@@ -32,3 +32,9 @@ data class DiscordGuildUpdateIconEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildUpdateIconEvent
 ): DiscordWebsocketEventBase<GuildUpdateIconEvent>
+
+val DiscordGuildUpdateIconEvent.newIconUrl: String?
+    get() = jdaEvent.newIconUrl
+
+val DiscordGuildUpdateIconEvent.oldIconUrl: String?
+    get() = jdaEvent.oldIconUrl

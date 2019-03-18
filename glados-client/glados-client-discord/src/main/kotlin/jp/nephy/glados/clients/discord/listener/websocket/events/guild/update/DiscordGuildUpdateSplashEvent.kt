@@ -32,3 +32,9 @@ data class DiscordGuildUpdateSplashEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildUpdateSplashEvent
 ): DiscordWebsocketEventBase<GuildUpdateSplashEvent>
+
+val DiscordGuildUpdateSplashEvent.newSplashUrl: String?
+    get() = jdaEvent.newSplashUrl
+
+val DiscordGuildUpdateSplashEvent.oldSplashUrl: String?
+    get() = jdaEvent.oldSplashUrl

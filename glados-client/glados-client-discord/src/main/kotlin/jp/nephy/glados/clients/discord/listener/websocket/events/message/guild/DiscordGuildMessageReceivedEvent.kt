@@ -26,9 +26,24 @@ package jp.nephy.glados.clients.discord.listener.websocket.events.message.guild
 
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
+import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.Message
+import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 
 data class DiscordGuildMessageReceivedEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildMessageReceivedEvent
 ): DiscordWebsocketEventBase<GuildMessageReceivedEvent>
+
+val DiscordGuildMessageReceivedEvent.message: Message
+    get() = jdaEvent.message
+
+val DiscordGuildMessageReceivedEvent.author: User
+    get() = jdaEvent.author
+
+val DiscordGuildMessageReceivedEvent.member: Member
+    get() = jdaEvent.member
+
+val DiscordGuildMessageReceivedEvent.isWebhookMessage: Boolean
+    get() = jdaEvent.isWebhookMessage

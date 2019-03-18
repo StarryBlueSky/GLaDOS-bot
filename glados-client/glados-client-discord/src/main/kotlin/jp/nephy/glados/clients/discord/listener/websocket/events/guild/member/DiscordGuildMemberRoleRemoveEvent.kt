@@ -26,9 +26,13 @@ package jp.nephy.glados.clients.discord.listener.websocket.events.guild.member
 
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
+import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent
 
 data class DiscordGuildMemberRoleRemoveEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildMemberRoleRemoveEvent
 ): DiscordWebsocketEventBase<GuildMemberRoleRemoveEvent>
+
+val DiscordGuildMemberRoleRemoveEvent.roles: List<Role>
+    get() = jdaEvent.roles

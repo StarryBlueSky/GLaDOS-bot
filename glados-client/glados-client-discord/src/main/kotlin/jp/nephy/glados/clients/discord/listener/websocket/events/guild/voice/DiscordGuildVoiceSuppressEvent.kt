@@ -32,3 +32,6 @@ data class DiscordGuildVoiceSuppressEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildVoiceSuppressEvent
 ): DiscordWebsocketEventBase<GuildVoiceSuppressEvent>
+
+val DiscordGuildVoiceSuppressEvent.isSuppressed: Boolean
+    get() = jdaEvent.isSuppressed

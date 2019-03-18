@@ -27,8 +27,19 @@ package jp.nephy.glados.clients.discord.listener.websocket.events.general
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
 import net.dv8tion.jda.api.events.ShutdownEvent
+import net.dv8tion.jda.api.requests.CloseCode
+import java.time.OffsetDateTime
 
 data class DiscordShutdownEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: ShutdownEvent
 ): DiscordWebsocketEventBase<ShutdownEvent>
+
+val DiscordShutdownEvent.timeShutdown: OffsetDateTime
+    get() = jdaEvent.timeShutdown
+
+val DiscordShutdownEvent.closeCode: CloseCode?
+    get() = jdaEvent.closeCode
+
+val DiscordShutdownEvent.code: Int
+    get() = jdaEvent.code

@@ -32,3 +32,6 @@ data class DiscordGuildVoiceSelfDeafenEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildVoiceSelfDeafenEvent
 ): DiscordWebsocketEventBase<GuildVoiceSelfDeafenEvent>
+
+val DiscordGuildVoiceSelfDeafenEvent.isSelfDeafened: Boolean
+    get() = jdaEvent.isSelfDeafened

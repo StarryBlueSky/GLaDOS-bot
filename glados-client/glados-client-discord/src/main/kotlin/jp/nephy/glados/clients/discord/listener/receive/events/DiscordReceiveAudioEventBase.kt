@@ -22,14 +22,20 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.discord.listener.receive.events
 
 import jp.nephy.glados.clients.discord.GuildPlayer
 import jp.nephy.glados.clients.discord.listener.DiscordEventBase
 import jp.nephy.glados.clients.discord.listener.receive.DiscordReceiveAudioEventSubscription
+import net.dv8tion.jda.api.entities.Guild
 
 interface DiscordReceiveAudioEventBase: DiscordEventBase {
     val guildPlayer: GuildPlayer
 
     override val subscription: DiscordReceiveAudioEventSubscription
 }
+
+val DiscordReceiveAudioEventBase.guild: Guild
+    get() = guildPlayer.guild

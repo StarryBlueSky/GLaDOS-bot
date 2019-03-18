@@ -22,13 +22,18 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.user
+package jp.nephy.glados.clients.discord.listener.websocket.events.emote
 
-import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.events.user.UserActivityStartEvent
+import net.dv8tion.jda.api.entities.Emote
+import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.events.emote.GenericEmoteEvent
 
-data class DiscordUserActivityStartEvent(
-    override val subscription: DiscordWebsocketEventSubscription,
-    override val jdaEvent: UserActivityStartEvent
-): DiscordWebsocketEventBase<UserActivityStartEvent>
+val DiscordWebsocketEventBase<out GenericEmoteEvent>.guild: Guild
+    get() = jdaEvent.guild
+
+val DiscordWebsocketEventBase<out GenericEmoteEvent>.emote: Emote
+    get() = jdaEvent.emote
+
+val DiscordWebsocketEventBase<out GenericEmoteEvent>.isManaged: Boolean
+    get() = jdaEvent.isManaged

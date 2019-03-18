@@ -26,9 +26,13 @@ package jp.nephy.glados.clients.discord.listener.websocket.events.message.guild
 
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
+import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.events.message.guild.GuildMessageEmbedEvent
 
 data class DiscordGuildMessageEmbedEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: GuildMessageEmbedEvent
 ): DiscordWebsocketEventBase<GuildMessageEmbedEvent>
+
+val DiscordGuildMessageEmbedEvent.messageEmbeds: List<MessageEmbed>
+    get() = jdaEvent.messageEmbeds

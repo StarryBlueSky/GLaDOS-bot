@@ -27,9 +27,21 @@ package jp.nephy.glados.clients.discord.listener.receive.events
 import jp.nephy.glados.clients.discord.GuildPlayer
 import jp.nephy.glados.clients.discord.listener.receive.DiscordReceiveAudioEventSubscription
 import net.dv8tion.jda.api.audio.CombinedAudio
+import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.User
 
 data class DiscordCombinedAudioReceiveEvent(
     override val subscription: DiscordReceiveAudioEventSubscription,
     override val guildPlayer: GuildPlayer,
     val audio: CombinedAudio
 ): DiscordReceiveAudioEventBase
+
+val DiscordCombinedAudioReceiveEvent.users: List<User>
+    get() = audio.users
+
+val DiscordCombinedAudioReceiveEvent.members: List<Member>
+    get() = users.map { guild.getMember(it) }
+
+fun DiscordCombinedAudioReceiveEvent.audioData(volume: Double): ByteArray {
+    return audio.getAudioData(volume)
+}

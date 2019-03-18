@@ -32,3 +32,12 @@ data class DiscordReadyEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: ReadyEvent
 ): DiscordWebsocketEventBase<ReadyEvent>
+
+val DiscordReadyEvent.guildAvailableCount: Int
+    get() = jdaEvent.guildAvailableCount
+
+val DiscordReadyEvent.guildUnavailableCount: Int
+    get() = jdaEvent.guildUnavailableCount
+
+val DiscordReadyEvent.guildTotalCount: Int
+    get() = jdaEvent.guildTotalCount

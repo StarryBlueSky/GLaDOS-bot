@@ -22,13 +22,26 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.user.update
+package jp.nephy.glados.clients.discord.listener.websocket.events.message
 
-import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.events.user.update.UserUpdateActivityOrderEvent
+import net.dv8tion.jda.api.entities.*
+import net.dv8tion.jda.api.events.message.GenericMessageEvent
 
-data class DiscordUserUpdateActivityOrderEvent(
-    override val subscription: DiscordWebsocketEventSubscription,
-    override val jdaEvent: UserUpdateActivityOrderEvent
-): DiscordWebsocketEventBase<UserUpdateActivityOrderEvent>
+val DiscordWebsocketEventBase<out GenericMessageEvent>.channel: MessageChannel
+    get() = jdaEvent.channel
+
+val DiscordWebsocketEventBase<out GenericMessageEvent>.messageId: Long
+    get() = jdaEvent.messageIdLong
+
+val DiscordWebsocketEventBase<out GenericMessageEvent>.channelType: ChannelType
+    get() = jdaEvent.channelType
+
+val DiscordWebsocketEventBase<out GenericMessageEvent>.guild: Guild?
+    get() = jdaEvent.guild
+
+val DiscordWebsocketEventBase<out GenericMessageEvent>.textChannel: TextChannel?
+    get() = jdaEvent.textChannel
+
+val DiscordWebsocketEventBase<out GenericMessageEvent>.privateChannel: PrivateChannel?
+    get() = jdaEvent.privateChannel

@@ -26,9 +26,21 @@ package jp.nephy.glados.clients.discord.listener.websocket.events.channel.voice.
 
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
+import net.dv8tion.jda.api.entities.IPermissionHolder
+import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.events.channel.voice.update.VoiceChannelUpdatePermissionsEvent
 
 data class DiscordVoiceChannelUpdatePermissionsEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: VoiceChannelUpdatePermissionsEvent
 ): DiscordWebsocketEventBase<VoiceChannelUpdatePermissionsEvent>
+
+val DiscordVoiceChannelUpdatePermissionsEvent.changedPermissionHolders: List<IPermissionHolder>
+    get() = jdaEvent.changedMembers
+
+val DiscordVoiceChannelUpdatePermissionsEvent.changedMembers: List<Member>
+    get() = jdaEvent.changedMembers
+
+val DiscordVoiceChannelUpdatePermissionsEvent.changedRoles: List<Role>
+    get() = jdaEvent.changedRoles

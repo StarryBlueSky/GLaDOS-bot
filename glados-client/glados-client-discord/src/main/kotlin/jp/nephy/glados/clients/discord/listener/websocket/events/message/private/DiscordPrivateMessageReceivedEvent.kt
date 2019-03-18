@@ -26,9 +26,17 @@ package jp.nephy.glados.clients.discord.listener.websocket.events.message.privat
 
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
+import net.dv8tion.jda.api.entities.Message
+import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent
 
 data class DiscordPrivateMessageReceivedEvent(
     override val subscription: DiscordWebsocketEventSubscription,
     override val jdaEvent: PrivateMessageReceivedEvent
 ): DiscordWebsocketEventBase<PrivateMessageReceivedEvent>
+
+val DiscordPrivateMessageReceivedEvent.message: Message
+    get() = jdaEvent.message
+
+val DiscordPrivateMessageReceivedEvent.author: User
+    get() = jdaEvent.author
