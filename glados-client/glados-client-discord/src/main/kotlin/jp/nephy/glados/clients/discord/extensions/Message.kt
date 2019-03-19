@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.discord.extensions
 
 import net.dv8tion.jda.api.entities.Message
@@ -30,4 +32,4 @@ val Message.fullName: String
     get() = "${member?.fullNameWithoutGuild ?: author.displayName} ${channel.fullName}"
 
 val Message.fullNameWithoutGuild: String
-    get() = "${member?.fullNameWithoutGuild ?: author.displayName} ${channel.name}"
+    get() = "${member?.fullNameWithoutGuild ?: author.displayName} ${channel.fullNameWithoutGuild}"

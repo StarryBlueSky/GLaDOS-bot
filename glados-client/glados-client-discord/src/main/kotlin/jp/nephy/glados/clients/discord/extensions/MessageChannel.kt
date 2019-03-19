@@ -33,6 +33,12 @@ import net.dv8tion.jda.api.entities.TextChannel
 val MessageChannel.fullName: String
     get() = when (this) {
         is TextChannel -> "#$name (${guild.name})"
-        is PrivateChannel -> "#$name (${user.displayName})"
-        else -> "#$name"
+        is PrivateChannel -> "$name (${user.displayName})"
+        else -> name
+    }
+
+val MessageChannel.fullNameWithoutGuild: String
+    get() = when (this) {
+        is TextChannel -> "#$name"
+        else -> name
     }
