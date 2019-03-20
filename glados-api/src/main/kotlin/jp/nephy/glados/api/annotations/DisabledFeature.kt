@@ -22,42 +22,10 @@
  * SOFTWARE.
  */
 
-@file:Suppress("UNUSED")
-
-package jp.nephy.glados.clients
-
-import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.api.annotations.DisabledFeature
-import jp.nephy.glados.api.annotations.ExperimentalFeature
-import kotlin.reflect.full.findAnnotation
+package jp.nephy.glados.api.annotations
 
 /**
- * Effective name of Plugin.
+ * Indicates that this plugin or subscription is disable.
  */
-val Plugin.effectiveName: String
-    get() = name?.ifBlank { null } ?: this::class.simpleName.orEmpty()
-
-/**
- * Effective version of Plugin.
- */
-val Plugin.effectiveVersion: String
-    get() = version ?: "1.0.0.0"
-
-/**
- * Full name of Plugin.
- */
-val Plugin.fullName: String
-    get() = "$effectiveName[v$effectiveVersion]"
-
-/**
- * The flag whether Plugin is experimental.
- */
-val Plugin.isExperimental: Boolean
-    get() = this::class.findAnnotation<ExperimentalFeature>() != null
-
-/**
- * The flag whether Plugin is disabled.
- */
-val Plugin.isDisabled: Boolean
-    get() = this::class.findAnnotation<DisabledFeature>() != null
-
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+annotation class DisabledFeature

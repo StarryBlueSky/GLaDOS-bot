@@ -28,6 +28,7 @@ package jp.nephy.glados.clients
 
 import jp.nephy.glados.api.Event
 import jp.nephy.glados.api.Subscription
+import jp.nephy.glados.api.annotations.DisabledFeature
 import jp.nephy.glados.api.annotations.ExperimentalFeature
 import kotlin.reflect.KClass
 import kotlin.reflect.full.callSuspend
@@ -64,6 +65,10 @@ val Subscription<*, *>.eventClass: KClass<*>
  * Subscription invoke operator.
  */
 suspend operator fun <E: Event> Subscription<*, E>.invoke(event: E) {
+    if (isDisabled) {
+        return
+    }
+    
     runCatching {
         val timeMillis = measureTimeMillis {
             function.callSuspend(plugin, event)
@@ -76,3 +81,9 @@ suspend operator fun <E: Event> Subscription<*, E>.invoke(event: E) {
         onFailure(it, event)
     }
 }
+
+/**
+ * The flag whether Subscription is disabled.
+ */
+val Subscription<*, *>.isDisabled: Boolean
+    get() = plugin.isDisabled || function.findAnnotation<DisabledFeature>() != null
