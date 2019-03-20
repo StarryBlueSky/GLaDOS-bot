@@ -33,27 +33,27 @@ import jp.nephy.glados.clients.twitter.event.*
  * TwitterEventModel.
  */
 interface TwitterEventModel: EventModel {
-    suspend fun onConnect(event: ConnectEvent) {}
+    suspend fun onTwitterConnect(event: TwitterConnectEvent) {}
     
-    suspend fun onDisconnect(event: DisconnectEvent) {}
+    suspend fun onTwitterDisconnect(event: TwitterDisconnectEvent) {}
     
-    suspend fun onStatus(event: StatusEvent) {}
+    suspend fun onTwitterStatus(event: TwitterStatusEvent) {}
     
-    suspend fun onDirectMessage(event: DirectMessageEvent) {}
+    suspend fun onTwitterDirectMessage(event: TwitterDirectMessageEvent) {}
     
-    suspend fun onFriends(event: FriendsEvent) {}
+    suspend fun onTwitterFriends(event: TwitterFriendsEvent) {}
     
-    suspend fun onDelete(event: DeleteEvent) {}
+    suspend fun onTwitterDelete(event: TwitterDeleteEvent) {}
     
-    suspend fun onHeartbeat(event: HeartbeatEvent) {}
+    suspend fun onTwitterHeartbeat(event: TwitterHeartbeatEvent) {}
     
-    suspend fun onLength(event: LengthEvent) {}
+    suspend fun onTwitterLength(event: TwitterLengthEvent) {}
     
-    suspend fun onAnyJson(event: AnyJsonEvent) {}
+    suspend fun onTwitterAnyJson(event: TwitterAnyJsonEvent) {}
     
-    suspend fun onUnhandledJson(event: UnhandledJsonEvent) {}
+    suspend fun onTwitterUnhandledJson(event: TwitterUnhandledJsonEvent) {}
     
-    suspend fun onUnknownData(event: UnknownDataEvent) {}
+    suspend fun onTwitterUnknownData(event: TwitterUnknownDataEvent) {}
     
-    suspend fun onRawData(event: RawDataEvent) {}
+    suspend fun onTwitterRawData(event: TwitterRawDataEvent) {}
 }

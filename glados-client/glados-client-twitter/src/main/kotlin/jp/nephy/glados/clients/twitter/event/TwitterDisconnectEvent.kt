@@ -28,9 +28,14 @@ import jp.nephy.glados.clients.twitter.TwitterSubscription
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 
 /**
- * HeartbeatEvent.
+ * TwitterDisconnectEvent.
  */
-data class HeartbeatEvent(
+data class TwitterDisconnectEvent(
     override val account: TwitterAccount,
-    override val subscription: TwitterSubscription
+    override val subscription: TwitterSubscription,
+
+    /**
+     * Disconnect cause.
+     */
+    val cause: Throwable?
 ): TwitterEventBase

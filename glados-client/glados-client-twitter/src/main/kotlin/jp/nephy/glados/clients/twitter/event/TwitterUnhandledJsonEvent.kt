@@ -26,11 +26,17 @@ package jp.nephy.glados.clients.twitter.event
 
 import jp.nephy.glados.clients.twitter.TwitterSubscription
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
+import jp.nephy.jsonkt.*
 
 /**
- * ConnectEvent.
+ * TwitterUnhandledJsonEvent.
  */
-data class ConnectEvent(
+data class TwitterUnhandledJsonEvent(
     override val account: TwitterAccount,
-    override val subscription: TwitterSubscription
+    override val subscription: TwitterSubscription,
+
+    /**
+     * The [JsonObject] of the event.
+     */
+    val json: JsonObject
 ): TwitterEventBase

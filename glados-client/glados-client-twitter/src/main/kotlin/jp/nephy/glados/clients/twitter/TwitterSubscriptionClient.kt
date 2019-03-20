@@ -129,7 +129,7 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
         
         override suspend fun onConnect() {
             runEvent(filter) {
-                ConnectEvent(account, it)
+                TwitterConnectEvent(account, it)
             }
 
             logger.info { "Tweetstorm (@${account.user.screenName}) が開始されました。" }
@@ -137,7 +137,7 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
 
         override suspend fun onDisconnect(cause: Throwable?) {
             runEvent(filter) {
-                DisconnectEvent(account, it, cause)
+                TwitterDisconnectEvent(account, it, cause)
             }
 
             if (cause != null) {
@@ -149,61 +149,61 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
 
         override suspend fun onStatus(status: Status) {
             runEvent(filter) {
-                StatusEvent(account, it, status)
+                TwitterStatusEvent(account, it, status)
             }
         }
 
         override suspend fun onDirectMessage(message: DirectMessage) {
             runEvent(filter) {
-                DirectMessageEvent(account, it, message)
+                TwitterDirectMessageEvent(account, it, message)
             }
         }
 
         override suspend fun onFriends(friends: Stream.Friends) {
             runEvent(filter) {
-                FriendsEvent(account, it, friends)
+                TwitterFriendsEvent(account, it, friends)
             }
         }
 
         override suspend fun onDelete(delete: Stream.Delete) {
             runEvent(filter) {
-                DeleteEvent(account, it, delete)
+                TwitterDeleteEvent(account, it, delete)
             }
         }
 
         override suspend fun onHeartbeat() {
             runEvent(filter) {
-                HeartbeatEvent(account, it)
+                TwitterHeartbeatEvent(account, it)
             }
         }
 
         override suspend fun onLength(length: Int) {
             runEvent(filter) {
-                LengthEvent(account, it, length)
+                TwitterLengthEvent(account, it, length)
             }
         }
 
         override suspend fun onAnyJson(json: JsonObject) {
             runEvent(filter) {
-                AnyJsonEvent(account, it, json)
+                TwitterAnyJsonEvent(account, it, json)
             }
         }
 
         override suspend fun onUnhandledJson(json: JsonObject) {
             runEvent(filter) {
-                UnhandledJsonEvent(account, it, json)
+                TwitterUnhandledJsonEvent(account, it, json)
             }
         }
 
         override suspend fun onUnknownData(data: String) {
             runEvent(filter) {
-                UnknownDataEvent(account, it, data)
+                TwitterUnknownDataEvent(account, it, data)
             }
         }
 
         override suspend fun onRawData(data: String) {
             runEvent(filter) {
-                RawDataEvent(account, it, data)
+                TwitterRawDataEvent(account, it, data)
             }
         }
     }

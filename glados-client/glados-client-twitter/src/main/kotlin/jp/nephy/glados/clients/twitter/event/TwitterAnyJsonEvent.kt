@@ -29,9 +29,9 @@ import jp.nephy.glados.clients.twitter.config.TwitterAccount
 import jp.nephy.jsonkt.*
 
 /**
- * AnyJsonEvent.
+ * TwitterAnyJsonEvent.
  */
-data class AnyJsonEvent(
+data class TwitterAnyJsonEvent(
     override val account: TwitterAccount,
     override val subscription: TwitterSubscription,
 

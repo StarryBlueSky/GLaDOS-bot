@@ -26,16 +26,17 @@ package jp.nephy.glados.clients.twitter.event
 
 import jp.nephy.glados.clients.twitter.TwitterSubscription
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
+import jp.nephy.penicillin.models.DirectMessage
 
 /**
- * UnknownDataEvent.
+ * TwitterDirectMessageEvent.
  */
-data class UnknownDataEvent(
+data class TwitterDirectMessageEvent(
     override val account: TwitterAccount,
     override val subscription: TwitterSubscription,
 
     /**
-     * Unknown data string.
+     * The [DirectMessage] object.
      */
-    val data: String
+    val message: DirectMessage
 ): TwitterEventBase

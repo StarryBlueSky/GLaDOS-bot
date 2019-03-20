@@ -29,9 +29,9 @@ import jp.nephy.glados.clients.twitter.config.TwitterAccount
 import jp.nephy.penicillin.models.Stream
 
 /**
- * DeleteEvent.
+ * TwitterDeleteEvent.
  */
-data class DeleteEvent(
+data class TwitterDeleteEvent(
     override val account: TwitterAccount,
     override val subscription: TwitterSubscription,
 

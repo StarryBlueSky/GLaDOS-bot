@@ -26,16 +26,17 @@ package jp.nephy.glados.clients.twitter.event
 
 import jp.nephy.glados.clients.twitter.TwitterSubscription
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
+import jp.nephy.penicillin.models.Status
 
 /**
- * RawDataEvent.
+ * TwitterStatusEvent.
  */
-data class RawDataEvent(
+data class TwitterStatusEvent(
     override val account: TwitterAccount,
     override val subscription: TwitterSubscription,
 
     /**
-     * Raw data string.
+     * The [Status] object.
      */
-    val data: String
+    val status: Status
 ): TwitterEventBase
