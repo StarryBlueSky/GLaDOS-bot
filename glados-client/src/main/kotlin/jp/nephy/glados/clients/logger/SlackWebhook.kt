@@ -29,9 +29,9 @@ import io.ktor.client.request.post
 import io.ktor.client.response.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.content.OutgoingContent
+import jp.nephy.glados.GLaDOSCoroutineScope
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.config
-import jp.nephy.glados.GLaDOSCoroutineScope
 import jp.nephy.jsonkt.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -124,4 +124,8 @@ object SlackWebhook: GLaDOSCoroutineScope() {
 
 fun SlackWebhook.MessageBuilder.text(block: () -> Any?) {
     text = block.toStringSafe()
+}
+
+fun SlackWebhook.MessageBuilder.textBuilder(block: StringBuilder.() -> Unit) {
+    text = buildString(block)
 }
