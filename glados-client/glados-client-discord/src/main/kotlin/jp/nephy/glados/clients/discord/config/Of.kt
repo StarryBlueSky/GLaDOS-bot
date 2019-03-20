@@ -28,18 +28,18 @@ package jp.nephy.glados.clients.discord.config
 
 import net.dv8tion.jda.api.entities.*
 
-inline fun <T> List<TextChannel>.textChannelOf(guild: Guild, block: (TextChannel) -> T?): T? {
-    return find { it.guild == guild }?.let(block)
+inline fun <T> List<TextChannel>.textChannelOf(guild: Guild, block: (TextChannel) -> Unit) {
+    find { it.guild == guild }?.also(block)
 }
 
-inline fun <T> List<VoiceChannel>.voiceChannelOf(guild: Guild, block: (VoiceChannel) -> T?): T? {
-    return find { it.guild == guild }?.let(block)
+inline fun <T> List<VoiceChannel>.voiceChannelOf(guild: Guild, block: (VoiceChannel) -> Unit) {
+    find { it.guild == guild }?.also(block)
 }
 
-inline fun <T> List<Role>.roleOf(guild: Guild, block: (Role) -> T?): T? {
-    return find { it.guild == guild }?.let(block)
+inline fun <T> List<Role>.roleOf(guild: Guild, block: (Role) -> Unit) {
+    find { it.guild == guild }?.also(block)
 }
 
-inline fun <T> List<Emote>.emoteOf(guild: Guild, block: (Emote) -> T?): T? {
-    return find { it.guild == guild }?.let(block)
+inline fun <T> List<Emote>.emoteOf(guild: Guild, block: (Emote) -> Unit) {
+    find { it.guild == guild }?.also(block)
 }
