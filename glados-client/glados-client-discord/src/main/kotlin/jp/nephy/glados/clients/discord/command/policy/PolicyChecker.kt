@@ -137,7 +137,7 @@ private fun DiscordCommandEvent.rejectBotChannelPolicy() {
 }
 
 private fun DiscordCommandEvent.satisfyCommandAvailabilityPolicy(): Boolean {
-    return guild.config?.options?.booleanValueOrNull("enable_command") == true
+    return guild == null || guild.config?.options?.booleanValueOrNull("enable_command") == true
 }
 
 private fun DiscordCommandEvent.rejectCommandAvailabilityPolicy() {
