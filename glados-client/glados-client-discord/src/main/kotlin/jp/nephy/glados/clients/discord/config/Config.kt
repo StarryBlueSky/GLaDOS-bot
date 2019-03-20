@@ -50,6 +50,9 @@ val Guild?.config: GuildConfig?
         return GLaDOS.config.discord.guilds.find { it.id == idLong }
     }
 
+val DiscordConfig.owner: User?
+    get() = ownerId?.let { GLaDOS.jda.getUserById(it) }
+
 fun GuildConfig?.textChannel(key: String): TextChannel? {
     return GLaDOS.jda.getTextChannelById(this?.textChannels?.longValueOrNull(key) ?: return null)
 }
