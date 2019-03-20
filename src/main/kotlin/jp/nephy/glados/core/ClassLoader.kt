@@ -43,13 +43,17 @@ private val logger = Logger.of("GLaDOS.ClassLoader")
 
 @Suppress("UNCHECKED_CAST")
 internal inline fun <reified T: Any> loadClassesFromJar(path: Path): List<KClass<T>> {
-    val thread = Thread.currentThread()
+    val classLoader = Thread.currentThread().contextClassLoader
     
-    Files.walk(GLaDOS.config.paths.libs).forEach { 
-        thread.addClassPath(it)
+    if (!Files.isDirectory(GLaDOS.config.paths.libs)) {
+        Files.createDirectories(GLaDOS.config.paths.libs)
     }
     
-    thread.addClassPath(path)
+    Files.walk(GLaDOS.config.paths.libs).forEach { 
+        classLoader.addClassPath(it)
+    }
+    
+    classLoader.addClassPath(path)
 
     return JarFile(path.toFile()).use { file ->
         file.stream().asSequence().filter {
@@ -58,7 +62,7 @@ internal inline fun <reified T: Any> loadClassesFromJar(path: Path): List<KClass
             it.name.removeSuffix(".class").replace('/', '.')
         }.mapNotNull {
             runCatching {
-                thread.contextClassLoader.loadClass(it)
+                classLoader.loadClass(it)
             }.onSuccess {
                 if (it.canonicalName == null) {
                     return@mapNotNull null
@@ -74,20 +78,19 @@ internal inline fun <reified T: Any> loadClassesFromJar(path: Path): List<KClass
     }
 }
 
-private fun Thread.addClassPath(jarPath: Path) {
-    val classLoader = contextClassLoader
-    if (classLoader !is URLClassLoader) {
-        throw UnsupportedOperationException("Unsupported ClassLoader: ${classLoader::class.qualifiedName}")
+private fun ClassLoader.addClassPath(jarPath: Path) {
+    if (this !is URLClassLoader) {
+        throw UnsupportedOperationException("Unsupported ClassLoader: ${this::class.qualifiedName}")
     }
     
     val url = jarPath.toUri().toURL()
-    if (classLoader.urLs.any { it.sameFile(url) }) {
+    if (urLs.any { it.sameFile(url) }) {
         return
     }
     
     val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
     method.isAccessible = true
-    method.invoke(classLoader, url)
+    method.invoke(this, url)
 }
 
 private const val definitionPath = "META-INF/clients"
@@ -95,6 +98,15 @@ private const val definitionPath = "META-INF/clients"
 @Suppress("UNCHECKED_CAST")
 internal inline fun <reified T: Any> loadClassesFromClassPath(): List<KClass<T>> {
     val classLoader = Thread.currentThread().contextClassLoader
+
+    if (!Files.isDirectory(GLaDOS.config.paths.libs)) {
+        Files.createDirectories(GLaDOS.config.paths.libs)
+    }
+
+    Files.walk(GLaDOS.config.paths.libs).forEach {
+        classLoader.addClassPath(it)
+    }
+    
     val roots = GLaDOS::class.java.classLoader.getResource(definitionPath)?.let { listOf(it) }
         ?: classLoader.getResources(definitionPath).toList()
     
