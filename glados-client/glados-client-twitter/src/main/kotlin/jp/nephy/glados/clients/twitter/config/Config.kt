@@ -26,24 +26,18 @@
 
 package jp.nephy.glados.clients.twitter.config
 
+import jp.nephy.glados.api.ConfigJson
 import jp.nephy.jsonkt.*
-import jp.nephy.jsonkt.delegation.*
 
 /**
- * TwitterConfig.
+ * Returns "twitter" config.
  */
-data class TwitterConfig(
-    /**
-     * [JsonObject] for this twitter config.
-     */
-    override val json: JsonObject
-): JsonModel {
-    /**
-     * A map of key and TwitterAccount.
-     */
-    val accounts: Map<String, TwitterAccount> by lambda {
-        it.jsonObject.map { account ->
-            account.key to account.value.jsonObject.parse<TwitterAccount>(account.key)
-        }.toMap()
-    }
+val ConfigJson.twitter: TwitterConfig
+    get() = json.getOrNull("twitter").parseOrNull() ?: throw IllegalStateException("Key \"twitter\" is not found in config.json.")
+
+/**
+ * Returns [TwitterAccount] for this [key].
+ */
+fun TwitterConfig.twitterAccount(key: String): TwitterAccount {
+    return accounts[key] ?: throw IllegalArgumentException("$key is not found in config.json.")
 }

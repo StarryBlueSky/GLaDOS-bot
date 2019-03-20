@@ -22,28 +22,65 @@
  * SOFTWARE.
  */
 
-@file:Suppress("UNUSED")
-
 package jp.nephy.glados.clients.twitter.config
 
 import jp.nephy.jsonkt.*
 import jp.nephy.jsonkt.delegation.*
+import jp.nephy.penicillin.endpoints.account
+import jp.nephy.penicillin.endpoints.account.verifyCredentials
+import jp.nephy.penicillin.extensions.complete
+import jp.nephy.penicillin.models.Account
 
 /**
- * TwitterConfig.
+ * TwitterAccount.
  */
-data class TwitterConfig(
+data class TwitterAccount(
     /**
-     * [JsonObject] for this twitter config.
+     * [JsonObject] for this account.
      */
-    override val json: JsonObject
+    override val json: JsonObject,
+
+    /**
+     * Json key for this account.
+     */
+    val key: String
 ): JsonModel {
     /**
-     * A map of key and TwitterAccount.
+     * Consumer Key.
      */
-    val accounts: Map<String, TwitterAccount> by lambda {
-        it.jsonObject.map { account ->
-            account.key to account.value.jsonObject.parse<TwitterAccount>(account.key)
-        }.toMap()
+    val ck: String by string
+
+    /**
+     * Consumer Secret.
+     */
+    val cs: String by string
+
+    /**
+     * Access Token.
+     */
+    val at: String by string
+
+    /**
+     * Access Token Secret.
+     */
+    val ats: String by string
+
+    /**
+     * User information.
+     */
+    val user: Account.VerifyCredentials by lazy {
+        client.use {
+            it.account.verifyCredentials.complete().use { response ->
+                response.result
+            }
+        }
+    }
+
+    override fun hashCode(): Int {
+        return key.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return key == (other as? TwitterAccount)?.key
     }
 }
