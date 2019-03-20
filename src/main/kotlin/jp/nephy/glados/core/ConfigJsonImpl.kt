@@ -90,9 +90,10 @@ internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
     override val paths: ConfigJson.Paths by modelOrDefault<PathsImpl>()
     
     data class PathsImpl(override val json: JsonObject): ConfigJson.Paths {
-        override val tmp: Path by lambda("tmp", { Paths.get("tmp") }) { Paths.get(it.string) }
-        override val resources: Path by lambda("resources", { Paths.get("resources") }) { Paths.get(it.string) }
-        override val plugins: Path by lambda("plugins", { Paths.get("plugins") }) { Paths.get(it.string) }
+        override val tmp: Path by lambda(default = { Paths.get("tmp") }) { Paths.get(it.string) }
+        override val resources: Path by lambda(default = { Paths.get("resources") }) { Paths.get(it.string) }
+        override val plugins: Path by lambda(default = { Paths.get("plugins") }) { Paths.get(it.string) }
+        override val libs: Path by lambda(default = { Paths.get("libs") }) { Paths.get(it.string) }
     }
     
     override val logging: ConfigJson.Logging by modelOrDefault<LoggingImpl>()

@@ -26,21 +26,29 @@ package jp.nephy.glados.core
 
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Logger
+import jp.nephy.glados.api.config
 import jp.nephy.glados.api.of
 import java.net.JarURLConnection
 import java.net.URL
 import java.net.URLClassLoader
-import java.nio.file.*
-import java.nio.file.attribute.BasicFileAttributes
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.jar.JarFile
 import kotlin.reflect.KClass
 import kotlin.streams.asSequence
+import kotlin.streams.toList
 
 private val logger = Logger.of("GLaDOS.ClassLoader")
 
 @Suppress("UNCHECKED_CAST")
 internal inline fun <reified T: Any> loadClassesFromJar(path: Path): List<KClass<T>> {
     val thread = Thread.currentThread()
+    
+    Files.walk(GLaDOS.config.paths.libs).forEach { 
+        thread.addClassPath(it)
+    }
+    
     thread.addClassPath(path)
 
     return JarFile(path.toFile()).use { file ->
@@ -67,9 +75,19 @@ internal inline fun <reified T: Any> loadClassesFromJar(path: Path): List<KClass
 }
 
 private fun Thread.addClassPath(jarPath: Path) {
+    val classLoader = contextClassLoader
+    if (classLoader !is URLClassLoader) {
+        throw UnsupportedOperationException("Unsupported ClassLoader: ${classLoader::class.qualifiedName}")
+    }
+    
+    val url = jarPath.toUri().toURL()
+    if (classLoader.urLs.any { it.sameFile(url) }) {
+        return
+    }
+    
     val method = URLClassLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
     method.isAccessible = true
-    method.invoke(contextClassLoader, jarPath.toUri().toURL())
+    method.invoke(classLoader, url)
 }
 
 private const val definitionPath = "META-INF/clients"
@@ -80,33 +98,25 @@ internal inline fun <reified T: Any> loadClassesFromClassPath(): List<KClass<T>>
     val roots = GLaDOS::class.java.classLoader.getResource(definitionPath)?.let { listOf(it) }
         ?: classLoader.getResources(definitionPath).toList()
     
-    return roots.flatMap {  root ->
+    return roots.flatMap { root ->
         logger.trace { "クラスパス: \"$root\" を検出しました。" }
 
         when (root.protocol) {
             "file" -> {
-                val paths = arrayListOf<Path>()
-                Files.walkFileTree(Paths.get(root.toURI()), object: SimpleFileVisitor<Path>() {
-                    override fun visitFile(path: Path, attrs: BasicFileAttributes): FileVisitResult {
-                        paths.add(path)
-                        return FileVisitResult.CONTINUE
-                    }
-                })
-
-                paths.map {
+                Files.walk(Paths.get(root.toURI())).map {
                     it.fileName.toString()
-                }
+                }.toList()
             }
             "jar" -> {
                 (root.openConnection() as JarURLConnection).jarFile.use {
                     it.entries().toList()
-                }.filter {
+                }.asSequence().filter {
                     it.name.startsWith(definitionPath)
                 }.map {
                     it.name.removePrefix("$definitionPath/")
                 }.filter { 
                     it.isNotBlank()
-                }
+                }.toList()
             }
             else -> {
                 throw UnsupportedOperationException("Unknown protocol: ${root.protocol}")

@@ -65,6 +65,12 @@ interface ConfigJson: JsonModel {
          * GLaDOS Plugin jars directory.
          */
         val plugins: Path
+
+        /**
+         * Classpath library jars directory.
+         * 
+         */
+        val libs: Path
     }
 
     /**
