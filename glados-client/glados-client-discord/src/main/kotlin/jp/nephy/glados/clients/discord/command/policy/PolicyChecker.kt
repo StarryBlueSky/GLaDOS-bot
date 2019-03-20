@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit
 
 private val logger = Logger.of("GLaDOS.Discord.PolicyChecker")
 
-internal fun DiscordCommandEvent.checkAllPolicies() {
+internal fun DiscordCommandEvent.checkAllPolicies(): Boolean {
     when {
         !satisfyAllowFromSelfUserPolicy() -> {
             rejectAllowFromSelfUserPolicy()
@@ -78,7 +78,12 @@ internal fun DiscordCommandEvent.checkAllPolicies() {
         !satisfyOwnerOnlyPermissionPolicy() -> {
             rejectOwnerOnlyPermissionPolicy()
         }
+        else -> {
+            return true
+        }
     }
+    
+    return false
 }
 
 private fun DiscordCommandEvent.satisfyAllowFromSelfUserPolicy(): Boolean {

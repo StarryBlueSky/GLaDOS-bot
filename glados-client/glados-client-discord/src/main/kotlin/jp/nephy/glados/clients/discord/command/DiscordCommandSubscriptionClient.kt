@@ -124,7 +124,9 @@ object DiscordCommandSubscriptionClient: GLaDOSSubscriptionClient<DiscordCommand
                     continue
                 }
 
-                event.checkAllPolicies()
+                if (!event.checkAllPolicies()) {
+                    continue
+                }
                 
                 if (subscription.isExperimental) {
                     event.message.emojiEnumPrompt<ExperimentalConsent> {
