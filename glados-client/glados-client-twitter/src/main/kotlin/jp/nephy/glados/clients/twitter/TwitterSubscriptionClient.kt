@@ -27,12 +27,15 @@ package jp.nephy.glados.clients.twitter
 import io.ktor.client.engine.cio.CIO
 import io.ktor.util.KtorExperimentalAPI
 import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.Priority
+import jp.nephy.glados.api.config
 import jp.nephy.glados.clients.runEvent
 import jp.nephy.glados.clients.subscriptions
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 import jp.nephy.glados.clients.twitter.config.client
+import jp.nephy.glados.clients.twitter.config.twitter
 import jp.nephy.glados.clients.twitter.event.*
 import jp.nephy.jsonkt.*
 import jp.nephy.penicillin.endpoints.stream
@@ -86,8 +89,13 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
             while (isActive) {
                 try {
                     client(engine = CIO).use {
-                        // TODO: Change UserStream endpoint
-                        it.stream.tweetstorm().listen(createListener(this@startJob)).await(reconnect = false)
+                        val customHost = GLaDOS.config.twitter.tweetstormHost
+                        
+                        if (customHost != null) {
+                            it.stream.tweetstorm(customHost)
+                        } else {
+                            it.stream.tweetstorm
+                        }.listen(createListener(this@startJob)).await(reconnect = false)
                     }
                 } catch (e: CancellationException) {
                     delay(5000)

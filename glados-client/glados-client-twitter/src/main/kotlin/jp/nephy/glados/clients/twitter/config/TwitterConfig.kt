@@ -46,4 +46,9 @@ data class TwitterConfig(
             account.key to account.value.jsonObject.parse<TwitterAccount>(account.key)
         }.toMap()
     }
+
+    /**
+     * Custom Tweetstorm host.
+     */
+    val tweetstormHost: String? by nullableString("tweetstorm_host")
 }
