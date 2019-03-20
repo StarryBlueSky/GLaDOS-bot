@@ -24,11 +24,11 @@
 
 package jp.nephy.glados.clients.twitter
 
+import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.Priority
 import jp.nephy.glados.api.config
-import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.twitter.config.TwitterAccount
 import jp.nephy.glados.clients.twitter.config.twitter
 import jp.nephy.glados.clients.twitter.config.twitterAccount
@@ -47,9 +47,12 @@ data class TwitterSubscription(
         get() = annotation.priority
 }
 
+/**
+ * A list of accounts corresponds with [TwitterEvent.accounts].
+ */
 val TwitterSubscription.accounts: List<TwitterAccount>
     get() = annotation.accounts.toList().ifEmpty {
-        GLaDOS.config.twitter.keys
+        GLaDOS.config.twitter.accounts.keys
     }.map {
-        GLaDOS.config.twitterAccount(it)
+        GLaDOS.config.twitter.twitterAccount(it)
     }

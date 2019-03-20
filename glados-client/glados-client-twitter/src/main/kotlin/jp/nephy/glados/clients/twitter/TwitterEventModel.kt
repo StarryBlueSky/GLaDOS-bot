@@ -33,27 +33,63 @@ import jp.nephy.glados.clients.twitter.event.*
  * TwitterEventModel.
  */
 interface TwitterEventModel: EventModel {
+    /**
+     * Called when GLaDOS connected to Tweetstorm.
+     */
     suspend fun onTwitterConnect(event: TwitterConnectEvent) {}
-    
+
+    /**
+     * Called when GLaDOS has been disconnected from Tweetstorm.
+     */
     suspend fun onTwitterDisconnect(event: TwitterDisconnectEvent) {}
-    
+
+    /**
+     * Called when GLaDOS received status object.
+     */
     suspend fun onTwitterStatus(event: TwitterStatusEvent) {}
-    
+
+    /**
+     * Called when GLaDOS received direct message object.
+     */
     suspend fun onTwitterDirectMessage(event: TwitterDirectMessageEvent) {}
-    
+
+    /**
+     * Called when GLaDOS received friends object.
+     */
     suspend fun onTwitterFriends(event: TwitterFriendsEvent) {}
-    
+
+    /**
+     * Called when GLaDOS received delete object.
+     */
     suspend fun onTwitterDelete(event: TwitterDeleteEvent) {}
-    
+
+    /**
+     * Called when GLaDOS received heartbeat.
+     */
     suspend fun onTwitterHeartbeat(event: TwitterHeartbeatEvent) {}
-    
+
+    /**
+     * Called when GLaDOS received length.
+     */
     suspend fun onTwitterLength(event: TwitterLengthEvent) {}
-    
+
+    /**
+     * Called when GLaDOS received any json objects.
+     */
     suspend fun onTwitterAnyJson(event: TwitterAnyJsonEvent) {}
-    
+
+    /**
+     * Called when GLaDOS received unhandled json.
+     */
     suspend fun onTwitterUnhandledJson(event: TwitterUnhandledJsonEvent) {}
-    
+
+    /**
+     * Called when GLaDOS received unknown data.
+     */
     suspend fun onTwitterUnknownData(event: TwitterUnknownDataEvent) {}
-    
+
+    /**
+     * Called when GLaDOS received any data.
+     */
     suspend fun onTwitterRawData(event: TwitterRawDataEvent) {}
 }
