@@ -3,7 +3,8 @@
     "paths": {
         "tmp": "tmp",
         "resources": "resources",
-        "plugins": "plugins"
+        "plugins": "plugins",
+        "libs": "libs"
     },
     "logging": {
         "level": "trace",
