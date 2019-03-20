@@ -24,6 +24,7 @@
 
 package jp.nephy.glados.core
 
+import io.ktor.util.extension
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.config
@@ -49,7 +50,7 @@ internal inline fun <reified T: Any> loadClassesFromJar(path: Path): List<KClass
         Files.createDirectories(GLaDOS.config.paths.libs)
     }
     
-    Files.walk(GLaDOS.config.paths.libs).forEach { 
+    Files.walk(GLaDOS.config.paths.libs).filter { it.extension == "jar" }.forEach { 
         classLoader.addClassPath(it)
     }
     
@@ -103,7 +104,7 @@ internal inline fun <reified T: Any> loadClassesFromClassPath(): List<KClass<T>>
         Files.createDirectories(GLaDOS.config.paths.libs)
     }
 
-    Files.walk(GLaDOS.config.paths.libs).forEach {
+    Files.walk(GLaDOS.config.paths.libs).filter { it.extension == "jar" }.forEach {
         classLoader.addClassPath(it)
     }
     
