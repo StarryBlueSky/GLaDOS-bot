@@ -133,10 +133,12 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
     }
     
     private fun createListener(account: TwitterAccount) = object: TweetstormListener {
-        private val filter: (TwitterSubscription) -> Boolean = { account in it.accounts }
-        
+        private fun filter(subscription: TwitterSubscription): Boolean {
+            return account in subscription.accounts
+        }
+
         override suspend fun onConnect() {
-            runEvent(filter) {
+            runEvent(::filter) {
                 TwitterConnectEvent(account, it)
             }
 
@@ -144,7 +146,7 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
         }
 
         override suspend fun onDisconnect(cause: Throwable?) {
-            runEvent(filter) {
+            runEvent(::filter) {
                 TwitterDisconnectEvent(account, it, cause)
             }
 
@@ -156,61 +158,61 @@ object TwitterSubscriptionClient: GLaDOSSubscriptionClient<TwitterEvent, Twitter
         }
 
         override suspend fun onStatus(status: Status) {
-            runEvent(filter) {
+            runEvent(::filter) {
                 TwitterStatusEvent(account, it, status)
             }
         }
 
         override suspend fun onDirectMessage(message: DirectMessage) {
-            runEvent(filter) {
+            runEvent(::filter) {
                 TwitterDirectMessageEvent(account, it, message)
             }
         }
 
         override suspend fun onFriends(friends: Stream.Friends) {
-            runEvent(filter) {
+            runEvent(::filter) {
                 TwitterFriendsEvent(account, it, friends)
             }
         }
 
         override suspend fun onDelete(delete: Stream.Delete) {
-            runEvent(filter) {
+            runEvent(::filter) {
                 TwitterDeleteEvent(account, it, delete)
             }
         }
 
         override suspend fun onHeartbeat() {
-            runEvent(filter) {
+            runEvent(::filter) {
                 TwitterHeartbeatEvent(account, it)
             }
         }
 
         override suspend fun onLength(length: Int) {
-            runEvent(filter) {
+            runEvent(::filter) {
                 TwitterLengthEvent(account, it, length)
             }
         }
 
         override suspend fun onAnyJson(json: JsonObject) {
-            runEvent(filter) {
+            runEvent(::filter) {
                 TwitterAnyJsonEvent(account, it, json)
             }
         }
 
         override suspend fun onUnhandledJson(json: JsonObject) {
-            runEvent(filter) {
+            runEvent(::filter) {
                 TwitterUnhandledJsonEvent(account, it, json)
             }
         }
 
         override suspend fun onUnknownData(data: String) {
-            runEvent(filter) {
+            runEvent(::filter) {
                 TwitterUnknownDataEvent(account, it, data)
             }
         }
 
         override suspend fun onRawData(data: String) {
-            runEvent(filter) {
+            runEvent(::filter) {
                 TwitterRawDataEvent(account, it, data)
             }
         }
