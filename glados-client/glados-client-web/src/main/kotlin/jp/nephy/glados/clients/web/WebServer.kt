@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.web
 
 import io.ktor.application.call
@@ -37,69 +39,90 @@ import io.ktor.routing.Routing
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.sessions.SessionStorageMemory
 import io.ktor.sessions.Sessions
-import jp.nephy.glados.api.GLaDOS
-import jp.nephy.glados.api.attributes
-import jp.nephy.glados.api.config
-import jp.nephy.glados.api.getOrPut
+import io.ktor.sessions.cookie
+import jp.nephy.glados.api.*
 import jp.nephy.glados.clients.invoke
 import jp.nephy.glados.clients.subscriptions
 import jp.nephy.glados.clients.web.config.web
+import jp.nephy.glados.clients.web.cookie.WebCookieSetupEvent
+import jp.nephy.glados.clients.web.cookie.WebCookieSetupSubscriptionClient
+import jp.nephy.glados.clients.web.error.WebErrorEvent
 import jp.nephy.glados.clients.web.error.WebErrorPageSubscriptionClient
 import jp.nephy.glados.clients.web.error.domain
 import jp.nephy.glados.clients.web.error.statuses
-import jp.nephy.glados.clients.web.event.WebErrorEvent
 import jp.nephy.glados.clients.web.extensions.effectiveHost
 import jp.nephy.glados.clients.web.features.DynamicResolver
 import jp.nephy.glados.clients.web.features.robotsTxt
-import jp.nephy.glados.clients.web.features.sitemap
-import jp.nephy.glados.clients.web.routing.WebRoutingSubscriptionClient
+import jp.nephy.glados.clients.web.features.sitemapXml
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 
 private const val webServerKey = "web"
 
+/**
+ * Access to [ApplicationEngine] instance.
+ */
 val GLaDOS.Companion.webServer: ApplicationEngine
     get() = GLaDOS.attributes[webServerKey]
+
+private val logger = Logger.of("GLaDOS.Web")
 
 internal fun initializeWebApplication() {
     GLaDOS.attributes.getOrPut(webServerKey) {
         embeddedServer(Netty, host = GLaDOS.config.web.host, port = GLaDOS.config.web.port) {
+            // Headers
             install(XForwardedHeaderSupport)
-            install(AutoHeadResponse)
             install(DefaultHeaders) {
                 header(HttpHeaders.Server, "GLaDOS-bot")
                 header("X-Powered-By", "GLaDOS-bot (+https://github.com/NephyProject/GLaDOS-bot)")
             }
 
+            // Error handling
             install(StatusPages) {
-                exception<Exception> { e ->
-                    WebRoutingSubscriptionClient.logger.error(e) { "Internal server error occurred." }
+                exception<Throwable> { e ->
+                    logger.error(e) { "Web サーバで例外が発生しました。" }
+                    
                     call.respond(HttpStatusCode.InternalServerError)
                 }
-
+                
                 for (status in WebErrorPageSubscriptionClient.subscriptions.flatMap { it.statuses }.distinct()) {
                     status(status) {
-                        val subscription = WebErrorPageSubscriptionClient.subscriptions.firstOrNull { status in it.statuses && (it.domain == null || it.domain == call.request.effectiveHost) } ?: return@status call.respond(status)
+                        val subscription = WebErrorPageSubscriptionClient.subscriptions.firstOrNull {
+                            status in it.statuses && (it.domain == null || it.domain == call.request.effectiveHost)
+                        }
                         
-                        subscription.invoke(WebErrorEvent(subscription, this, status))
+                        if (subscription != null) {
+                            val event = WebErrorEvent(subscription, this, status)
+                            subscription.invoke(event)
+                        } else {
+                            call.respond(status)
+                        }
                     }
                 }
             }
+            
+            // Routing
             install(DynamicResolver)
+            install(Routing) {
+                sitemapXml()
+                robotsTxt()
+            }
+            if (GLaDOS.config.web.enableHeadRequestHandler) {
+                install(AutoHeadResponse)
+            }
+
+            // Cookie
             install(Sessions) {
                 runBlocking {
-                    // TODO
-                    //                    for (subscription in Session.activeSubscriptions) {
-                    //                        cookie(subscription.sessionName, subscription.sessionClass, SessionStorageMemory()) {
-                    //                            subscription.invoke(this)
-                    //                        }
-                    //                    }
+                    for (subscription in WebCookieSetupSubscriptionClient.subscriptions) {
+                        cookie(subscription.annotation.name, subscription.annotation.sessionClass, SessionStorageMemory()) {
+                            val event = WebCookieSetupEvent(subscription, this)
+                            subscription.invoke(event)
+                        }
+                    }
                 }
-            }
-            install(Routing) {
-                sitemap()
-                robotsTxt()
             }
         }.start(wait = false)
     }
