@@ -22,23 +22,25 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.event
+package jp.nephy.glados.clients.web
 
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.util.pipeline.PipelineContext
 import jp.nephy.glados.api.Event
-import jp.nephy.glados.clients.web.routing.WebRoutingSubscription
 
-data class WebAccessEvent(
-    override val subscription: WebRoutingSubscription,
-    
-    val context: PipelineContext<*, ApplicationCall>,
-    
-    val matchResult: MatchResult?,
-    
-    val fragments: Map<String, String>
-): Event
+/**
+ * WebEventBase.
+ */
+interface WebEventBase: Event {
+    /**
+     * PipelineContext.
+     */
+    val context: PipelineContext<*, ApplicationCall>
+}
 
-val WebAccessEvent.call: ApplicationCall
+/**
+ * ApplicationCall.
+ */
+val WebEventBase.call: ApplicationCall
     get() = context.call

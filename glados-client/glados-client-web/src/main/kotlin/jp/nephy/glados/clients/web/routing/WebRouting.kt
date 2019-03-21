@@ -27,16 +27,42 @@ package jp.nephy.glados.clients.web.routing
 import jp.nephy.glados.api.Priority
 import jp.nephy.glados.clients.web.HttpMethod
 import jp.nephy.glados.clients.web.PathType
-import jp.nephy.glados.clients.web.extensions.meta.SitemapUpdateFrequency
+import jp.nephy.glados.clients.web.routing.meta.SitemapChangeFrequency
 
+/**
+ * Indicates that this function is executed as [WebRoutingSubscription].
+ */
 @Target(AnnotationTarget.FUNCTION)
 annotation class WebRouting(
+    /**
+     * Path.
+     */
     val path: String,
+
+    /**
+     * Domain. If empty, accepts any domains.
+     */
     val domain: String = "",
+
+    /**
+     * PathType of path.
+     */
     val pathType: PathType = PathType.Normal,
+
+    /**
+     * Array of HttpMethod.
+     */
     val methods: Array<HttpMethod> = [],
+
+    /**
+     * Array of RegexOption.
+     */
     val regexOptions: Array<RegexOption> = [],
-    val updateFrequency: SitemapUpdateFrequency = SitemapUpdateFrequency.Monthly,
+
+    /**
+     * Execution priority.
+     */
     val priority: Priority = Priority.Normal,
+    val changeFrequency: SitemapChangeFrequency = SitemapChangeFrequency.Monthly,
     val banRobots: Boolean = false
 )

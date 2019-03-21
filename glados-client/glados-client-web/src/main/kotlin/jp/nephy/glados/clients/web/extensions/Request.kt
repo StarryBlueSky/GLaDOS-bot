@@ -26,8 +26,8 @@
 
 package jp.nephy.glados.clients.web.extensions
 
-import jp.nephy.glados.clients.web.event.WebAccessEvent
-import jp.nephy.glados.clients.web.event.call
+import jp.nephy.glados.clients.web.routing.WebAccessEvent
+import jp.nephy.glados.clients.web.call
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 

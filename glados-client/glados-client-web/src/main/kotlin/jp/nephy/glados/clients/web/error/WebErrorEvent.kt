@@ -22,10 +22,22 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.extensions.meta
+package jp.nephy.glados.clients.web.error
 
-object TwitterCard {
-    enum class Type(val tagName: String) {
-        Summary("summary"), SummaryLargeImage("summary_large_image"), App("app"), Player("player")
-    }
-}
+import io.ktor.application.ApplicationCall
+import io.ktor.http.HttpStatusCode
+import io.ktor.util.pipeline.PipelineContext
+import jp.nephy.glados.clients.web.WebEventBase
+
+/**
+ * WebErrorEvent.
+ */
+data class WebErrorEvent(
+    override val subscription: WebErrorPageSubscription,
+    override val context: PipelineContext<*, ApplicationCall>,
+
+    /**
+     * Current error status code.
+     */
+    val status: HttpStatusCode
+): WebEventBase

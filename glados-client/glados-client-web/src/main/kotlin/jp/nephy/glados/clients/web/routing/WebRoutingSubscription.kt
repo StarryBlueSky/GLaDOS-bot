@@ -31,12 +31,11 @@ import io.ktor.http.HttpMethod
 import io.ktor.request.httpMethod
 import io.ktor.request.path
 import io.ktor.util.pipeline.PipelineContext
+import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.Priority
-import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.web.PathType
-import jp.nephy.glados.clients.web.event.WebAccessEvent
-import jp.nephy.glados.clients.web.extensions.meta.SitemapUpdateFrequency
+import jp.nephy.glados.clients.web.routing.meta.SitemapChangeFrequency
 import kotlin.reflect.KFunction
 
 class WebRoutingSubscription(
@@ -50,8 +49,8 @@ class WebRoutingSubscription(
         get() = annotation.methods.ifEmpty { jp.nephy.glados.clients.web.HttpMethod.values() }.map { it.ktor }
     val domain: String?
         get() = annotation.domain.ifBlank { null }
-    val updateFrequency: SitemapUpdateFrequency
-        get() = annotation.updateFrequency
+    val changeFrequency: SitemapChangeFrequency
+        get() = annotation.changeFrequency
     val banRobots: Boolean
         get() = annotation.banRobots
 

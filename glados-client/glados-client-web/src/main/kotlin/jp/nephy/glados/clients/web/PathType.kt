@@ -24,6 +24,22 @@
 
 package jp.nephy.glados.clients.web
 
+/**
+ * The way to parse "path"
+ */
 enum class PathType {
-    Normal, Regex, Pattern
+    /**
+     * Indicates "path" should be parsed as normal path.
+     */
+    Normal,
+
+    /**
+     * Indicates "path" should be parsed as regex path.
+     */
+    Regex,
+
+    /**
+     * Indicates "path" should be parsed as pattern path.
+     */
+    Pattern
 }

@@ -22,28 +22,28 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.error
+package jp.nephy.glados.clients.web.config
 
-import jp.nephy.glados.api.Priority
-import jp.nephy.glados.clients.web.HttpStatus
+import jp.nephy.jsonkt.*
+import jp.nephy.jsonkt.delegation.*
 
-/**
- * Indicates that this function is executed as [WebErrorPageSubscription].
- */
-@Target(AnnotationTarget.FUNCTION)
-annotation class WebErrorPage(
-    /**
-     * Target http statuses.
-     */
-    val statuses: Array<HttpStatus>,
+data class WebConfig(override val json: JsonObject): JsonModel {
+    val host by string { "127.0.0.1" }
+    val port by int { 8080 }
+    
+    val logging by modelOrDefault<Logging>()
 
-    /**
-     * Target domain. If empty, any domains are targeted.
-     */
-    val domain: String = "",
-
-    /**
-     * Execution priority.
-     */
-    val priority: Priority = Priority.Normal
-)
+    val staticDirectory: String by string("static_directory") { "static" }
+    val defaultFiles: List<String> by stringList("default_files") { listOf("index.html") }
+    
+    val enableHeadRequestHandler: Boolean by boolean("enable_head_request_handler") { true }
+    val enableOptionsRequestHandler: Boolean by boolean("enable_options_request_handler") { true }
+    
+    val enableRobotsTxtHandler: Boolean by boolean("enable_robots_txt_handler") { true }
+    val enableSitemapXmlHandler: Boolean by boolean("enable_sitemap_xml_handler") { true }
+    
+    data class Logging(override val json: JsonObject): JsonModel {
+        val ignoreIpAddresses by lambdaList("ignore_ip_addresses") { it.string.toRegex() }
+        val ignoreUserAgents by lambdaList("ignore_user_agents") { it.string.toRegex() }
+    }
+}

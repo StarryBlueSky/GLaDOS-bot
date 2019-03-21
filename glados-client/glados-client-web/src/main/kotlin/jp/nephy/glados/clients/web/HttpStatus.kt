@@ -24,7 +24,15 @@
 
 package jp.nephy.glados.clients.web
 
-enum class HttpStatusCode(val ktor: io.ktor.http.HttpStatusCode) {
+/**
+ * HttpStatus.
+ */
+enum class HttpStatus(
+    /**
+     * Corresponding ktor HttpStatusCode.
+     */
+    val ktor: io.ktor.http.HttpStatusCode
+) {
     Continue(io.ktor.http.HttpStatusCode.Continue),
     SwitchingProtocols(io.ktor.http.HttpStatusCode.SwitchingProtocols),
     Processing(io.ktor.http.HttpStatusCode.Processing),

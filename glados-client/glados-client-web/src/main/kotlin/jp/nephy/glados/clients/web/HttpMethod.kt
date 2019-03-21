@@ -24,6 +24,47 @@
 
 package jp.nephy.glados.clients.web
 
-enum class HttpMethod(val ktor: io.ktor.http.HttpMethod) {
-    Get(io.ktor.http.HttpMethod.Get), Post(io.ktor.http.HttpMethod.Post), Put(io.ktor.http.HttpMethod.Put), Patch(io.ktor.http.HttpMethod.Patch), Delete(io.ktor.http.HttpMethod.Delete), Head(io.ktor.http.HttpMethod.Head), Options(io.ktor.http.HttpMethod.Options)
+/**
+ * HttpMethod.
+ */
+enum class HttpMethod(
+    /**
+     * Corresponding ktor HttpMethod.
+     */
+    val ktor: io.ktor.http.HttpMethod
+) {
+    /**
+     * Get request.
+     */
+    GET(io.ktor.http.HttpMethod.Get),
+
+    /**
+     * Post request.
+     */
+    POST(io.ktor.http.HttpMethod.Post),
+
+    /**
+     * Put request.
+     */
+    PUT(io.ktor.http.HttpMethod.Put),
+
+    /**
+     * Patch request.
+     */
+    PATCH(io.ktor.http.HttpMethod.Patch),
+
+    /**
+     * Delete request.
+     */
+    DELETE(io.ktor.http.HttpMethod.Delete),
+
+    /**
+     * Head request.
+     */
+    HEAD(io.ktor.http.HttpMethod.Head),
+
+    /**
+     * Options request.
+     */
+    OPTIONS(io.ktor.http.HttpMethod.Options)
 }

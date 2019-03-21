@@ -67,45 +67,52 @@ internal object DynamicResolver: ApplicationFeature<ApplicationCallPipeline, Dyn
 
         @UseExperimental(KtorExperimentalAPI::class)
         suspend fun PipelineContext<Unit, ApplicationCall>.handleRequest() {
-            val host = call.request.effectiveHost
-            val path = call.request.path().removePrefix("/").removeSuffix("/").decodeURLPart()
-
             if (call.request.httpMethod == HttpMethod.Get) {
+                val host = call.request.effectiveHost
+                val path = call.request.path().removePrefix("/").removeSuffix("/").decodeURLPart()
+                
                 val searchPaths = listOf(
-                    arrayOf(host, path), arrayOf(host, path, "index.html"), arrayOf(path)
-                )
-                val file = searchPaths.map { GLaDOS.resourceFile("static", *it) }.firstOrNull { it.isFile && it.exists() }
+                    arrayOf(host, path), arrayOf(path)
+                ) + GLaDOS.config.web.defaultFiles.map { arrayOf(host, path, it) } + GLaDOS.config.web.defaultFiles.map { arrayOf(path, it) }
+                val file = searchPaths.asSequence().map { 
+                    GLaDOS.resourceFile(GLaDOS.config.web.staticDirectory, *it)
+                }.firstOrNull { 
+                    it.isFile && it.exists()
+                }
+                
                 if (file != null) {
                     call.respondFile(file)
-                    callLogging(accessStaticLogger)
-                    return
+                    return callLogging(accessStaticLogger)
                 }
             }
 
             val routing = WebRoutingSubscriptionClient.subscriptions.find { it.canHandle(call) } ?: return
             val event = routing.makeEvent(this)
 
-            if (call.request.httpMethod != HttpMethod.Options) {
-                routing.invoke(event)
-                callLogging(accessLogger)
-            } else {
-                call.respond(HttpStatusCode.OK, "")
+            if (GLaDOS.config.web.enableOptionsRequestHandler && call.request.httpMethod == HttpMethod.Options) {
+                return call.respond(HttpStatusCode.OK, "")
             }
+            
+            routing.invoke(event)
+            callLogging(accessLogger)
         }
 
         private fun PipelineContext<Unit, ApplicationCall>.callLogging(logger: Logger) {
-            val httpStatus = call.response.status() ?: HttpStatusCode.OK
-            val userAgent = call.request.userAgent()
+            val userAgent = call.request.userAgent().orEmpty()
             val remoteHost = call.request.origin.remoteHost
-            if (!userAgent.isNullOrBlank() && GLaDOS.config.web.ignoreUserAgents.any { it in userAgent } || GLaDOS.config.web.ignoreIpAddressRanges.any { it in remoteHost }) {
+            
+            if (GLaDOS.config.web.logging.ignoreUserAgents.any { it in userAgent } || GLaDOS.config.web.logging.ignoreIpAddresses.any { it in remoteHost }) {
                 return
             }
+
+            val httpStatus = call.response.status() ?: HttpStatusCode.OK
 
             logger.info {
                 buildString {
                     appendln("${httpStatus.value} ${httpStatus.description}: ${call.request.origin.version} ${call.request.origin.method.value} ${call.request.url}")
+                    
                     append("<- $remoteHost")
-                    if (!userAgent.isNullOrBlank()) {
+                    if (userAgent.isNotBlank()) {
                         append(" ($userAgent)")
                     }
                 }

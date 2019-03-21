@@ -25,8 +25,8 @@
 package jp.nephy.glados.clients.web
 
 import jp.nephy.glados.api.EventModel
-import jp.nephy.glados.clients.web.event.WebAccessEvent
-import jp.nephy.glados.clients.web.event.WebErrorEvent
+import jp.nephy.glados.clients.web.routing.WebAccessEvent
+import jp.nephy.glados.clients.web.error.WebErrorEvent
 
 interface WebEventModel: EventModel {
     suspend fun onAccess(event: WebAccessEvent) {}

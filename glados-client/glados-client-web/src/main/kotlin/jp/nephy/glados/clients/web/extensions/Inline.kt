@@ -22,10 +22,14 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.web.extensions
 
 import jp.nephy.glados.api.GLaDOS
+import jp.nephy.glados.api.config
 import jp.nephy.glados.api.resourceFile
+import jp.nephy.glados.clients.web.config.web
 import kotlinx.html.*
 import kotlinx.io.charsets.Charset
 
@@ -34,7 +38,7 @@ private fun staticFile(path: String, minified: Boolean, charset: Charset): Strin
     val paths = path.removePrefix("/").removeSuffix("/").split("/").toTypedArray()
 
     return runCatching {
-        GLaDOS.resourceFile("static", *paths).readText(charset)
+        GLaDOS.resourceFile(GLaDOS.config.web.staticDirectory, *paths).readText(charset)
     }.getOrNull()?.let {
         if (minified) {
             it.replace(minifyRegex, "")
@@ -53,7 +57,10 @@ fun FlowOrMetaDataContent.inlineCSS(path: String, minified: Boolean = true, char
 }
 
 fun FlowOrPhrasingOrMetaDataContent.inlineJS(path: String, async: Boolean = false, defer: Boolean = false, type: String? = null, minified: Boolean = true, charset: Charset = Charsets.UTF_8) {
-    script(async = async, defer = defer, type = type) {
+    script(type = type) {
+        this.async = async
+        this.defer = defer
+        
         unsafe {
             +staticFile(path, minified, charset)
         }

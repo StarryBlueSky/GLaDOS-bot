@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.extensions.meta
+package jp.nephy.glados.clients.web.routing.meta
 
 import java.util.*
 
@@ -101,9 +101,9 @@ data class PageMeta(
             locale = value
         }
 
-        private var alternateLocale: String? = null
+        private val alternateLocale = mutableListOf<String>()
         fun alternateLocale(value: String) = apply {
-            alternateLocale = value
+            alternateLocale += value
         }
 
         private var determiner: OpenGraph.Determiner? = null

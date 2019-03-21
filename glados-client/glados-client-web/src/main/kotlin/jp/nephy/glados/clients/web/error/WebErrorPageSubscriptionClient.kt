@@ -24,19 +24,17 @@
 
 package jp.nephy.glados.clients.web.error
 
-import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.GLaDOSSubscriptionClient
-import jp.nephy.glados.api.Priority
+import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.clients.fullName
-import jp.nephy.glados.clients.web.event.WebErrorEvent
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 
+/**
+ * WebErrorPageSubscriptionClient.
+ */
 object WebErrorPageSubscriptionClient: GLaDOSSubscriptionClient<WebErrorPage, WebErrorEvent, WebErrorPageSubscription>() {
-    override val priority: Priority
-        get() = Priority.Normal
-    
     override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): WebErrorPageSubscription? {
         if (eventClass != WebErrorEvent::class) {
             return null

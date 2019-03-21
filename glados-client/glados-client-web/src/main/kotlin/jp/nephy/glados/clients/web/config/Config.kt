@@ -22,28 +22,10 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.error
+package jp.nephy.glados.clients.web.config
 
-import jp.nephy.glados.api.Priority
-import jp.nephy.glados.clients.web.HttpStatus
+import jp.nephy.glados.api.ConfigJson
+import jp.nephy.jsonkt.*
 
-/**
- * Indicates that this function is executed as [WebErrorPageSubscription].
- */
-@Target(AnnotationTarget.FUNCTION)
-annotation class WebErrorPage(
-    /**
-     * Target http statuses.
-     */
-    val statuses: Array<HttpStatus>,
-
-    /**
-     * Target domain. If empty, any domains are targeted.
-     */
-    val domain: String = "",
-
-    /**
-     * Execution priority.
-     */
-    val priority: Priority = Priority.Normal
-)
+val ConfigJson.web: WebConfig
+    get() = json.getOrNull("web").parseOrNull() ?: WebConfig(jsonObjectOf())

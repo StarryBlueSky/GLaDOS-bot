@@ -22,18 +22,11 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.config
+package jp.nephy.glados.clients.web.routing.meta
 
-import jp.nephy.glados.api.ConfigJson
-import jp.nephy.jsonkt.*
-import jp.nephy.jsonkt.delegation.*
-
-data class Web(override val json: JsonObject): JsonModel {
-    val host by string { "127.0.0.1" }
-    val port by int { 8080 }
-    val ignoreIpAddressRanges by lambdaList("ignore_ip_address_ranges") { it.string.toRegex() }
-    val ignoreUserAgents by lambdaList("ignore_user_agents") { it.string.toRegex() }
+enum class SitemapChangeFrequency {
+    Always, Hourly, Daily, Weekly, Monthly, Yearly, Never;
+    
+    val key: String
+        get() = name.toLowerCase()
 }
-
-val ConfigJson.web: Web
-    get() = json.getOrNull("web").parseOrNull() ?: Web(jsonObjectOf())
