@@ -27,5 +27,5 @@ package jp.nephy.glados.api.annotations
 /**
  * Indicates that this plugin or subscription is experimental.
  */
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.TYPEALIAS, AnnotationTarget.FUNCTION)
 annotation class ExperimentalFeature

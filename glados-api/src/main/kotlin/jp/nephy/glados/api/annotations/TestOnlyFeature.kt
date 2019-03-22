@@ -27,5 +27,5 @@ package jp.nephy.glados.api.annotations
 /**
  * Indicates that this plugin or subscription is able to be executed in development mode only.
  */
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.TYPEALIAS, AnnotationTarget.FUNCTION)
 annotation class TestOnlyFeature
