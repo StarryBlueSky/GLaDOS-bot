@@ -22,47 +22,19 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.routing
+package jp.nephy.glados.clients.web.routing.meta
 
-import jp.nephy.glados.api.Priority
-import jp.nephy.glados.clients.web.HttpMethod
-import jp.nephy.glados.clients.web.PathType
-import jp.nephy.glados.clients.web.routing.meta.SitemapChangeFrequency
+import kotlinx.html.*
 
-/**
- * Indicates that this function is executed as [WebRoutingSubscription].
- */
-@Target(AnnotationTarget.FUNCTION)
-annotation class WebRouting(
-    /**
-     * Path.
-     */
-    val path: String,
-
-    /**
-     * Domain. If empty, accepts any domains.
-     */
-    val domain: String = "",
-
-    /**
-     * PathType of path.
-     */
-    val pathType: PathType = PathType.Normal,
-
-    /**
-     * Array of HttpMethod.
-     */
-    val methods: Array<HttpMethod> = [],
-
-    /**
-     * Array of RegexOption.
-     */
-    val regexOptions: Array<RegexOption> = [],
-
-    /**
-     * Execution priority.
-     */
-    val priority: Priority = Priority.Normal,
-    val changeFrequency: SitemapChangeFrequency = SitemapChangeFrequency.Monthly,
-    val banRobots: Boolean = false
-)
+@HtmlTagMarker
+fun HEAD.twitterCard(type: TwitterCard.Type, site: String? = null, creator: String? = null) {
+    meta(name = "twitter:card", content = type.content)
+    
+    if (site != null) {
+        meta(name = "twitter:site", content = site)
+    }
+    
+    if (creator != null) {
+        meta(name = "twitter:creator", content = creator)
+    }
+}

@@ -24,7 +24,7 @@
 
 @file:Suppress("UNUSED")
 
-package jp.nephy.glados.clients.web.extensions
+package jp.nephy.glados.clients.web.routing.layout
 
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.config
@@ -39,15 +39,18 @@ private fun staticFile(path: String, minified: Boolean, charset: Charset): Strin
 
     return runCatching {
         GLaDOS.resourceFile(GLaDOS.config.web.staticDirectory, *paths).readText(charset)
-    }.getOrNull()?.let {
+    }.map {
         if (minified) {
             it.replace(minifyRegex, "")
         } else {
             it
         }
-    }.orEmpty()
+    }.getOrNull().orEmpty()
 }
 
+/**
+ * Inserts CSS content inline-ly.
+ */
 fun FlowOrMetaDataContent.inlineCSS(path: String, minified: Boolean = true, charset: Charset = Charsets.UTF_8) {
     style {
         unsafe {
@@ -56,6 +59,9 @@ fun FlowOrMetaDataContent.inlineCSS(path: String, minified: Boolean = true, char
     }
 }
 
+/**
+ * Inserts JavaScript content inline-ly.
+ */
 fun FlowOrPhrasingOrMetaDataContent.inlineJS(path: String, async: Boolean = false, defer: Boolean = false, type: String? = null, minified: Boolean = true, charset: Charset = Charsets.UTF_8) {
     script(type = type) {
         this.async = async
@@ -67,6 +73,9 @@ fun FlowOrPhrasingOrMetaDataContent.inlineJS(path: String, async: Boolean = fals
     }
 }
 
+/**
+ * Inserts HTML content inline-ly.
+ */
 fun FlowContent.inlineHTML(path: String, minified: Boolean = true, charset: Charset = Charsets.UTF_8) {
     consumer.onTagContentUnsafe {
         +staticFile(path, minified, charset)

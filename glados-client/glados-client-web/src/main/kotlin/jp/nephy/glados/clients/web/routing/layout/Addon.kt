@@ -22,8 +22,14 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.routing.meta
+package jp.nephy.glados.clients.web.routing.layout
 
-enum class SitemapChangeFrequency {
-    Always, Hourly, Daily, Weekly, Monthly, Yearly, Never
+import kotlinx.html.*
+
+interface Addon {
+    fun HEAD.top() {}
+    fun HEAD.bottom() {}
+    
+    fun BODY.top() {}
+    fun BODY.bottom() {}
 }

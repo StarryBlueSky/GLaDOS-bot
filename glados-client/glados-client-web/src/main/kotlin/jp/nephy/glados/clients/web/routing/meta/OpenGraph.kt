@@ -22,10 +22,9 @@
  * SOFTWARE.
  */
 
-@file:Suppress("UNUSED")
-
 package jp.nephy.glados.clients.web.routing.meta
 
+import io.ktor.http.ContentType
 import java.time.temporal.Temporal
 
 /**
@@ -210,7 +209,7 @@ object OpenGraph {
         /**
          * A MIME type for this image.
          */
-        val type: String? = null,
+        val type: ContentType? = null,
 
         /**
          * The number of pixels wide.
@@ -245,7 +244,7 @@ object OpenGraph {
         /**
          * A MIME type for this image.
          */
-        val type: String? = null,
+        val type: ContentType? = null,
 
         /**
          * The number of pixels wide.
@@ -275,7 +274,7 @@ object OpenGraph {
         /**
          * A MIME type for this image.
          */
-        val type: String? = null
+        val type: ContentType? = null
     )
 
     /**
@@ -305,18 +304,28 @@ object OpenGraph {
                 /**
                  * The musician that made this song.
                  */
-                val musician: List<Profile> = emptyList(),
-
+                val musician: List<String> = emptyList()
+            ) {
                 /**
-                 * Which disc of the album this song is on.
+                 * music.song.album
                  */
-                val disc: Int? = null,
+                data class Album(
+                    /**
+                     * Album.
+                     */
+                    val content: String,
 
-                /**
-                 * Which track this song is.
-                 */
-                val track: Int? = null
-            )
+                    /**
+                     * Which disc of the album this song is on.
+                     */
+                    val disc: Int? = null,
+
+                    /**
+                     * Which track this song is.
+                     */
+                    val track: Int? = null
+                )
+            }
 
             /**
              * music.album
@@ -330,23 +339,33 @@ object OpenGraph {
                 /**
                  * The musician that made this song.
                  */
-                val musician: Profile? = null,
+                val musician: String? = null,
 
                 /**
                  * The date the album was released.
                  */
-                val releaseDate: Temporal? = null,
-
+                val releaseDate: Temporal? = null
+            ) {
                 /**
-                 * The same as music:album:disc but in reverse.
+                 * music.album.song
                  */
-                val disc: Int? = null,
+                data class Song(
+                    /**
+                     * Song.
+                     */
+                    val content: String,
 
-                /**
-                 * The same as music:album:track but in reverse.
-                 */
-                val track: Int? = null
-            )
+                    /**
+                     * The same as music:album:disc but in reverse.
+                     */
+                    val disc: Int? = null,
+
+                    /**
+                     * The same as music:album:track but in reverse.
+                     */
+                    val track: Int? = null
+                )
+            }
 
             /**
              * music.playlist
@@ -360,7 +379,7 @@ object OpenGraph {
                 /**
                  * The creator of this playlist.
                  */
-                val creator: Profile? = null,
+                val creator: String? = null,
 
                 /**
                  * The same as music:album:disc but in reverse.
@@ -371,7 +390,27 @@ object OpenGraph {
                  * The same as music:album:track but in reverse.
                  */
                 val track: Int? = null
-            )
+            ) {
+                /**
+                 * music.playlist.song
+                 */
+                data class Song(
+                    /**
+                     * Song.
+                     */
+                    val content: String,
+
+                    /**
+                     * The same as music:album:disc but in reverse.
+                     */
+                    val disc: Int? = null,
+
+                    /**
+                     * The same as music:album:track but in reverse.
+                     */
+                    val track: Int? = null
+                )
+            }
 
             /**
              * music.radio_station
@@ -380,7 +419,7 @@ object OpenGraph {
                 /**
                  * The creator of this station.
                  */
-                val creator: Profile? = null
+                val creator: String? = null
             )
         }
 
@@ -395,24 +434,9 @@ object OpenGraph {
              */
             data class Actor(
                 /**
-                 * A name normally given to an individual by a parent or self-chosen.
+                 * Actor.
                  */
-                val firstName: String? = null,
-
-                /**
-                 * A name inherited from a family or marriage and by which the individual is commonly known.
-                 */
-                val lastName: String? = null,
-
-                /**
-                 * A short unique string to identify them.
-                 */
-                val username: String? = null,
-
-                /**
-                 * Their gender.
-                 */
-                val gender: Gender? = null,
+                val content: String,
 
                 /**
                  * The role they played.
@@ -432,12 +456,12 @@ object OpenGraph {
                 /**
                  * Directors of the movie.
                  */
-                val director: List<Profile> = emptyList(),
+                val director: List<String> = emptyList(),
 
                 /**
                  * Writers of the movie.
                  */
-                val writer: List<Profile> = emptyList(),
+                val writer: List<String> = emptyList(),
 
                 /**
                  * The movie's length in seconds.
@@ -467,12 +491,12 @@ object OpenGraph {
                 /**
                  * Directors of the movie.
                  */
-                val director: List<Profile> = emptyList(),
+                val director: List<String> = emptyList(),
 
                 /**
                  * Writers of the movie.
                  */
-                val writer: List<Profile> = emptyList(),
+                val writer: List<String> = emptyList(),
 
                 /**
                  * The movie's length in seconds.
@@ -492,7 +516,7 @@ object OpenGraph {
                 /**
                  * Which series this episode belongs to.
                  */
-                val series: TVShow? = null
+                val series: String? = null
             )
 
             /**
@@ -507,12 +531,12 @@ object OpenGraph {
                 /**
                  * Directors of the movie.
                  */
-                val director: List<Profile> = emptyList(),
+                val director: List<String> = emptyList(),
 
                 /**
                  * Writers of the movie.
                  */
-                val writer: List<Profile> = emptyList(),
+                val writer: List<String> = emptyList(),
 
                 /**
                  * The movie's length in seconds.
@@ -542,12 +566,12 @@ object OpenGraph {
                 /**
                  * Directors of the movie.
                  */
-                val director: List<Profile> = emptyList(),
+                val director: List<String> = emptyList(),
 
                 /**
                  * Writers of the movie.
                  */
-                val writer: List<Profile> = emptyList(),
+                val writer: List<String> = emptyList(),
 
                 /**
                  * The movie's length in seconds.
@@ -590,7 +614,7 @@ object OpenGraph {
             /**
              * Writers of the article.
              */
-            val author: List<Profile> = emptyList(),
+            val author: List<String> = emptyList(),
 
             /**
              * A high-level section name. E.g. Technology
@@ -612,7 +636,7 @@ object OpenGraph {
             /**
              * Who wrote this book.
              */
-            val author: List<Profile> = emptyList(),
+            val author: List<String> = emptyList(),
 
             /**
              * The ISBN.

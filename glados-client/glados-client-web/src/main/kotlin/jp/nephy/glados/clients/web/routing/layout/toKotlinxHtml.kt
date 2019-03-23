@@ -22,13 +22,16 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.extensions
+package jp.nephy.glados.clients.web.routing.layout
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
 
+/**
+ * Converts html syntax to kotlinx.html syntax.
+ */
 fun String.toKotlinxHtmlSyntax(): String {
     return Jsoup.parse(this).body().childNodes().joinToString("\n") { dump(it) }
 }

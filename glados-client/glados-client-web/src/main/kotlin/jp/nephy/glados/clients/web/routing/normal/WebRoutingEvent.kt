@@ -22,8 +22,16 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.routing.meta
+package jp.nephy.glados.clients.web.routing.normal
 
-enum class SitemapChangeFrequency {
-    Always, Hourly, Daily, Weekly, Monthly, Yearly, Never
-}
+import io.ktor.application.ApplicationCall
+import io.ktor.util.pipeline.PipelineContext
+import jp.nephy.glados.clients.web.WebEventBase
+
+/**
+ * WebRoutingEvent.
+ */
+data class WebRoutingEvent(
+    override val subscription: WebRoutingSubscription,
+    override val context: PipelineContext<*, ApplicationCall>
+): WebEventBase

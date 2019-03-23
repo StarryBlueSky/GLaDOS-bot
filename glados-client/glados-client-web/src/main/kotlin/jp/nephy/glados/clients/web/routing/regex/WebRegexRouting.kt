@@ -22,20 +22,38 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.routing
+package jp.nephy.glados.clients.web.routing.regex
 
-import io.ktor.application.ApplicationCall
-import io.ktor.util.pipeline.PipelineContext
-import jp.nephy.glados.clients.web.WebEventBase
+import jp.nephy.glados.api.Priority
+import jp.nephy.glados.clients.web.HttpMethod
 
 /**
- * WebAccessEvent.
+ * Indicates that this function is executed as [WebRegexRoutingSubscription].
  */
-data class WebAccessEvent(
-    override val subscription: WebRoutingSubscription,
-    override val context: PipelineContext<*, ApplicationCall>,
-    
-    val matchResult: MatchResult?,
-    
-    val fragments: Map<String, String>
-): WebEventBase
+@Target(AnnotationTarget.FUNCTION)
+annotation class WebRegexRouting(
+    /**
+     * Path.
+     */
+    val path: String,
+
+    /**
+     * Domain. If empty, accepts any domains.
+     */
+    val domain: String = "",
+
+    /**
+     * Array of HttpMethod.
+     */
+    val methods: Array<HttpMethod> = [],
+
+    /**
+     * Array of RegexOption.
+     */
+    val regexOptions: Array<RegexOption> = [],
+
+    /**
+     * Execution priority.
+     */
+    val priority: Priority = Priority.Normal
+)

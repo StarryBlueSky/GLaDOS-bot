@@ -22,8 +22,44 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.routing.meta
+package jp.nephy.glados.clients.web.routing.normal
 
-enum class SitemapChangeFrequency {
-    Always, Hourly, Daily, Weekly, Monthly, Yearly, Never
-}
+import jp.nephy.glados.api.Priority
+import jp.nephy.glados.clients.web.HttpMethod
+import jp.nephy.glados.clients.web.routing.meta.SitemapChangeFrequency
+
+/**
+ * Indicates that this function is executed as [WebRoutingSubscription].
+ */
+@Target(AnnotationTarget.FUNCTION)
+annotation class WebRouting(
+    /**
+     * Path.
+     */
+    val path: String,
+
+    /**
+     * Domain. If empty, accepts any domains.
+     */
+    val domain: String = "",
+    
+    /**
+     * Array of HttpMethod.
+     */
+    val methods: Array<HttpMethod> = [],
+    
+    /**
+     * Execution priority.
+     */
+    val priority: Priority = Priority.Normal,
+
+    /**
+     * Change frequency of sitemap.xml.
+     */
+    val changeFrequency: SitemapChangeFrequency = SitemapChangeFrequency.Daily,
+
+    /**
+     * Whether search engine robots should be banned.
+     */
+    val banRobots: Boolean = false
+)

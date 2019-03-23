@@ -22,7 +22,9 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.extensions
+@file:Suppress("UNUSED")
+
+package jp.nephy.glados.clients.web.routing.layout
 
 import io.ktor.application.ApplicationCall
 import io.ktor.html.Template
@@ -40,6 +42,9 @@ import kotlinx.coroutines.io.ByteWriteChannel
 import kotlinx.html.*
 import kotlinx.html.stream.*
 
+/**
+ * Responds with minified html contents.
+ */
 @UseExperimental(KtorExperimentalAPI::class)
 suspend inline fun ApplicationCall.respondMinifiedHtml(status: HttpStatusCode = HttpStatusCode.OK, noinline block: HTML.() -> Unit) {
     respond(status, object: OutgoingContent.WriteChannelContent() {
@@ -54,19 +59,36 @@ suspend inline fun ApplicationCall.respondMinifiedHtml(status: HttpStatusCode = 
     })
 }
 
+/**
+ * Responds with minified html template.
+ */
 suspend inline fun <T: Template<HTML>> ApplicationCall.respondMinifiedHtmlTemplate(template: T, status: HttpStatusCode = HttpStatusCode.OK, body: T.() -> Unit) {
     template.body()
-    respondMinifiedHtml(status) { with(template) { apply() } }
+    
+    respondMinifiedHtml(status) { 
+        with(template) { 
+            apply()
+        }
+    }
 }
 
-suspend inline fun ApplicationCall.respondJsonModel(model: JsonModel, status: HttpStatusCode? = null) {
+/**
+ * Responds with [JsonModel].
+ */
+suspend inline fun ApplicationCall.respondJsonModel(model: JsonModel, status: HttpStatusCode = HttpStatusCode.OK) {
     respondJsonObject(status) { model.json }
 }
 
-suspend inline fun ApplicationCall.respondJsonObject(status: HttpStatusCode? = null, block: () -> Map<String, Any?>) {
+/**
+ * Responds with [JsonObject].
+ */
+suspend inline fun ApplicationCall.respondJsonObject(status: HttpStatusCode = HttpStatusCode.OK, block: () -> Map<String, Any?>) {
     respondText(block().toJsonObject().toJsonString(), ContentType.Application.Json, status)
 }
 
-suspend inline fun ApplicationCall.respondJsonArray(status: HttpStatusCode? = null, block: () -> Iterable<Map<String, Any?>>) {
+/**
+ * Responds with [JsonArray].
+ */
+suspend inline fun ApplicationCall.respondJsonArray(status: HttpStatusCode = HttpStatusCode.OK, block: () -> Iterable<Map<String, Any?>>) {
     respondText(block().toJsonArray().toJsonString(), ContentType.Application.Json, status)
 }

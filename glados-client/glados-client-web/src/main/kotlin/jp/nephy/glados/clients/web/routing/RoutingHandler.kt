@@ -24,35 +24,16 @@
 
 package jp.nephy.glados.clients.web.routing
 
-import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.GLaDOSSubscriptionClient
-import jp.nephy.glados.clients.fullName
-import jp.nephy.glados.clients.web.disposeWebApplication
-import jp.nephy.glados.clients.web.initializeWebApplication
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
-import kotlin.reflect.full.findAnnotation
+import io.ktor.application.ApplicationCall
+import io.ktor.util.pipeline.PipelineContext
+import jp.nephy.glados.clients.web.WebEventBase
 
-object WebRoutingSubscriptionClient: GLaDOSSubscriptionClient<WebRouting, WebAccessEvent, WebRoutingSubscription>() {
-    override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): WebRoutingSubscription? {
-        if (eventClass != WebAccessEvent::class) {
-            return null
-        }
-
-        val annotation = function.findAnnotation<WebRouting>()
-        if (annotation == null) {
-            logger.warn { "関数: \"${plugin.fullName}#${function.name}\" は @WebRouting が付与されていません。スキップします。" }
-            return null
-        }
-        
-        return WebRoutingSubscription(plugin, function, annotation)
-    }
-
-    override fun start() {
-        initializeWebApplication()
-    }
-
-    override fun stop() {
-        disposeWebApplication()
-    }
+/**
+ * RoutingHandler.
+ */
+interface RoutingHandler<E: WebEventBase> {
+    /**
+     * Creates new routing event or null from current context.
+     */
+    fun createEvent(context: PipelineContext<*, ApplicationCall>): E?
 }

@@ -22,24 +22,21 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web
+package jp.nephy.glados.clients.web.routing.regex
+
+import io.ktor.application.ApplicationCall
+import io.ktor.util.pipeline.PipelineContext
+import jp.nephy.glados.clients.web.WebEventBase
 
 /**
- * The way to parse "path"
+ * WebRegexRoutingEvent.
  */
-enum class PathType {
-    /**
-     * Indicates "path" should be parsed as normal path.
-     */
-    Normal,
+data class WebRegexRoutingEvent(
+    override val subscription: WebRegexRoutingSubscription,
+    override val context: PipelineContext<*, ApplicationCall>,
 
     /**
-     * Indicates "path" should be parsed as regex path.
+     * Matched regex result.
      */
-    Regex,
-
-    /**
-     * Indicates "path" should be parsed as pattern path.
-     */
-    Pattern
-}
+    val matchResult: MatchResult?
+): WebEventBase

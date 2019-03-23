@@ -22,8 +22,30 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.routing.meta
+package jp.nephy.glados.clients.web.routing.regex
 
-enum class SitemapChangeFrequency {
-    Always, Hourly, Daily, Weekly, Monthly, Yearly, Never
+import jp.nephy.glados.GLaDOSSubscriptionClient
+import jp.nephy.glados.api.Plugin
+import jp.nephy.glados.clients.fullName
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.full.findAnnotation
+
+/**
+ * WebRoutingSubscriptionClient.
+ */
+object WebRegexRoutingSubscriptionClient: GLaDOSSubscriptionClient<WebRegexRouting, WebRegexRoutingEvent, WebRegexRoutingSubscription>() {
+    override fun create(plugin: Plugin, function: KFunction<*>, eventClass: KClass<*>): WebRegexRoutingSubscription? {
+        if (eventClass != WebRegexRoutingEvent::class) {
+            return null
+        }
+
+        val annotation = function.findAnnotation<WebRegexRouting>()
+        if (annotation == null) {
+            logger.warn { "関数: \"${plugin.fullName}#${function.name}\" は @WebRegexRouting が付与されていません。スキップします。" }
+            return null
+        }
+        
+        return WebRegexRoutingSubscription(plugin, function, annotation)
+    }
 }

@@ -22,34 +22,20 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.extensions
+package jp.nephy.glados.clients.web.routing.layout
 
-import kotlinx.html.*
-import kotlin.reflect.full.createInstance
-
-interface Addon {
-    fun HEAD.headerStart() {}
-    fun HEAD.headerEnd() {}
-    fun BODY.bodyStart() {}
-    fun BODY.bodyEnd() {}
-
-    class Builder {
-        operator fun invoke(operation: Builder.() -> Unit) {
-            apply(operation)
-        }
-
-        val addons = mutableListOf<Addon>()
-
-        fun build(): List<Addon> {
-            return addons
-        }
+class AddonManager {
+    operator fun invoke(operation: AddonManager.() -> Unit) {
+        apply(operation)
     }
-}
 
-fun <T: Addon> Addon.Builder.install(addon: T) {
-    addons.add(addon)
-}
+    private val addons = mutableListOf<Addon>()
 
-inline fun <reified T: Addon> Addon.Builder.install() {
-    install(T::class.objectInstance ?: T::class.createInstance())
+    fun <T: Addon> install(addon: T) {
+        addons += addon
+    }
+
+    internal fun build(): List<Addon> {
+        return addons
+    }
 }

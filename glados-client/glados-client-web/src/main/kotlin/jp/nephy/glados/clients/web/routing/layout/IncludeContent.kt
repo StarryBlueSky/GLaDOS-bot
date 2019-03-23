@@ -22,8 +22,16 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.routing.meta
+package jp.nephy.glados.clients.web.routing.layout
 
-enum class SitemapChangeFrequency {
-    Always, Hourly, Daily, Weekly, Monthly, Yearly, Never
+import io.ktor.html.Placeholder
+
+abstract class IncludeContent<T>: Placeholder<T>() {
+    abstract fun T.block()
+    
+    init {
+        invoke { 
+            block()
+        }
+    }
 }
