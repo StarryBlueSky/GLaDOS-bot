@@ -34,10 +34,9 @@ import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Priority
 import jp.nephy.glados.api.config
 import jp.nephy.glados.clients.subscriptions
-import jp.nephy.glados.clients.web.PathType
 import jp.nephy.glados.clients.web.config.web
-import jp.nephy.glados.clients.web.extensions.effectiveHost
-import jp.nephy.glados.clients.web.routing.WebRoutingSubscriptionClient
+import jp.nephy.glados.clients.web.effectiveHost
+import jp.nephy.glados.clients.web.routing.normal.WebRoutingSubscriptionClient
 
 internal fun Route.sitemapXml() {
     get("/sitemap.xml") {
@@ -51,11 +50,11 @@ internal fun Route.sitemapXml() {
                 appendln("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">")
                 
                 WebRoutingSubscriptionClient.subscriptions.filter { 
-                    (it.domain == null || it.domain == call.request.effectiveHost) && !it.banRobots && it.pathType == PathType.Normal 
+                    (it.domain == null || it.domain == call.request.effectiveHost) && !it.annotation.banRobots
                 }.forEach { page ->
                     appendln("    <url>")
                     appendln("        <loc>${call.request.origin.scheme}://${call.request.effectiveHost}${page.path}</loc>")
-                    appendln("        <changefreq>${page.changeFrequency.key}</changefreq>")
+                    appendln("        <changefreq>${page.annotation.changeFrequency.name.toLowerCase()}</changefreq>")
                     appendln("        <priority>${page.priority.sitemapPriority}</priority>")
                     appendln("    </url>")
                 }
@@ -86,7 +85,7 @@ internal fun Route.robotsTxt() {
         call.respondText(ContentType.Text.Plain) {
             buildString {
                 WebRoutingSubscriptionClient.subscriptions.filter { 
-                    (it.domain == null || it.domain == call.request.effectiveHost) && it.banRobots && it.pathType == PathType.Normal 
+                    (it.domain == null || it.domain == call.request.effectiveHost) && it.annotation.banRobots 
                 }.forEach {
                     appendln("User-agent: *")
                     appendln("Disallow: ${it.path}")

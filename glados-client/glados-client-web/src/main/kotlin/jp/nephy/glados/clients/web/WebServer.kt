@@ -52,7 +52,6 @@ import jp.nephy.glados.clients.web.error.WebErrorEvent
 import jp.nephy.glados.clients.web.error.WebErrorPageSubscriptionClient
 import jp.nephy.glados.clients.web.error.domain
 import jp.nephy.glados.clients.web.error.statuses
-import jp.nephy.glados.clients.web.extensions.effectiveHost
 import jp.nephy.glados.clients.web.features.DynamicResolver
 import jp.nephy.glados.clients.web.features.robotsTxt
 import jp.nephy.glados.clients.web.features.sitemapXml

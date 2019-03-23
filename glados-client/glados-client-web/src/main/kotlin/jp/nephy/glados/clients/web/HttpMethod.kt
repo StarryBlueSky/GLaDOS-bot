@@ -68,3 +68,15 @@ enum class HttpMethod(
      */
     OPTIONS(io.ktor.http.HttpMethod.Options)
 }
+
+internal val io.ktor.http.HttpMethod.glados: HttpMethod
+    get() = when (this) {
+        io.ktor.http.HttpMethod.Get -> HttpMethod.GET
+        io.ktor.http.HttpMethod.Post -> HttpMethod.POST
+        io.ktor.http.HttpMethod.Put -> HttpMethod.PUT
+        io.ktor.http.HttpMethod.Patch -> HttpMethod.PATCH
+        io.ktor.http.HttpMethod.Delete -> HttpMethod.DELETE
+        io.ktor.http.HttpMethod.Head -> HttpMethod.HEAD
+        io.ktor.http.HttpMethod.Options -> HttpMethod.OPTIONS
+        else -> throw IllegalArgumentException("Unknown http method: $this")
+    }

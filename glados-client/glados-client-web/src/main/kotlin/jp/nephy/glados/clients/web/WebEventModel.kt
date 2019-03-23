@@ -22,14 +22,43 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.web
 
 import jp.nephy.glados.api.EventModel
-import jp.nephy.glados.clients.web.routing.WebAccessEvent
+import jp.nephy.glados.clients.web.cookie.WebCookieSetupEvent
 import jp.nephy.glados.clients.web.error.WebErrorEvent
+import jp.nephy.glados.clients.web.routing.normal.WebRoutingEvent
+import jp.nephy.glados.clients.web.routing.pattern.WebPatternRoutingEvent
+import jp.nephy.glados.clients.web.routing.regex.WebRegexRoutingEvent
 
+/**
+ * WebEventModel.
+ */
 interface WebEventModel: EventModel {
-    suspend fun onAccess(event: WebAccessEvent) {}
+    /**
+     * Called when normal path routing.
+     */
+    suspend fun onAccess(event: WebRoutingEvent) {}
+
+    /**
+     * Called when pattern path routing.
+     */
+    suspend fun onPatternAccess(event: WebPatternRoutingEvent) {}
+
+    /**
+     * Called when regex path routing.
+     */
+    suspend fun onRegexAccess(event: WebRegexRoutingEvent) {}
     
+    /**
+     * Called when server errors.
+     */
     suspend fun onError(event: WebErrorEvent) {}
+
+    /**
+     * Called when cookie setup.
+     */
+    suspend fun onCookieSetup(event: WebCookieSetupEvent) {}
 }

@@ -44,9 +44,11 @@ import jp.nephy.glados.api.*
 import jp.nephy.glados.clients.invoke
 import jp.nephy.glados.clients.subscriptions
 import jp.nephy.glados.clients.web.config.web
-import jp.nephy.glados.clients.web.extensions.effectiveHost
-import jp.nephy.glados.clients.web.extensions.url
-import jp.nephy.glados.clients.web.routing.WebRoutingSubscriptionClient
+import jp.nephy.glados.clients.web.effectiveHost
+import jp.nephy.glados.clients.web.url
+import jp.nephy.glados.clients.web.routing.normal.WebRoutingSubscriptionClient
+import jp.nephy.glados.clients.web.routing.pattern.WebPatternRoutingSubscriptionClient
+import jp.nephy.glados.clients.web.routing.regex.WebRegexRoutingSubscriptionClient
 
 internal object DynamicResolver: ApplicationFeature<ApplicationCallPipeline, DynamicResolver.Configuration, DynamicResolver.Resolver> {
     override val key = AttributeKey<Resolver>("DynamicResolver")
@@ -66,7 +68,7 @@ internal object DynamicResolver: ApplicationFeature<ApplicationCallPipeline, Dyn
         private val accessStaticLogger = Logger.of("GLaDOS.Web.AccessStatic", "#glados-web-static")
 
         @UseExperimental(KtorExperimentalAPI::class)
-        suspend fun PipelineContext<Unit, ApplicationCall>.handleRequest() {
+        suspend fun PipelineContext<*, ApplicationCall>.handleRequest() {
             if (call.request.httpMethod == HttpMethod.Get) {
                 val host = call.request.effectiveHost
                 val path = call.request.path().removePrefix("/").removeSuffix("/").decodeURLPart()
@@ -86,29 +88,58 @@ internal object DynamicResolver: ApplicationFeature<ApplicationCallPipeline, Dyn
                 }
             }
 
-            val routing = WebRoutingSubscriptionClient.subscriptions.find { it.canHandle(call) } ?: return
-            val event = routing.makeEvent(this)
+            for (subscription in WebRoutingSubscriptionClient.subscriptions) {
+                val event = subscription.createEvent(this) ?: continue
 
-            if (GLaDOS.config.web.enableOptionsRequestHandler && call.request.httpMethod == HttpMethod.Options) {
-                return call.respond(HttpStatusCode.OK, "")
-            }
-            
-            routing.invoke(event)
-            callLogging(accessLogger)
-        }
+                if (GLaDOS.config.web.enableOptionsRequestHandler && call.request.httpMethod == HttpMethod.Options) {
+                    return call.respond(HttpStatusCode.OK, "")
+                }
 
-        private fun PipelineContext<Unit, ApplicationCall>.callLogging(logger: Logger) {
-            val userAgent = call.request.userAgent().orEmpty()
-            val remoteHost = call.request.origin.remoteHost
-            
-            if (GLaDOS.config.web.logging.ignoreUserAgents.any { it in userAgent } || GLaDOS.config.web.logging.ignoreIpAddresses.any { it in remoteHost }) {
+                subscription.invoke(event)
+                callLogging(accessLogger)
                 return
             }
 
-            val httpStatus = call.response.status() ?: HttpStatusCode.OK
+            for (subscription in WebPatternRoutingSubscriptionClient.subscriptions) {
+                val event = subscription.createEvent(this) ?: continue
 
+                if (GLaDOS.config.web.enableOptionsRequestHandler && call.request.httpMethod == HttpMethod.Options) {
+                    return call.respond(HttpStatusCode.OK, "")
+                }
+
+                subscription.invoke(event)
+                callLogging(accessLogger)
+                return
+            }
+
+            for (subscription in WebRegexRoutingSubscriptionClient.subscriptions) {
+                val event = subscription.createEvent(this) ?: continue
+
+                if (GLaDOS.config.web.enableOptionsRequestHandler && call.request.httpMethod == HttpMethod.Options) {
+                    return call.respond(HttpStatusCode.OK, "")
+                }
+
+                subscription.invoke(event)
+                callLogging(accessLogger)
+                return
+            }
+        }
+        
+        private fun PipelineContext<*, ApplicationCall>.callLogging(logger: Logger) {
+            val userAgent = call.request.userAgent().orEmpty()
+            if (GLaDOS.config.web.logging.ignoreUserAgents.any { it in userAgent }) {
+                return
+            }
+
+            val remoteHost = call.request.origin.remoteHost
+            if (GLaDOS.config.web.logging.ignoreIpAddresses.any { it in remoteHost }) {
+                return
+            }
+            
             logger.info {
                 buildString {
+                    val httpStatus = call.response.status() ?: HttpStatusCode.OK
+                    
                     appendln("${httpStatus.value} ${httpStatus.description}: ${call.request.origin.version} ${call.request.origin.method.value} ${call.request.url}")
                     
                     append("<- $remoteHost")
