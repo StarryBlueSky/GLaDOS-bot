@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-@file:Suppress("UNUSED", "PropertyVisibilityPrivate")
+@file:Suppress("UNUSED")
 
 package jp.nephy.glados.clients.web.routing.layout
 
@@ -30,13 +30,12 @@ import io.ktor.html.Placeholder
 import io.ktor.html.Template
 import io.ktor.html.insert
 import jp.nephy.glados.clients.web.routing.meta.PageMetaTemplate
-import jp.nephy.glados.clients.web.routing.meta.invoke
 import kotlinx.html.*
 
 /**
  * WebPageTemplate.
  */
-open class WebPageTemplate: Template<HTML> {
+abstract class WebPageTemplate: Template<HTML> {
     /**
      * HTML document lang.
      */
@@ -69,9 +68,16 @@ open class WebPageTemplate: Template<HTML> {
     val addon: AddonManager = AddonManager()
 
     /**
+     * Initializes with this HTML.
+     */
+    abstract fun HTML.init()
+    
+    /**
      * Applies to HTML document.
      */
-    override fun HTML.apply() {
+    final override fun HTML.apply() {
+        init()
+        
         this@WebPageTemplate.lang?.also { 
             lang = it
         }
