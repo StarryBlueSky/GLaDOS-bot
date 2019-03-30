@@ -64,11 +64,7 @@ data class WebRegexRoutingSubscription(
         }
 
         val requestPath = context.call.request.path()
-        if (!regexPath.matches(requestPath)) {
-            return null
-        }
-        
-        val matchResult = regexPath.matchEntire(context.call.request.path())
+        val matchResult = regexPath.matchEntire(requestPath) ?: return null
         
         return WebRegexRoutingEvent(this, context, matchResult)
     }

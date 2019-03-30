@@ -38,5 +38,5 @@ data class WebRegexRoutingEvent(
     /**
      * Matched regex result.
      */
-    val matchResult: MatchResult?
+    val matchResult: MatchResult
 ): WebEventBase
