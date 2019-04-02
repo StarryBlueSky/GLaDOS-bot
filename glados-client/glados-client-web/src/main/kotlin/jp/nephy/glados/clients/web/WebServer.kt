@@ -39,6 +39,7 @@ import io.ktor.routing.Routing
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.sessions.CookieSessionBuilder
 import io.ktor.sessions.SessionStorageMemory
 import io.ktor.sessions.Sessions
 import io.ktor.sessions.cookie
@@ -117,7 +118,8 @@ internal fun initializeWebApplication() {
                 runBlocking {
                     for (subscription in WebCookieSetupSubscriptionClient.subscriptions) {
                         cookie(subscription.annotation.name, subscription.annotation.sessionClass, SessionStorageMemory()) {
-                            val event = WebCookieSetupEvent(subscription, this)
+                            @Suppress("UNCHECKED_CAST")
+                            val event = WebCookieSetupEvent(subscription, this as CookieSessionBuilder<Any>)
                             subscription.invoke(event)
                         }
                     }
