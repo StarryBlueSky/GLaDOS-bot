@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNUSED")
+
 package jp.nephy.glados.clients.chrono
 
 import jp.nephy.glados.api.Event
@@ -37,3 +39,15 @@ data class ScheduleEvent(
     val calendar: Calendar,
     override val subscription: ScheduleSubscription
 ): Event
+
+/**
+ * Hour of day for this event calendar.
+ */
+val ScheduleEvent.hour: Int
+    get() = calendar[Calendar.HOUR_OF_DAY]
+
+/**
+ * Minute for this event calendar.
+ */
+val ScheduleEvent.minute: Int
+    get() = calendar[Calendar.MINUTE]

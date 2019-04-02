@@ -24,9 +24,9 @@
 
 package jp.nephy.glados.clients.chrono
 
+import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.Priority
-import jp.nephy.glados.GLaDOSSubscription
 import java.util.*
 import kotlin.reflect.KFunction
 
@@ -78,5 +78,5 @@ data class ScheduleSubscription(
  * Checks if the subscription matches a calendar.
  */
 fun ScheduleSubscription.matches(calendar: Calendar): Boolean {
-    return calendar.get(Calendar.HOUR_OF_DAY) in hours && calendar.get(Calendar.MINUTE) in minutes
+    return calendar[Calendar.HOUR_OF_DAY] in hours && calendar[Calendar.MINUTE] in minutes
 }
