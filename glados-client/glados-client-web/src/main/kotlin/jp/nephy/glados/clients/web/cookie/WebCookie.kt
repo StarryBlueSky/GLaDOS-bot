@@ -40,7 +40,7 @@ annotation class WebCookie(
     /**
      * Cookie session class.
      */
-    val sessionClass: KClass<Any>,
+    val sessionClass: KClass<out Any>,
     
     /**
      * Execution priority.
