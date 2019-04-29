@@ -33,7 +33,7 @@ import jp.nephy.jsonkt.*
  * Returns "twitter" config.
  */
 val ConfigJson.twitter: TwitterConfig
-    get() = json.getOrNull("twitter").parseOrNull() ?: throw IllegalStateException("Key \"twitter\" is not found in config.json.")
+    get() = json["twitter"].parseOrNull() ?: throw IllegalStateException("Key \"twitter\" is not found in config.json.")
 
 /**
  * Returns [TwitterAccount] for this [key].

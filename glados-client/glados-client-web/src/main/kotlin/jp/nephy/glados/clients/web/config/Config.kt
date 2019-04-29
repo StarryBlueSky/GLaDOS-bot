@@ -28,4 +28,4 @@ import jp.nephy.glados.api.ConfigJson
 import jp.nephy.jsonkt.*
 
 val ConfigJson.web: WebConfig
-    get() = json.getOrNull("web").parseOrNull() ?: WebConfig(jsonObjectOf())
+    get() = json["web"].parseOrNull() ?: WebConfig(jsonObjectOf())
