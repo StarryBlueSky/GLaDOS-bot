@@ -2,9 +2,9 @@
 
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.jetbrains.dokka.gradle.DokkaTask
-import java.text.SimpleDateFormat
-import java.util.Date
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -17,7 +17,7 @@ val bintrayUsername by property()
 val bintrayApiKey by property()
 
 plugins { 
-    kotlin("jvm") version "1.3.21"
+    kotlin("jvm") version "1.3.31"
     
     // For publishing
     id("maven-publish")
