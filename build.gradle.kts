@@ -170,7 +170,7 @@ dependencies {
 
     implementation("io.ktor:ktor-client-apache:1.1.5")
 
-    implementation("io.methvin:directory-watcher:0.9.3")
+    implementation("io.methvin:directory-watcher:0.9.4")
 
     implementation("ch.qos.logback:logback-core:1.2.3")
     implementation("org.fusesource.jansi:jansi:1.17.1")
