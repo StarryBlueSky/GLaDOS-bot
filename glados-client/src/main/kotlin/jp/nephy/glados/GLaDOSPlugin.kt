@@ -26,10 +26,7 @@
 
 package jp.nephy.glados
 
-import jp.nephy.glados.api.EventModel
-import jp.nephy.glados.api.Logger
-import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.api.of
+import jp.nephy.glados.api.*
 import jp.nephy.glados.clients.fullName
 
 /**
@@ -37,7 +34,7 @@ import jp.nephy.glados.clients.fullName
  */
 abstract class GLaDOSPlugin(
     final override val name: String? = null,
-    final override val version: String? = null,
+    final override val version: Version? = null,
     final override val description: String? = null
 ): Plugin, EventModel, GLaDOSCoroutineScope() {
     final override val logger: Logger = Logger.of("GLaDOS.Plugin.$fullName")
