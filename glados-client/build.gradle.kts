@@ -1,5 +1,3 @@
-import com.sun.javafx.scene.CameraHelper.project
-
 dependencies {
     api(project(":glados-api"))
 

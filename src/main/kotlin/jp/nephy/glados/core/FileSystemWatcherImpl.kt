@@ -26,17 +26,16 @@ package jp.nephy.glados.core
 
 import io.methvin.watcher.DirectoryChangeEvent
 import io.methvin.watcher.DirectoryWatcher
+import jp.nephy.glados.GLaDOSCoroutineScope
 import jp.nephy.glados.api.FileSystemEventListener
 import jp.nephy.glados.api.FileSystemWatcher
 import jp.nephy.glados.api.Logger
-import jp.nephy.glados.GLaDOSCoroutineScope
 import jp.nephy.glados.api.of
 import kotlinx.coroutines.launch
 import java.nio.file.FileSystemException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.nio.file.NoSuchFileException
 import java.util.concurrent.CopyOnWriteArraySet
 
 internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope() {
