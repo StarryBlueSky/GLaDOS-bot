@@ -39,7 +39,7 @@ interface Plugin: CoroutineScope {
     /**
      * The version of Plugin.
      */
-    val version: String?
+    val version: Version?
 
     /**
      * The description of Plugin.

@@ -22,50 +22,6 @@
  * SOFTWARE.
  */
 
-@file:Suppress("UNUSED")
+package jp.nephy.glados.api
 
-package jp.nephy.glados.clients
-
-import jp.nephy.glados.api.Plugin
-import jp.nephy.glados.api.Version
-import jp.nephy.glados.api.annotations.DisabledFeature
-import jp.nephy.glados.api.annotations.ExperimentalFeature
-import kotlin.reflect.full.findAnnotation
-
-/**
- * Effective name of Plugin.
- */
-val Plugin.effectiveName: String
-    get() = name?.ifBlank { null } ?: this::class.simpleName.orEmpty()
-
-/**
- * Effective version of Plugin.
- */
-val Plugin.effectiveVersion: Version
-    get() = version ?: Version(1, 0, 0, 0)
-
-val Version.label: String
-    get() = if (build != null) {
-        "v$major.$minor.$revision.$build"
-    } else {
-        "v$major.$minor.$revision"
-    }
-
-/**
- * Full name of Plugin.
- */
-val Plugin.fullName: String
-    get() = "$effectiveName[${effectiveVersion.label}]"
-
-/**
- * The flag whether Plugin is experimental.
- */
-val Plugin.isExperimental: Boolean
-    get() = this::class.findAnnotation<ExperimentalFeature>() != null
-
-/**
- * The flag whether Plugin is disabled.
- */
-val Plugin.isDisabled: Boolean
-    get() = this::class.findAnnotation<DisabledFeature>() != null
-
+data class Version(val major: Int, val minor: Int, val revision: Int, val build: Int? = null)
