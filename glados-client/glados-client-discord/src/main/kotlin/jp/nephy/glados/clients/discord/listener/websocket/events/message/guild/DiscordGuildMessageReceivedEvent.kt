@@ -43,7 +43,7 @@ val DiscordGuildMessageReceivedEvent.author: User
     get() = jdaEvent.author
 
 val DiscordGuildMessageReceivedEvent.member: Member
-    get() = jdaEvent.member
+    get() = jdaEvent.member!!
 
 val DiscordGuildMessageReceivedEvent.isWebhookMessage: Boolean
     get() = jdaEvent.isWebhookMessage

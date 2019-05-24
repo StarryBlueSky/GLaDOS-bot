@@ -31,8 +31,8 @@ import net.dv8tion.jda.api.events.UpdateEvent
 val <E: Any> DiscordWebsocketEventBase<out UpdateEvent<E, *>>.entity: E
     get() = jdaEvent.entity
 
-val <T: Any> DiscordWebsocketEventBase<out UpdateEvent<*, T>>.old: T
+val <T: Any> DiscordWebsocketEventBase<out UpdateEvent<*, T>>.old: T?
     get() = jdaEvent.oldValue
 
-val <T: Any> DiscordWebsocketEventBase<out UpdateEvent<*, T>>.new: T
+val <T: Any> DiscordWebsocketEventBase<out UpdateEvent<*, T>>.new: T?
     get() = jdaEvent.newValue

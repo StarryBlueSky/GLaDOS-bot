@@ -92,7 +92,11 @@ import net.dv8tion.jda.api.events.emote.EmoteRemovedEvent
 import net.dv8tion.jda.api.events.emote.update.EmoteUpdateNameEvent
 import net.dv8tion.jda.api.events.emote.update.EmoteUpdateRolesEvent
 import net.dv8tion.jda.api.events.guild.*
-import net.dv8tion.jda.api.events.guild.member.*
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
+import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent
+import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent
 import net.dv8tion.jda.api.events.guild.update.*
 import net.dv8tion.jda.api.events.guild.voice.*
 import net.dv8tion.jda.api.events.http.HttpRequestEvent
@@ -153,7 +157,7 @@ object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<Discord
         
         override fun onReady(event: ReadyEvent) {
             if (!initialized) {
-                event.jda.presence.status = OnlineStatus.ONLINE
+                event.jda.presence.setStatus(OnlineStatus.ONLINE)
                 initialized = true
             }
 
@@ -702,9 +706,9 @@ object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<Discord
             }
         }
 
-        override fun onGuildMemberNickChange(event: GuildMemberNickChangeEvent) {
+        override fun onGuildMemberUpdateNickname(event: GuildMemberUpdateNicknameEvent) {
             runEvent {
-                DiscordGuildMemberNickChangeEvent(it, event)
+                DiscordGuildMemberUpdateNicknameEvent(it, event)
             }
         }
 

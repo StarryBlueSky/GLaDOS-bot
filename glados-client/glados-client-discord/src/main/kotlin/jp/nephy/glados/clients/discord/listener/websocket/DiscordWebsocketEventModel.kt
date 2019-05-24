@@ -169,7 +169,7 @@ interface DiscordWebsocketEventModel: EventModel {
     suspend fun onDiscordGuildMemberLeave(event: DiscordGuildMemberLeaveEvent) {}
     suspend fun onDiscordGuildMemberRoleAdd(event: DiscordGuildMemberRoleAddEvent) {}
     suspend fun onDiscordGuildMemberRoleRemove(event: DiscordGuildMemberRoleRemoveEvent) {}
-    suspend fun onDiscordGuildMemberNickChange(event: DiscordGuildMemberNickChangeEvent) {}
+    suspend fun onDiscordGuildMemberNickChange(event: DiscordGuildMemberUpdateNicknameEvent) {}
     
     suspend fun onDiscordGuildVoiceUpdate(event: DiscordGuildVoiceUpdateEvent) {}
     suspend fun onDiscordGuildVoiceJoin(event: DiscordGuildVoiceJoinEvent) {}

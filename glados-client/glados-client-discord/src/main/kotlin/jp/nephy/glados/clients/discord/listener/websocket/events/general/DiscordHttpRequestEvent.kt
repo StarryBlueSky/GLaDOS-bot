@@ -30,12 +30,12 @@ import net.dv8tion.jda.api.events.http.HttpRequestEvent
 import net.dv8tion.jda.api.requests.Request
 import net.dv8tion.jda.api.requests.Response
 import net.dv8tion.jda.api.requests.RestAction
+import net.dv8tion.jda.api.utils.data.DataArray
+import net.dv8tion.jda.api.utils.data.DataObject
 import net.dv8tion.jda.internal.requests.Route
 import okhttp3.Headers
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
-import org.json.JSONArray
-import org.json.JSONObject
 
 data class DiscordHttpRequestEvent(
     override val subscription: DiscordWebsocketEventSubscription,
@@ -45,34 +45,34 @@ data class DiscordHttpRequestEvent(
 val DiscordHttpRequestEvent.request: Request<*>
     get() = jdaEvent.request
 
-val DiscordHttpRequestEvent.requestBody: RequestBody
+val DiscordHttpRequestEvent.requestBody: RequestBody?
     get() = jdaEvent.requestBody
 
-val DiscordHttpRequestEvent.requestBodyRaw: Any
+val DiscordHttpRequestEvent.requestBodyRaw: Any?
     get() = jdaEvent.requestBodyRaw
 
-val DiscordHttpRequestEvent.requestHeaders: Headers
+val DiscordHttpRequestEvent.requestHeaders: Headers?
     get() = jdaEvent.requestHeaders
 
-val DiscordHttpRequestEvent.requestRaw: okhttp3.Request
+val DiscordHttpRequestEvent.requestRaw: okhttp3.Request?
     get() = jdaEvent.requestRaw
 
-val DiscordHttpRequestEvent.response: Response
+val DiscordHttpRequestEvent.response: Response?
     get() = jdaEvent.response
 
-val DiscordHttpRequestEvent.responseBody: ResponseBody
+val DiscordHttpRequestEvent.responseBody: ResponseBody?
     get() = jdaEvent.responseBody
 
-val DiscordHttpRequestEvent.responseBodyAsArray: JSONArray
+val DiscordHttpRequestEvent.responseBodyAsArray: DataArray?
     get() = jdaEvent.responseBodyAsArray
 
-val DiscordHttpRequestEvent.responseBodyAsObject: JSONObject
+val DiscordHttpRequestEvent.responseBodyAsObject: DataObject?
     get() = jdaEvent.responseBodyAsObject
 
-val DiscordHttpRequestEvent.responseHeaders: Headers
+val DiscordHttpRequestEvent.responseHeaders: Headers?
     get() = jdaEvent.responseHeaders
 
-val DiscordHttpRequestEvent.responseRaw: okhttp3.Response
+val DiscordHttpRequestEvent.responseRaw: okhttp3.Response?
     get() = jdaEvent.responseRaw
 
 val DiscordHttpRequestEvent.cfRays: Set<String>

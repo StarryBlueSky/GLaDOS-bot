@@ -57,11 +57,11 @@ class SendMessageWrapper(val channel: MessageChannel, val mention: IMentionable?
         return when {
             text != null -> {
                 channel.sendTyping().launch()
-                channel.sendMessage(text)
+                channel.sendMessage(text!!)
             }
             embed != null -> {
                 channel.sendTyping().launch()
-                channel.sendMessage(embed)
+                channel.sendMessage(embed!!)
             }
             else -> {
                 throw IllegalStateException()

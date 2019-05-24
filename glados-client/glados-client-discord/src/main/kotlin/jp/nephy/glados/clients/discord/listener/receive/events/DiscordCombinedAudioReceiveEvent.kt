@@ -40,7 +40,7 @@ val DiscordCombinedAudioReceiveEvent.users: List<User>
     get() = audio.users
 
 val DiscordCombinedAudioReceiveEvent.members: List<Member>
-    get() = users.map { guild.getMember(it) }
+    get() = users.map { guild.getMember(it)!! }
 
 fun DiscordCombinedAudioReceiveEvent.audioData(volume: Double): ByteArray {
     return audio.getAudioData(volume)

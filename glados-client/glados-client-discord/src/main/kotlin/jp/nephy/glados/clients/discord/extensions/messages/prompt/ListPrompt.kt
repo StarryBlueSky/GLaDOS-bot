@@ -37,12 +37,12 @@ import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import java.util.concurrent.TimeUnit
 
-data class ListPrompt<T>(
+data class ListPrompt<T: Any>(
     val items: List<T>, val itemTitle: (T) -> String, val itemDescription: (T) -> String?, val defaultItem: T?, val title: String?, val authorName: String?, val authorUrl: String?, val authorImageUrl: String?, val description: String?, val color: HexColor?, val timeoutSecs: Long?
 ) {
-    data class PromptResult<T>(val item: T, val event: MessageReceivedEvent)
+    data class PromptResult<T: Any>(val item: T, val event: MessageReceivedEvent)
 
-    class Builder<T>(private val items: List<T>) {
+    class Builder<T: Any>(private val items: List<T>) {
         private var itemTitle: (T) -> String = {
             if (it is PromptEnum) {
                 it.promptTitle
@@ -113,7 +113,7 @@ data class ListPrompt<T>(
         private val digitRegex = "^#?(\\d+)$".toRegex()
 
         @Suppress("ResultIsResult")
-        suspend fun <T> create(channel: MessageChannel, target: User, items: List<T>, builder: Builder<T>.() -> Unit): Result<PromptResult<T>> {
+        suspend fun <T: Any> create(channel: MessageChannel, target: User, items: List<T>, builder: Builder<T>.() -> Unit): Result<PromptResult<T>> {
             val prompt = Builder(items).apply(builder).build()
 
             val promptMessage = channel.reply(target) {
@@ -163,7 +163,7 @@ data class ListPrompt<T>(
 
             return runCatching {
                 val event = DiscordEventWaiter.waitCatching<MessageReceivedEvent>(prompt.timeoutSecs, TimeUnit.SECONDS) {
-                    it.member.user.idLong == target.idLong && digitRegex.containsMatchIn(it.message.contentDisplay)
+                    it.author.idLong == target.idLong && digitRegex.containsMatchIn(it.message.contentDisplay)
                 }.getOrThrow()
                 val number = digitRegex.find(event.message.contentDisplay)!!.value.toInt()
                 val selected = prompt.items.getOrElse(number) { prompt.defaultItem } ?: throw IllegalArgumentException("Item index $number is out of items.")

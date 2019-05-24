@@ -43,10 +43,10 @@ class EditMessageWrapper(private val target: Message): MessageWrapper {
     override fun build(): MessageAction {
         return when {
             message != null -> {
-                target.editMessage(message)
+                target.editMessage(message!!)
             }
             embed != null -> {
-                target.editMessage(embed)
+                target.editMessage(embed!!)
             }
             else -> {
                 throw IllegalStateException()

@@ -36,6 +36,7 @@ import jp.nephy.penicillin.core.emulation.EmulationMode
 import jp.nephy.penicillin.core.session.ApiClient
 import jp.nephy.penicillin.core.session.SessionBuilder
 import jp.nephy.penicillin.core.session.config.*
+import jp.nephy.penicillin.endpoints.common.TweetMode
 
 /**
  * Creates default [ApiClient] for this account.
@@ -69,6 +70,7 @@ fun TwitterAccount.client(
         }
         api {
             emulationMode = mode
+            defaultTweetMode = TweetMode.Extended
         }
 
         block()

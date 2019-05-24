@@ -38,7 +38,7 @@ data class DiscordUserSpeakingEvent(
     val modes: EnumSet<SpeakingMode>
 ): DiscordConnectionEventBase
 
-val DiscordUserSpeakingEvent.member: Member
+val DiscordUserSpeakingEvent.member: Member?
     get() = guild.getMember(user)
 
 val DiscordUserSpeakingEvent.isSpeaking: Boolean

@@ -43,4 +43,4 @@ val DiscordGuildMessageUpdateEvent.author: User
     get() = jdaEvent.author
 
 val DiscordGuildMessageUpdateEvent.member: Member
-    get() = jdaEvent.member
+    get() = jdaEvent.member!!

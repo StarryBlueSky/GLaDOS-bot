@@ -42,7 +42,7 @@ val DiscordUserAudioReceiveEvent.user: User
     get() = audio.user
 
 val DiscordUserAudioReceiveEvent.member: Member
-    get() = guild.getMember(user)
+    get() = guild.getMember(user)!!
 
 fun DiscordUserAudioReceiveEvent.audioData(volume: Double): ByteArray {
     return audio.getAudioData(volume)

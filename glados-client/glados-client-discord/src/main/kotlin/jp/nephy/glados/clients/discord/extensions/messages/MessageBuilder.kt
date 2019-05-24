@@ -107,17 +107,17 @@ suspend inline fun <reified E: Enum<out EmojiEnum>> TextChannel.emojiEnumPrompt(
 }
 
 @Suppress("ResultIsResult")
-suspend inline fun <T> Message.itemPrompt(items: List<T>, noinline operation: ListPrompt.Builder<T>.() -> Unit): Result<ListPrompt.PromptResult<T>> {
+suspend inline fun <T: Any> Message.itemPrompt(items: List<T>, noinline operation: ListPrompt.Builder<T>.() -> Unit): Result<ListPrompt.PromptResult<T>> {
     return textChannel.itemPrompt(author, items, operation)
 }
 
 @Suppress("ResultIsResult")
-suspend inline fun <T> TextChannel.itemPrompt(to: Member, items: List<T>, noinline operation: ListPrompt.Builder<T>.() -> Unit): Result<ListPrompt.PromptResult<T>> {
+suspend inline fun <T: Any> TextChannel.itemPrompt(to: Member, items: List<T>, noinline operation: ListPrompt.Builder<T>.() -> Unit): Result<ListPrompt.PromptResult<T>> {
     return itemPrompt(to.user, items, operation)
 }
 
 @Suppress("ResultIsResult")
-suspend inline fun <T> TextChannel.itemPrompt(to: User, items: List<T>, noinline operation: ListPrompt.Builder<T>.() -> Unit): Result<ListPrompt.PromptResult<T>> {
+suspend inline fun <T: Any> TextChannel.itemPrompt(to: User, items: List<T>, noinline operation: ListPrompt.Builder<T>.() -> Unit): Result<ListPrompt.PromptResult<T>> {
     return ListPrompt.create(this, to, items, operation)
 }
 

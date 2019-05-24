@@ -22,14 +22,10 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.web.extensions
+package jp.nephy.glados.clients.twitter.commands
 
-import io.ktor.html.Placeholder
+import jp.nephy.glados.api.Priority
 
-abstract class Include<T>: Placeholder<T>() {
-    abstract fun T.block()
-
-    init {
-        invoke { block() }
-    }
-}
+annotation class TwitterCommand(
+    val priority: Priority = Priority.Normal
+)

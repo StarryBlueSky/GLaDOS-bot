@@ -57,16 +57,14 @@ object DiscordMessageManager {
     
     internal object Listener: ListenerAdapter() {
         override fun onMessageReceived(event: MessageReceivedEvent) {
-            add(event.message ?: return)
+            add(event.message)
         }
 
         override fun onMessageUpdate(event: MessageUpdateEvent) {
-            val message = event.message ?: return
-
-            cache[message.idLong]?.also {
-                history[message.idLong] = it
+            cache[event.message.idLong]?.also {
+                history[event.message.idLong] = it
             }
-            cache[message.idLong] = message
+            cache[event.message.idLong] = event.message
         }
     }
 }

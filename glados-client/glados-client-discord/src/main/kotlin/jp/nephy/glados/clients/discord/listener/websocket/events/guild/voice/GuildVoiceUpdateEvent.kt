@@ -29,7 +29,7 @@ import net.dv8tion.jda.api.entities.VoiceChannel
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent
 
 val DiscordWebsocketEventBase<out GuildVoiceUpdateEvent>.channelLeft: VoiceChannel
-    get() = jdaEvent.channelLeft
+    get() = jdaEvent.channelLeft!!
 
 val DiscordWebsocketEventBase<out GuildVoiceUpdateEvent>.channelJoined: VoiceChannel
-    get() = jdaEvent.channelJoined
+    get() = jdaEvent.channelJoined!!

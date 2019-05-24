@@ -42,10 +42,10 @@ val DiscordDisconnectEvent.closeCode: CloseCode?
 val DiscordDisconnectEvent.cloudflareRays: List<String>
     get() = jdaEvent.cloudflareRays
 
-val DiscordDisconnectEvent.serviceCloseFrame: WebSocketFrame
+val DiscordDisconnectEvent.serviceCloseFrame: WebSocketFrame?
     get() = jdaEvent.serviceCloseFrame
 
-val DiscordDisconnectEvent.clientCloseFrame: WebSocketFrame
+val DiscordDisconnectEvent.clientCloseFrame: WebSocketFrame?
     get() = jdaEvent.clientCloseFrame
 
 val DiscordDisconnectEvent.isClosedByServer: Boolean
