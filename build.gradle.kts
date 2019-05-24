@@ -168,7 +168,7 @@ dependencies {
 
     implementation(kotlin("reflect"))
 
-    implementation("io.ktor:ktor-client-apache:1.1.5")
+    implementation("io.ktor:ktor-client-apache:1.2.0")
 
     implementation("io.methvin:directory-watcher:0.9.4")
 

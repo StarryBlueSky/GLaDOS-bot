@@ -1,7 +1,9 @@
+import com.sun.javafx.scene.CameraHelper.project
+
 dependencies {
     api(project(":glados-api"))
 
-    implementation("io.github.microutils:kotlin-logging:1.6.25")
+    implementation("io.github.microutils:kotlin-logging:1.6.26")
 }
 
 subprojects {
