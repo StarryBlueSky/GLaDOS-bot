@@ -24,7 +24,6 @@
 
 package jp.nephy.glados.clients.logger
 
-import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.response.HttpResponse
 import io.ktor.http.ContentType
@@ -32,6 +31,7 @@ import io.ktor.http.content.OutgoingContent
 import jp.nephy.glados.GLaDOSCoroutineScope
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.config
+import jp.nephy.glados.api.httpClient
 import jp.nephy.jsonkt.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
@@ -43,8 +43,6 @@ import mu.KotlinLogging
 
 object SlackWebhook: GLaDOSCoroutineScope() {
     private val logger = KotlinLogging.logger("GLaDOS.Logger.SlackWebhook")
-
-    private val httpClient = HttpClient()
     
     fun message(channel: String? = null, builder: MessageBuilder.() -> Unit): Job {
         return launch {
@@ -56,7 +54,7 @@ object SlackWebhook: GLaDOSCoroutineScope() {
         val requestBody = MessageBuilder(channel).apply(builder).build()
         repeat(3) {
             try {
-                httpClient.post<HttpResponse>(GLaDOS.config.logging.slackWebhookUrl ?: return) {
+                GLaDOS.httpClient.post<HttpResponse>(GLaDOS.config.logging.slackWebhookUrl ?: return) {
                     body = requestBody
                 }
 
