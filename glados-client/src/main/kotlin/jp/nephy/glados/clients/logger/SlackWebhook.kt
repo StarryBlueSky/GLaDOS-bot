@@ -25,6 +25,7 @@
 package jp.nephy.glados.clients.logger
 
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.apache.Apache
 import io.ktor.client.request.post
 import io.ktor.client.response.HttpResponse
 import io.ktor.http.ContentType
@@ -41,7 +42,7 @@ import java.util.concurrent.Executors
 object SlackWebhook {
     private val logger = KotlinLogging.logger("GLaDOS.Logger.SlackWebhook")
     
-    private val httpClient = HttpClient()
+    private val httpClient = HttpClient(Apache)
     private object SlackCoroutineScope: CoroutineScope {
         override val coroutineContext = Executors.newCachedThreadPool().asCoroutineDispatcher()
     }
@@ -64,7 +65,7 @@ object SlackWebhook {
             } catch (e: CancellationException) {
                 return
             } catch (e: Throwable) {
-                logger.error(e) { "ペイロードの送信に失敗しました。(${it + 1}/3)" }
+                logger.error(e) { "Payload の送信に失敗しました。(${it + 1}/3)" }
             }
 
             try {
@@ -115,6 +116,8 @@ object SlackWebhook {
                 override val contentType = ContentType.Application.Json
 
                 override suspend fun writeTo(channel: ByteWriteChannel) {
+                    logger.debug { "Payload: $payload" }
+                    
                     channel.writeStringUtf8(payload.filterValues { it != null }.toJsonObject().toJsonString())
                 }
             }
