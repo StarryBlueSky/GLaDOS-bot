@@ -78,7 +78,7 @@ object DiscordCommandSubscriptionClient: GLaDOSSubscriptionClient<DiscordCommand
             }
             
             launch {
-                handleMessage(event.message, event.author, event.member, event.guild, event.channel)
+                handleMessage(event.message, event.author, event.member, event.guildOrNull, event.channel)
             }
         }
 
