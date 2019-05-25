@@ -38,10 +38,16 @@ val DiscordWebsocketEventBase<out GenericMessageEvent>.channelType: ChannelType
     get() = jdaEvent.channelType
 
 val DiscordWebsocketEventBase<out GenericMessageEvent>.guild: Guild?
-    get() = jdaEvent.guild
+    get() = runCatching {
+        jdaEvent.guild
+    }.getOrNull()
 
 val DiscordWebsocketEventBase<out GenericMessageEvent>.textChannel: TextChannel?
-    get() = jdaEvent.textChannel
+    get() = runCatching {
+        jdaEvent.textChannel
+    }.getOrNull()
 
 val DiscordWebsocketEventBase<out GenericMessageEvent>.privateChannel: PrivateChannel?
-    get() = jdaEvent.privateChannel
+    get() = runCatching {
+        jdaEvent.privateChannel
+    }.getOrNull()
