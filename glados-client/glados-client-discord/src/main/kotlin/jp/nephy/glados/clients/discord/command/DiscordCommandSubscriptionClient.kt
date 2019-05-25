@@ -36,6 +36,7 @@ import jp.nephy.glados.clients.discord.command.policy.checkAllPolicies
 import jp.nephy.glados.clients.discord.extensions.awaitAndDelete
 import jp.nephy.glados.clients.discord.extensions.messages.HexColor
 import jp.nephy.glados.clients.discord.extensions.messages.emojiEnumPrompt
+import jp.nephy.glados.clients.discord.extensions.messages.guildOrNull
 import jp.nephy.glados.clients.discord.extensions.messages.reply
 import kotlinx.coroutines.launch
 import net.dv8tion.jda.api.entities.*
@@ -72,14 +73,22 @@ object DiscordCommandSubscriptionClient: GLaDOSSubscriptionClient<DiscordCommand
     
     internal object Listener: ListenerAdapter() {
         override fun onMessageReceived(event: MessageReceivedEvent) {
+            if (event.message.type != MessageType.DEFAULT) {
+                return
+            }
+            
             launch {
                 handleMessage(event.message, event.author, event.member, event.guild, event.channel)
             }
         }
 
         override fun onMessageUpdate(event: MessageUpdateEvent) {
+            if (event.message.type != MessageType.DEFAULT) {
+                return
+            }
+            
             launch {
-                handleMessage(event.message, event.author, event.member, event.guild, event.channel)
+                handleMessage(event.message, event.author, event.member, event.guildOrNull, event.channel)
             }
         }
 
