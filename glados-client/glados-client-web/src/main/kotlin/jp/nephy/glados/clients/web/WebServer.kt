@@ -66,7 +66,7 @@ private const val webServerKey = "web"
  */
 val GLaDOS.Companion.webServer: ApplicationEngine
     get() = runBlocking {
-        GLaDOS.attributes.read(webServerKey)
+        GLaDOS.attributes.read<ApplicationEngine>(webServerKey)
     }
 
 private val logger = Logger.of("GLaDOS.Web")

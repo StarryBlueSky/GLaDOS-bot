@@ -42,7 +42,7 @@ private const val jdaKey = "jda"
 
 val GLaDOS.Companion.jda: JDA
     get() = runBlocking {
-        GLaDOS.attributes.read(jdaKey)
+        GLaDOS.attributes.read<JDA>(jdaKey)
     }
 
 internal suspend fun initializeJDA() {
