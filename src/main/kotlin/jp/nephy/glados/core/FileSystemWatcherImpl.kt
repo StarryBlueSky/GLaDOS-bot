@@ -26,7 +26,7 @@ package jp.nephy.glados.core
 
 import io.methvin.watcher.DirectoryChangeEvent
 import io.methvin.watcher.DirectoryWatcher
-import jp.nephy.glados.GLaDOSCoroutineScope
+import jp.nephy.glados.InternalCoroutineContext
 import jp.nephy.glados.api.FileSystemEventListener
 import jp.nephy.glados.api.FileSystemWatcher
 import jp.nephy.glados.api.Logger
@@ -38,7 +38,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.concurrent.CopyOnWriteArraySet
 
-internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope() {
+internal object FileSystemWatcherImpl: FileSystemWatcher {
     private val logger = Logger.of("GLaDOS.FileSystemWatcher")
 
     private lateinit var watcher: DirectoryWatcher
@@ -54,7 +54,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
     
     private fun handleCreateEvent(path: Path) {
         for (listener in listeners) {
-            launch {
+            InternalCoroutineContext.launch {
                 try {
                     listener.onCreated(path)
                 } catch (e: FileSystemException) {
@@ -65,7 +65,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
     
     private fun handleModifyEvent(path: Path) {
         for (listener in listeners) {
-            launch {
+            InternalCoroutineContext.launch {
                 try {
                     listener.onModified(path)
                 } catch (e: FileSystemException) {
@@ -76,7 +76,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
     
     private fun handleDeleteEvent(path: Path) {
         for (listener in listeners) {
-            launch {
+            InternalCoroutineContext.launch {
                 try {
                     listener.onDeleted(path)
                 } catch (e: FileSystemException) {
@@ -87,7 +87,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
     
     private fun handleOverflowEvent(path: Path) {
         for (listener in listeners) {
-            launch {
+            InternalCoroutineContext.launch {
                 try {
                     listener.onOverflow(path)
                 } catch (e: FileSystemException) {
@@ -131,7 +131,6 @@ internal object FileSystemWatcherImpl: FileSystemWatcher, GLaDOSCoroutineScope()
     }
 
     override fun close() {
-        super.close()
         watcher.close()
     }
 }

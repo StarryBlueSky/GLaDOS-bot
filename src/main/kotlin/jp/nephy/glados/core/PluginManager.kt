@@ -25,13 +25,13 @@
 package jp.nephy.glados.core
 
 import io.ktor.util.extension
+import jp.nephy.glados.InternalCoroutineContext
 import jp.nephy.glados.api.*
 import jp.nephy.glados.api.annotations.TestOnlyFeature
 import jp.nephy.glados.api.annotations.TestableFeature
 import jp.nephy.glados.clients.effectiveName
 import jp.nephy.glados.clients.fullName
 import jp.nephy.glados.clients.name
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -42,10 +42,9 @@ import kotlin.reflect.KVisibility
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.jvmErasure
-import kotlin.streams.toList
 import kotlin.system.measureTimeMillis
 
-internal object PluginManager: ClassManager<Plugin>, CoroutineScope by GLaDOS {
+internal object PluginManager: ClassManager<Plugin> {
     private val logger = Logger.of("GLaDOS.PluginManager")
     
     init {
@@ -57,16 +56,10 @@ internal object PluginManager: ClassManager<Plugin>, CoroutineScope by GLaDOS {
     
     override fun loadAll() {
         val loadingTimeMillis = measureTimeMillis {
-            val jobs = Files.walk(GLaDOS.config.paths.plugins).filter { 
+            Files.walk(GLaDOS.config.paths.plugins).filter { 
                 it.extension == "jar"
-            }.map { 
-                launch { 
-                    load(it)
-                }
-            }.toList()
-            
-            runBlocking {
-                jobs.joinAll()
+            }.forEach { 
+                load(it)
             }
         }
         
@@ -109,7 +102,7 @@ internal object PluginManager: ClassManager<Plugin>, CoroutineScope by GLaDOS {
         }.getOrNull() ?: return
 
         val jobs = kotlinClass.declaredFunctions.map { function -> 
-            launch {
+            InternalCoroutineContext.launch {
                 if (function.valueParameters.size != 1) {
                     logger.trace { "関数: \"${plugin.effectiveName}#${function.name}\" は引数の長さが 1 ではありません。スキップします。" }
                     return@launch

@@ -31,8 +31,15 @@ import jp.nephy.glados.api.config
 import jp.nephy.glados.api.initialize
 import jp.nephy.glados.clients.logger.installHttpClientLogger
 import jp.nephy.glados.core.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.newFixedThreadPoolContext
+import java.util.concurrent.Executors
+
+internal object InternalCoroutineContext: CoroutineScope {
+    override val coroutineContext = Executors.newCachedThreadPool().asCoroutineDispatcher()
+}
 
 /**
  * Starts GLaDOS application.

@@ -24,12 +24,11 @@
 
 package jp.nephy.glados.core
 
-import jp.nephy.glados.api.*
+import jp.nephy.glados.api.ClassManager
+import jp.nephy.glados.api.Logger
+import jp.nephy.glados.api.SubscriptionClient
+import jp.nephy.glados.api.of
 import jp.nephy.glados.clients.name
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.io.core.Closeable
 import java.nio.file.Path
 import java.util.concurrent.CopyOnWriteArraySet
@@ -37,7 +36,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.system.measureTimeMillis
 
-internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, CoroutineScope by GLaDOS, Closeable {
+internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Closeable {
     private val logger = Logger.of("GLaDOS.ClientManager")
     
     val clients = CopyOnWriteArraySet<SubscriptionClient<*, *, *>>()
@@ -48,14 +47,8 @@ internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Corout
         }
 
         val loadingTimeMillis = measureTimeMillis {
-            val jobs = loadClassesFromClassPath<SubscriptionClient<*, *, *>>().map { 
-                launch { 
-                    load(it)
-                }
-            }.toList()
-
-            runBlocking {
-                jobs.joinAll()
+            loadClassesFromClassPath<SubscriptionClient<*, *, *>>().forEach { 
+                load(it)
             }
         }
         
@@ -90,7 +83,7 @@ internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Corout
     fun startAll() {
         clients.sortedBy { 
             it.priority
-        }.map { client ->
+        }.forEach { client ->
             runCatching {
                 client.start()
             }.onSuccess {
@@ -104,22 +97,16 @@ internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Corout
     override fun close() {
         logger.info { "ClientManager を終了します。" }
 
-        val jobs = clients.map { client ->
-            launch {
-                runCatching {
-                    client.stop()
-                }.onSuccess {
-                    client.logger.info { "終了しました。" }
-                }.onFailure { e ->
-                    client.logger.error(e) { "終了中に例外が発生しました。" }
-                }
+        clients.map { client ->
+            runCatching {
+                client.stop()
+            }.onSuccess {
+                client.logger.info { "終了しました。" }
+            }.onFailure { e ->
+                client.logger.error(e) { "終了中に例外が発生しました。" }
             }
         }
 
-        runBlocking {
-            jobs.joinAll()
-        }
-        
         clients.clear()
     }
 }
