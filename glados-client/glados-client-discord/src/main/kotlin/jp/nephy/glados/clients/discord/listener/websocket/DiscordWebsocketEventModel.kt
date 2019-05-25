@@ -58,13 +58,15 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.message.reactio
 import jp.nephy.glados.clients.discord.listener.websocket.events.role.DiscordRoleCreateEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.role.DiscordRoleDeleteEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.role.update.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUserTypingEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.presence.DiscordUserActivityEndEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.presence.DiscordUserActivityStartEvent
-import jp.nephy.glados.clients.discord.listener.websocket.events.user.DiscordUserTypingEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.presence.DiscordUserUpdateActivityOrderEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.presence.DiscordUserUpdateOnlineStatusEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.self.*
-import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.DiscordUserUpdateAvatarEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.DiscordUserUpdateDiscriminatorEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.DiscordUserUpdateNameEvent
 
 interface DiscordWebsocketEventModel: EventModel {
     suspend fun onDiscordReady(event: DiscordReadyEvent) {}
@@ -169,7 +171,7 @@ interface DiscordWebsocketEventModel: EventModel {
     suspend fun onDiscordGuildMemberLeave(event: DiscordGuildMemberLeaveEvent) {}
     suspend fun onDiscordGuildMemberRoleAdd(event: DiscordGuildMemberRoleAddEvent) {}
     suspend fun onDiscordGuildMemberRoleRemove(event: DiscordGuildMemberRoleRemoveEvent) {}
-    suspend fun onDiscordGuildMemberNickChange(event: DiscordGuildMemberUpdateNicknameEvent) {}
+    suspend fun onDiscordGuildMemberUpdateNickname(event: DiscordGuildMemberUpdateNicknameEvent) {}
     
     suspend fun onDiscordGuildVoiceUpdate(event: DiscordGuildVoiceUpdateEvent) {}
     suspend fun onDiscordGuildVoiceJoin(event: DiscordGuildVoiceJoinEvent) {}
