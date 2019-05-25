@@ -25,6 +25,7 @@
 package jp.nephy.glados
 
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.apache.Apache
 import io.ktor.client.features.UserAgent
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.config
@@ -55,7 +56,7 @@ fun main(args: Array<String>) {
         
         coroutineContext = newFixedThreadPoolContext(config.parallelism, "GLaDOS")
 
-        httpClient = HttpClient {
+        httpClient = HttpClient(Apache) {
             install(UserAgent) {
                 agent = GLaDOS.config.userAgent
             }
