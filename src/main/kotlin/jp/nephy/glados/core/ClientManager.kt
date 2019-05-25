@@ -95,15 +95,17 @@ internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Closea
     }
 
     override fun close() {
-        logger.info { "ClientManager を終了します。" }
+        logger.info { "ClientManager を停止します。" }
 
-        clients.map { client ->
+        clients.sortedBy {
+            it.priority
+        }.forEach { client ->
             runCatching {
                 client.stop()
             }.onSuccess {
-                client.logger.info { "終了しました。" }
+                client.logger.info { "停止しました。" }
             }.onFailure { e ->
-                client.logger.error(e) { "終了中に例外が発生しました。" }
+                client.logger.error(e) { "停止中に例外が発生しました。" }
             }
         }
 
