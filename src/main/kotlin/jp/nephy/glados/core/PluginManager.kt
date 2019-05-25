@@ -103,7 +103,7 @@ internal object PluginManager: ClassManager<Plugin>, CoroutineScope by GLaDOS {
                 logger.warn { "Plugin: \"${it.effectiveName}\" は object 宣言ではなく class 宣言されています。object 宣言が推奨されます。" }
             }
             
-            logger.debug { "Plugin: \"${it.fullName}\" をロードしました。" }
+            logger.info { "Plugin: \"${it.fullName}\" をロードしました。" }
         }.onFailure { e ->
             logger.error(e) { "クラス: \"${kotlinClass.qualifiedName}\" の初期化に失敗しました。" }
         }.getOrNull() ?: return
