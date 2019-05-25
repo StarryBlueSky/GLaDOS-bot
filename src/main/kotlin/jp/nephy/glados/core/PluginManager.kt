@@ -104,7 +104,12 @@ internal object PluginManager: ClassManager<Plugin> {
         val jobs = kotlinClass.declaredFunctions.map { function -> 
             InternalCoroutineScope.launch {
                 if (function.valueParameters.size != 1) {
-                    logger.trace { "関数: \"${plugin.effectiveName}#${function.name}\" は引数の長さが 1 ではありません。スキップします。" }
+                    if (function.annotations.isNotEmpty()) {
+                        logger.warn { "関数: \"${plugin.effectiveName}#${function.name}\" は引数の長さが 1 ではありませんが Subscription の可能性があります。" }
+                    } else {
+                        logger.trace { "関数: \"${plugin.effectiveName}#${function.name}\" は引数の長さが 1 ではありません。スキップします。" }
+                    }
+                    
                     return@launch
                 }
 
