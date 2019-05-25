@@ -99,6 +99,10 @@ internal object FileSystemWatcherImpl: FileSystemWatcher {
     fun start() {
         watcher = DirectoryWatcher.builder().path(Paths.get("")).listener { event ->
             val path = event.path()
+            if (path.startsWith("logs")) {
+                return@listener
+            }
+            
             if (!Files.exists(path)) {
                 return@listener
             }
