@@ -60,7 +60,7 @@ data class WebPatternRoutingSubscription(
     
     override fun createEvent(context: PipelineContext<*, ApplicationCall>): WebPatternRoutingEvent? {
         val method = context.call.request.httpMethod.glados
-        if (method !in annotation.methods && method != HttpMethod.OPTIONS) {
+        if (annotation.methods.isNotEmpty() && method !in annotation.methods && method != HttpMethod.OPTIONS) {
             return null
         }
 

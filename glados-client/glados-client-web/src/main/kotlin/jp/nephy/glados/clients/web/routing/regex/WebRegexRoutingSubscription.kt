@@ -55,7 +55,7 @@ data class WebRegexRoutingSubscription(
     
     override fun createEvent(context: PipelineContext<*, ApplicationCall>): WebRegexRoutingEvent? {
         val method = context.call.request.httpMethod.glados
-        if (method !in annotation.methods && method != HttpMethod.OPTIONS) {
+        if (annotation.methods.isNotEmpty() && method !in annotation.methods && method != HttpMethod.OPTIONS) {
             return null
         }
 
