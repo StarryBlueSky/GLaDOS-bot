@@ -25,7 +25,7 @@
 package jp.nephy.glados.core
 
 import io.ktor.util.extension
-import jp.nephy.glados.InternalCoroutineContext
+import jp.nephy.glados.InternalCoroutineScope
 import jp.nephy.glados.api.*
 import jp.nephy.glados.api.annotations.TestOnlyFeature
 import jp.nephy.glados.api.annotations.TestableFeature
@@ -102,7 +102,7 @@ internal object PluginManager: ClassManager<Plugin> {
         }.getOrNull() ?: return
 
         val jobs = kotlinClass.declaredFunctions.map { function -> 
-            InternalCoroutineContext.launch {
+            InternalCoroutineScope.launch {
                 if (function.valueParameters.size != 1) {
                     logger.trace { "関数: \"${plugin.effectiveName}#${function.name}\" は引数の長さが 1 ではありません。スキップします。" }
                     return@launch

@@ -37,7 +37,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.newFixedThreadPoolContext
 import java.util.concurrent.Executors
 
-internal object InternalCoroutineContext: CoroutineScope {
+internal object InternalCoroutineScope: CoroutineScope {
     override val coroutineContext = Executors.newCachedThreadPool().asCoroutineDispatcher()
 }
 

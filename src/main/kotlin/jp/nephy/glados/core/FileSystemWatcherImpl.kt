@@ -26,7 +26,7 @@ package jp.nephy.glados.core
 
 import io.methvin.watcher.DirectoryChangeEvent
 import io.methvin.watcher.DirectoryWatcher
-import jp.nephy.glados.InternalCoroutineContext
+import jp.nephy.glados.InternalCoroutineScope
 import jp.nephy.glados.api.FileSystemEventListener
 import jp.nephy.glados.api.FileSystemWatcher
 import jp.nephy.glados.api.Logger
@@ -54,7 +54,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher {
     
     private fun handleCreateEvent(path: Path) {
         for (listener in listeners) {
-            InternalCoroutineContext.launch {
+            InternalCoroutineScope.launch {
                 try {
                     listener.onCreated(path)
                 } catch (e: FileSystemException) {
@@ -65,7 +65,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher {
     
     private fun handleModifyEvent(path: Path) {
         for (listener in listeners) {
-            InternalCoroutineContext.launch {
+            InternalCoroutineScope.launch {
                 try {
                     listener.onModified(path)
                 } catch (e: FileSystemException) {
@@ -76,7 +76,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher {
     
     private fun handleDeleteEvent(path: Path) {
         for (listener in listeners) {
-            InternalCoroutineContext.launch {
+            InternalCoroutineScope.launch {
                 try {
                     listener.onDeleted(path)
                 } catch (e: FileSystemException) {
@@ -87,7 +87,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher {
     
     private fun handleOverflowEvent(path: Path) {
         for (listener in listeners) {
-            InternalCoroutineContext.launch {
+            InternalCoroutineScope.launch {
                 try {
                     listener.onOverflow(path)
                 } catch (e: FileSystemException) {
