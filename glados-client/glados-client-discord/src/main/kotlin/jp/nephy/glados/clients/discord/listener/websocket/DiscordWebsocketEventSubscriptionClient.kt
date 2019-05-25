@@ -72,6 +72,7 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.Dis
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.DiscordUserUpdateDiscriminatorEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.user.update.DiscordUserUpdateNameEvent
 import jp.nephy.glados.clients.runEvent
+import kotlinx.coroutines.runBlocking
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.events.*
 import net.dv8tion.jda.api.events.channel.category.CategoryCreateEvent
@@ -145,11 +146,15 @@ object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<Discord
     }
 
     override fun start() {
-        initializeJDA()
+        runBlocking {
+            initializeJDA()
+        }
     }
 
     override fun stop() {
-        disposeJDA()
+        runBlocking {
+            disposeJDA()
+        }
     }
 
     internal object Listener: ListenerAdapter() {

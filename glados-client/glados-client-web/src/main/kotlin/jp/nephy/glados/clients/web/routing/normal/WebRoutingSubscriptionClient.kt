@@ -29,6 +29,7 @@ import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.clients.fullName
 import jp.nephy.glados.clients.web.disposeWebApplication
 import jp.nephy.glados.clients.web.initializeWebApplication
+import kotlinx.coroutines.runBlocking
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
@@ -52,10 +53,14 @@ object WebRoutingSubscriptionClient: GLaDOSSubscriptionClient<WebRouting, WebRou
     }
 
     override fun start() {
-        initializeWebApplication()
+        runBlocking {
+            initializeWebApplication()
+        }
     }
 
     override fun stop() {
-        disposeWebApplication()
+        runBlocking {
+            disposeWebApplication()
+        }
     }
 }

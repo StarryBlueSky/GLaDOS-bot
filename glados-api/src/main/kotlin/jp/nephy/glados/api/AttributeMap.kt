@@ -31,20 +31,20 @@ interface AttributeMap {
     /**
      * Gets an instance with the key.
      */
-    operator fun <T: Any> get(key: String): T
+    suspend fun <T: Any> read(key: String): T
 
     /**
      * Sets an instance with the key.
      */
-    operator fun <T: Any> set(key: String, value: T)
+    suspend fun <T: Any> write(key: String, value: T)
 
     /**
      * Checks if an instance with the key exists.
      */
-    operator fun contains(key: String): Boolean
+    suspend fun has(key: String): Boolean
 
     /**
      * Removes an instance with the key.
      */
-    fun <T: Any> remove(key: String): T?
+    suspend fun <T: Any> remove(key: String): T?
 }

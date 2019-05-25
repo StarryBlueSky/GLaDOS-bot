@@ -27,15 +27,20 @@ package jp.nephy.glados.core
 import jp.nephy.glados.api.AttributeMap
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.of
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.ConcurrentHashMap
 
 internal object AttributeMapImpl: AttributeMap {
     private val logger = Logger.of("GLaDOS.AttributeMap")
     private val map = ConcurrentHashMap<String, Any>()
+    private val mutex = Mutex()
     
     @Suppress("UNCHECKED_CAST")
-    override operator fun <T: Any> get(key: String): T {
-        val attribute = map[key]
+    override suspend fun <T: Any> read(key: String): T {
+        val attribute = mutex.withLock {
+            map[key]
+        }
 
         return if (attribute != null) {
             attribute as? T ?: throw IllegalArgumentException("Attribute[\"$key\"] type is ${attribute::class.qualifiedName}.")
@@ -44,21 +49,27 @@ internal object AttributeMapImpl: AttributeMap {
         }
     }
 
-    override operator fun <T: Any> set(key: String, value: T) {
-        if (key in this) {
-            throw IllegalStateException("Attribute[\"$key\"] is already initialized.")
+    override suspend fun <T: Any> write(key: String, value: T) {
+        if (has(key)) {
+            return
         }
         
-        map[key] = value
+        mutex.withLock {
+            map[key] = value
+        }
         logger.debug { "Attribute: \"$key\" が作成されました。" }
     }
 
-    override operator fun contains(key: String): Boolean {
-        return map.containsKey(key)
+    override suspend fun has(key: String): Boolean {
+        return mutex.withLock {
+            map.containsKey(key)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T: Any> remove(key: String): T? {
-        return map.remove(key) as? T
+    override suspend fun <T: Any> remove(key: String): T? {
+        return mutex.withLock {
+            map.remove(key)
+        } as? T
     }
 }

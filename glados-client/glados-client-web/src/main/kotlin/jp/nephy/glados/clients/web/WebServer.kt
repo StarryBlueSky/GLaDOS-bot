@@ -65,11 +65,13 @@ private const val webServerKey = "web"
  * Access to [ApplicationEngine] instance.
  */
 val GLaDOS.Companion.webServer: ApplicationEngine
-    get() = GLaDOS.attributes[webServerKey]
+    get() = runBlocking {
+        GLaDOS.attributes.read(webServerKey)
+    }
 
 private val logger = Logger.of("GLaDOS.Web")
 
-internal fun initializeWebApplication() {
+internal suspend fun initializeWebApplication() {
     GLaDOS.attributes.getOrPut(webServerKey) {
         embeddedServer(Netty, host = GLaDOS.config.web.host, port = GLaDOS.config.web.port) {
             // Headers
@@ -129,7 +131,7 @@ internal fun initializeWebApplication() {
     }
 }
 
-internal fun disposeWebApplication() {
+internal suspend fun disposeWebApplication() {
     GLaDOS.attributes.remove<ApplicationEngine>(webServerKey)?.also {
         it.stop(1, 5, TimeUnit.SECONDS)
     }

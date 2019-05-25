@@ -31,6 +31,7 @@ import jp.nephy.glados.api.getOrPut
 import jp.nephy.glados.clients.discord.command.DiscordCommandSubscriptionClient
 import jp.nephy.glados.clients.discord.config.discord
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscriptionClient
+import kotlinx.coroutines.runBlocking
 import net.dv8tion.jda.api.AccountType
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
@@ -40,9 +41,11 @@ import net.dv8tion.jda.api.entities.Activity
 private const val jdaKey = "jda"
 
 val GLaDOS.Companion.jda: JDA
-    get() = GLaDOS.attributes[jdaKey]
+    get() = runBlocking {
+        GLaDOS.attributes.read(jdaKey)
+    }
 
-internal fun initializeJDA() {
+internal suspend fun initializeJDA() {
     GLaDOS.attributes.getOrPut(jdaKey) {
         JDABuilder(AccountType.BOT).apply {
             setToken(GLaDOS.config.discord.token)
@@ -64,7 +67,7 @@ internal fun initializeJDA() {
     }
 }
 
-internal fun disposeJDA() {
+internal suspend fun disposeJDA() {
     GLaDOS.attributes.remove<JDA>(jdaKey)?.also { 
         it.shutdown()
     }

@@ -26,16 +26,18 @@ package jp.nephy.glados.api
 
 import kotlinx.coroutines.delay
 
-fun <T: Any> AttributeMap.getOrPut(key: String, block: () -> T): T {
-    if (key !in this) {
-        this[key] = block()
+suspend fun <T: Any> AttributeMap.getOrPut(key: String, block: () -> T): T {
+    if (!has(key)) {
+        write(key, block())
     }
 
-    return this[key]
+    return read(key)
 }
 
-suspend fun AttributeMap.awaitInitialization(key: String) {
-    while (key !in this) {
+suspend fun <T: Any> AttributeMap.onReady(key: String, callback: (T) -> Unit) {
+    while (!has(key)) {
         delay(100)
     }
+    
+    callback(read(key))
 }
