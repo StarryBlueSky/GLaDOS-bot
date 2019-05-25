@@ -24,28 +24,30 @@
 
 package jp.nephy.glados.clients.logger
 
+import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.response.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.content.OutgoingContent
-import jp.nephy.glados.GLaDOSCoroutineScope
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.config
-import jp.nephy.glados.api.httpClient
 import jp.nephy.jsonkt.*
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.io.ByteWriteChannel
 import kotlinx.coroutines.io.writeStringUtf8
-import kotlinx.coroutines.launch
 import mu.KotlinLogging
+import java.util.concurrent.Executors
 
-object SlackWebhook: GLaDOSCoroutineScope() {
+object SlackWebhook {
     private val logger = KotlinLogging.logger("GLaDOS.Logger.SlackWebhook")
     
+    private val httpClient = HttpClient()
+    private object SlackCoroutineScope: CoroutineScope {
+        override val coroutineContext = Executors.newCachedThreadPool().asCoroutineDispatcher()
+    }
+    
     fun message(channel: String? = null, builder: MessageBuilder.() -> Unit): Job {
-        return launch {
+        return SlackCoroutineScope.launch {
             messageAwait(channel, builder)
         }
     }
@@ -54,7 +56,7 @@ object SlackWebhook: GLaDOSCoroutineScope() {
         val requestBody = MessageBuilder(channel).apply(builder).build()
         repeat(3) {
             try {
-                GLaDOS.httpClient.post<HttpResponse>(GLaDOS.config.logging.slackWebhookUrl ?: return) {
+                httpClient.post<HttpResponse>(GLaDOS.config.logging.slackWebhookUrl ?: return) {
                     body = requestBody
                 }
 
