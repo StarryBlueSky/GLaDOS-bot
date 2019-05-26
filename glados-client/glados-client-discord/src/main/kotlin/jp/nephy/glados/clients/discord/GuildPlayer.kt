@@ -56,21 +56,25 @@ class GuildPlayer internal constructor(val guild: Guild, initialVolume: Int) {
 
     init {
         guild.audioManager.connectionListener = DiscordConnectionEventSubscriptionClient.Listener(guild)
-        guild.audioManager.receivingHandler = DiscordReceiveAudioEventSubscriptionClient.Listener(this)
-        guild.audioManager.sendingHandler = object: AudioSendHandler {
-            private var frame: AudioFrame? = null
+        guild.audioManager.sendingHandler = SilenceAudioSendHandler {
+            // Hotfix: https://github.com/DV8FromTheWorld/JDA/issues/789
+            
+            guild.audioManager.sendingHandler = object: AudioSendHandler {
+                private var frame: AudioFrame? = null
 
-            override fun canProvide(): Boolean {
-                frame = audioPlayer.provide()
-                return frame != null
+                override fun canProvide(): Boolean {
+                    frame = audioPlayer.provide()
+                    return frame != null
+                }
+
+                override fun provide20MsAudio() = ByteBuffer.wrap(frame!!.data)
+
+                override fun isOpus() = true
             }
-
-            override fun provide20MsAudio() = ByteBuffer.wrap(frame!!.data)
-
-            override fun isOpus() = true
+            guild.audioManager.receivingHandler = DiscordReceiveAudioEventSubscriptionClient.Listener(this)
+            
+            audioPlayer.addListener(DiscordAudioEventSubscriptionClient.Listener(this))
+            audioPlayer.volume = initialVolume
         }
-
-        audioPlayer.addListener(DiscordAudioEventSubscriptionClient.Listener(this))
-        audioPlayer.volume = initialVolume
     }
 }
