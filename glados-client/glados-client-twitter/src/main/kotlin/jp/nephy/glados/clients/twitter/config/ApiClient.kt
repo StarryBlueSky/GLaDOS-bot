@@ -30,6 +30,7 @@ import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.apache.Apache
 import io.ktor.util.KtorExperimentalAPI
 import jp.nephy.glados.api.GLaDOS
+import jp.nephy.glados.api.httpClient
 import jp.nephy.glados.clients.logger.installHttpClientLogger
 import jp.nephy.penicillin.PenicillinClient
 import jp.nephy.penicillin.core.emulation.EmulationMode
@@ -37,6 +38,7 @@ import jp.nephy.penicillin.core.session.ApiClient
 import jp.nephy.penicillin.core.session.SessionBuilder
 import jp.nephy.penicillin.core.session.config.*
 import jp.nephy.penicillin.endpoints.common.TweetMode
+import mu.KotlinLogging
 
 /**
  * Creates default [ApiClient] for this account.
@@ -50,29 +52,42 @@ val TwitterAccount.client: ApiClient
 val TwitterAccount.officialClient: ApiClient
     get() = client(EmulationMode.TwitterForiPhone)
 
+private val logger = KotlinLogging.logger("GLaDOS.SubscriptionClient.Twitter")
+
 /**
  * Creates [ApiClient] for this account.
  */
 @UseExperimental(KtorExperimentalAPI::class)
 fun TwitterAccount.client(
-    mode: EmulationMode = EmulationMode.None, engine: HttpClientEngineFactory<*> = Apache, block: SessionBuilder.() -> Unit = {}
+    mode: EmulationMode = EmulationMode.None,
+    engine: HttpClientEngineFactory<*> = Apache,
+    block: SessionBuilder.() -> Unit = {}
 ): ApiClient {
     return PenicillinClient {
         account {
             application(ck, cs)
             token(at, ats)
         }
+        
         dispatcher {
             coroutineContext = GLaDOS.coroutineContext
         }
-        httpClient(engine) {
-            installHttpClientLogger()
+        
+        if (engine == Apache) {
+            httpClient(GLaDOS.httpClient)
+        } else {
+            httpClient(engine) {
+                installHttpClientLogger()
+            }
         }
+        
         api {
             emulationMode = mode
             defaultTweetMode = TweetMode.Extended
         }
 
         block()
+    }.also {
+        logger.trace { "新しい ApiClient が作成されました。($it)\n${Thread.currentThread().stackTrace.joinToString("\n") { "\tat $it" }}" }
     }
 }
