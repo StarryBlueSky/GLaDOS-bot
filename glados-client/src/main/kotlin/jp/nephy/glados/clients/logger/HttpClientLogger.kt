@@ -54,6 +54,10 @@ private class HttpClientLogger(private val config: Config) {
             return
         }
 
+        if (response.call.request.url.host == "hooks.slack.com") {
+            return
+        }
+        
         log {
             if (LogCategory.Summary in config.categories) {
                 appendln("${response.status.value} ${response.status.description}: ${response.version} ${response.call.request.method.value} ${response.call.request.url}")
