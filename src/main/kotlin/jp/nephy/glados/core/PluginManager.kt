@@ -81,10 +81,10 @@ internal object PluginManager: ClassManager<Plugin> {
     }
     
     override fun load(kotlinClass: KClass<out Plugin>) {
-        if (GLaDOS.isDebugMode && kotlinClass.findAnnotation<TestOnlyFeature>() == null && kotlinClass.findAnnotation<TestableFeature>() == null) {
+        if (GLaDOS.isDevelopmentMode && kotlinClass.findAnnotation<TestOnlyFeature>() == null && kotlinClass.findAnnotation<TestableFeature>() == null) {
             logger.info { "クラス: \"${kotlinClass.qualifiedName}\" はテスト可能ではありません。スキップします。" }
             return
-        } else if (!GLaDOS.isDebugMode && kotlinClass.findAnnotation<TestOnlyFeature>() != null) {
+        } else if (!GLaDOS.isDevelopmentMode && kotlinClass.findAnnotation<TestOnlyFeature>() != null) {
             logger.info { "クラス: \"${kotlinClass.qualifiedName}\" はテスト環境でのみ実行できます。スキップします。" }
             return
         }

@@ -36,7 +36,7 @@ import io.ktor.http.contentType
 import io.ktor.util.AttributeKey
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Logger
-import jp.nephy.glados.api.isDebugMode
+import jp.nephy.glados.api.isDevelopmentMode
 import jp.nephy.glados.api.of
 import kotlinx.coroutines.io.ByteChannel
 import kotlinx.coroutines.io.close
@@ -162,7 +162,7 @@ private enum class LogCategory {
 
 fun HttpClientConfig<*>.installHttpClientLogger() {
     install(HttpClientLogger) {
-        if (GLaDOS.isDebugMode) {
+        if (GLaDOS.isDevelopmentMode) {
             all()
         } else {
             of(LogCategory.Summary)

@@ -143,7 +143,7 @@ val GLaDOS.Companion.initialized: Boolean
 /**
  * Shortcut to `GLaDOS.Instance.isDevelopmentMode`.
  */
-val GLaDOS.Companion.isDebugMode: Boolean
+val GLaDOS.Companion.isDevelopmentMode: Boolean
     get() = GLaDOS.Instance.isDevelopmentMode
 
 /**

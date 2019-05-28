@@ -40,7 +40,7 @@ internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
         fun load(): ConfigJson {
             val logger = Logger.of("GLaDOS.Config.ConfigJson")
             
-            return if (GLaDOS.isDebugMode) {
+            return if (GLaDOS.isDevelopmentMode) {
                 if (!Files.exists(developmentConfigJsonPath)) {
                     logger.info { "$developmentConfigJsonPath は存在しません。デフォルトの JSON をコピーします。" }
                     
@@ -77,7 +77,7 @@ internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
 
         @Suppress("DEPRECATION")
         private fun handleFileChange(path: Path) {
-            if ((!GLaDOS.isDebugMode && Files.isSameFile(path, productionConfigJsonPath)) || (GLaDOS.isDebugMode && Files.isSameFile(path, developmentConfigJsonPath))) {
+            if ((!GLaDOS.isDevelopmentMode && Files.isSameFile(path, productionConfigJsonPath)) || (GLaDOS.isDevelopmentMode && Files.isSameFile(path, developmentConfigJsonPath))) {
                 GLaDOS.Instance.config = load()
             }
         }

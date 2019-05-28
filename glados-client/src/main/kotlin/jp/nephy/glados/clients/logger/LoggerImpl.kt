@@ -116,7 +116,7 @@ internal class LoggerImpl(private val name: String, private val slackChannel: St
         return when {
             !GLaDOS.initialized -> false
             !useSlack -> false
-            GLaDOS.isDebugMode -> false
+            GLaDOS.isDevelopmentMode -> false
             !target.isGreaterOrEqual(GLaDOS.config.logging.levelForSlack) -> false
             else -> true
         }
