@@ -208,7 +208,7 @@ private fun DiscordCommandEvent.rejectWhileInSameVoiceChannelConditionPolicy() {
 }
 
 private fun DiscordCommandEvent.satisfyAdminOnlyPermissionPolicy(): Boolean {
-    return subscription.annotation.permission != PermissionPolicy.AdminOnly || member?.hasAdminPermission ?: author.hasAdminPermission
+    return subscription.annotation.permission != PermissionPolicy.AdminOnly || (member?.hasAdminPermission ?: author.hasAdminPermission || author.isGLaDOSOwner)
 }
 
 private fun DiscordCommandEvent.rejectAdminOnlyPermissionPolicy() {
@@ -238,7 +238,7 @@ private fun DiscordCommandEvent.rejectAdminOnlyPermissionPolicy() {
 }
 
 private fun DiscordCommandEvent.satisfyMainGuildAdminOnlyPermissionPolicy(): Boolean {
-    return subscription.annotation.permission != PermissionPolicy.MainGuildAdminOnly || (guild.config?.isMain == true && member?.hasAdminPermission ?: author.hasAdminPermission)
+    return subscription.annotation.permission != PermissionPolicy.MainGuildAdminOnly || ((guild.config?.isMain == true && member?.hasAdminPermission ?: author.hasAdminPermission) || author.isGLaDOSOwner)
 }
 
 private fun DiscordCommandEvent.rejectMainGuildAdminOnlyPermissionPolicy() {
