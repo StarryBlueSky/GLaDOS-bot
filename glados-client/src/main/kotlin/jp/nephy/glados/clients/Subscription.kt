@@ -64,7 +64,7 @@ val Subscription<*, *>.eventClass: KClass<*>
 /**
  * Subscription invoke operator.
  */
-suspend operator fun <E: Event> Subscription<*, E>.invoke(event: E) {
+suspend operator fun <E: Event> Subscription<*, E>.invoke(event: E, skipLogging: Boolean = false) {
     if (isDisabled) {
         return
     }
@@ -74,7 +74,9 @@ suspend operator fun <E: Event> Subscription<*, E>.invoke(event: E) {
             function.callSuspend(plugin, event)
         }
 
-        logger.trace { "$timeMillis ms で終了しました。" }
+        if (!skipLogging) {
+            logger.trace { "$timeMillis ms で終了しました。" }
+        }
     }.onSuccess {
         onSuccess(event)
     }.onFailure {

@@ -58,7 +58,7 @@ object DiscordReceiveAudioEventSubscriptionClient: GLaDOSSubscriptionClient<Disc
         override fun canReceiveUser(): Boolean = true
 
         override fun handleUserAudio(userAudio: UserAudio) {
-            runEvent {
+            runEvent(skipLogging = true) {
                 DiscordUserAudioReceiveEvent(it, guildPlayer, userAudio)
             }
         }
@@ -66,7 +66,7 @@ object DiscordReceiveAudioEventSubscriptionClient: GLaDOSSubscriptionClient<Disc
         override fun canReceiveCombined(): Boolean = true
 
         override fun handleCombinedAudio(combinedAudio: CombinedAudio) {
-            runEvent {
+            runEvent(skipLogging = true) {
                 DiscordCombinedAudioReceiveEvent(it, guildPlayer, combinedAudio)
             }
         }

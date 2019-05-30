@@ -48,6 +48,7 @@ val <A: Annotation, E: Event, S: Subscription<A, E>> SubscriptionClient<A, E, S>
  * Runs Subscriptions.
  */
 inline fun <A: Annotation, E: Event, S: Subscription<A, E>, reified T: E> SubscriptionClient<A, E, S>.runEvent(
+    skipLogging: Boolean = false,
     noinline filter: (S) -> Boolean = { true },
     crossinline block: (S) -> T
 ) {
@@ -57,7 +58,7 @@ inline fun <A: Annotation, E: Event, S: Subscription<A, E>, reified T: E> Subscr
         launch {
             val event = block(subscription)
 
-            subscription.invoke(event)
+            subscription.invoke(event, skipLogging)
         }
     }
 }
