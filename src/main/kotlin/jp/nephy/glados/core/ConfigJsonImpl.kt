@@ -59,7 +59,7 @@ internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
                 }
                 
                 logger.info { "Production モードの設定をロードします。" }
-                productionConfigJsonPath.parse()
+                productionConfigJsonPath.parse<ConfigJsonImpl>()
             }
         }
         
