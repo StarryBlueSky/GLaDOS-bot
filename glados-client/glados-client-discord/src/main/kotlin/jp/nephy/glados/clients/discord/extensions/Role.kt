@@ -26,9 +26,13 @@
 
 package jp.nephy.glados.clients.discord.extensions
 
+import net.dv8tion.jda.api.Permission
+import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.requests.restaction.AuditableRestAction
+import net.dv8tion.jda.api.requests.restaction.RoleAction
+import java.awt.Color
 
 /**
  * Checks if this member has the role.
@@ -78,4 +82,8 @@ fun Member.removeRole(role: Role): AuditableRestAction<Void>? {
     }
     
     return guild.addRoleToMember(this, role)
+}
+
+fun Guild.createRole(name: String? = null, color: Color? = null, mentionable: Boolean? = null, hoisted: Boolean? = null, permissions: List<Permission>): RoleAction {
+    return createRole().setName(name).setColor(color).setMentionable(mentionable).setHoisted(hoisted).setPermissions(permissions)
 }
