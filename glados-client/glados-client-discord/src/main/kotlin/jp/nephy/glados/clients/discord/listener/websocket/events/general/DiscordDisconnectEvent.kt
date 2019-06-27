@@ -39,9 +39,6 @@ data class DiscordDisconnectEvent(
 val DiscordDisconnectEvent.closeCode: CloseCode?
     get() = jdaEvent.closeCode
 
-val DiscordDisconnectEvent.cloudflareRays: List<String>
-    get() = jdaEvent.cloudflareRays
-
 val DiscordDisconnectEvent.serviceCloseFrame: WebSocketFrame?
     get() = jdaEvent.serviceCloseFrame
 

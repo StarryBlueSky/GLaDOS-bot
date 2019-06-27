@@ -59,7 +59,7 @@ fun Member.addRole(role: Role): AuditableRestAction<Void>? {
         return null
     }
     
-    return guild.controller.addSingleRoleToMember(this, role)
+    return guild.addRoleToMember(this, role)
 }
 
 /**
@@ -77,5 +77,5 @@ fun Member.removeRole(role: Role): AuditableRestAction<Void>? {
         return null
     }
     
-    return guild.controller.removeSingleRoleFromMember(this, role)
+    return guild.addRoleToMember(this, role)
 }

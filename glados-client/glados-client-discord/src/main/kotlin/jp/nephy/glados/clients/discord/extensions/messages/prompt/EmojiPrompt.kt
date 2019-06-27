@@ -127,7 +127,7 @@ data class EmojiPrompt<E>(
         private val logger = Logger.of("GLaDOS.Discord.Message.EmojiPrompt")
 
         @Suppress("ResultIsResult")
-        suspend fun <E> create(channel: MessageChannel, target: User, emojis: List<E> = emptyList(), builder: Builder<E>.() -> Unit): Result<PromptResult<E>> {
+        suspend fun <E: Any> create(channel: MessageChannel, target: User, emojis: List<E> = emptyList(), builder: Builder<E>.() -> Unit): Result<PromptResult<E>> {
             val prompt = Builder(emojis).apply(builder).build()
 
             val promptMessage = channel.reply(target) {

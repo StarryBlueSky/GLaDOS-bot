@@ -17,7 +17,7 @@ val bintrayUsername by property()
 val bintrayApiKey by property()
 
 plugins { 
-    kotlin("jvm") version "1.3.31"
+    kotlin("jvm") version "1.3.40"
     
     // For publishing
     id("maven-publish")
@@ -168,7 +168,7 @@ dependencies {
 
     implementation(kotlin("reflect"))
 
-    implementation("io.ktor:ktor-client-apache:1.2.0")
+    implementation("io.ktor:ktor-client-apache:1.2.2")
 
     implementation("io.methvin:directory-watcher:0.9.4")
 

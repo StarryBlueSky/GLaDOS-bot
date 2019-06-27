@@ -44,7 +44,7 @@ internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
                 if (!Files.exists(developmentConfigJsonPath)) {
                     logger.info { "$developmentConfigJsonPath は存在しません。デフォルトの JSON をコピーします。" }
                     
-                    val defaultJson = this::class.java.classLoader.getResource(developmentConfigJsonPath.fileName.toString()).readText()
+                    val defaultJson = this::class.java.classLoader.getResource(developmentConfigJsonPath.fileName.toString())!!.readText()
                     developmentConfigJsonPath.toFile().writeText(defaultJson)
                 }
                 
@@ -54,12 +54,12 @@ internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
                 if (!Files.exists(productionConfigJsonPath)) {
                     logger.info { "$productionConfigJsonPath は存在しません。空の JSON を新たに作成します。" }
 
-                    val defaultJson = this::class.java.classLoader.getResource(productionConfigJsonPath.fileName.toString()).readText()
+                    val defaultJson = this::class.java.classLoader.getResource(productionConfigJsonPath.fileName.toString())!!.readText()
                     productionConfigJsonPath.toFile().writeText(defaultJson)
                 }
                 
                 logger.info { "Production モードの設定をロードします。" }
-                productionConfigJsonPath.parse<ConfigJsonImpl>()
+                productionConfigJsonPath.parse()
             }
         }
         

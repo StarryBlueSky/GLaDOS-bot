@@ -104,7 +104,7 @@ object DiscordEventWaiter {
     /**
      * Thrown when an event waiting was failed because of timeout.
      */
-    class EventWaitingTimeoutException(val eventClass: KClass<out GenericEvent>, val timeoutMillis: Long): CancellationException("Event: ${eventClass.qualifiedName} waiting was failure because of timeout ($timeoutMillis ms).")
+    data class EventWaitingTimeoutException(val eventClass: KClass<out GenericEvent>, val timeoutMillis: Long): CancellationException("Event: ${eventClass.qualifiedName} waiting was failure because of timeout ($timeoutMillis ms).")
     
     internal object Listener: ListenerAdapter() {
         override fun onGenericEvent(event: GenericEvent) {
