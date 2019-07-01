@@ -34,12 +34,12 @@ import java.nio.file.Paths
 
 internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
     companion object {
-        private val productionConfigJsonPath: Path = Paths.get("config.prod.json")
-        private val developmentConfigJsonPath: Path = Paths.get("config.dev.json")
+        private val productionConfigJsonPath = Paths.get("config.prod.json")
+        private val developmentConfigJsonPath = Paths.get("config.dev.json")
         
         fun load(): ConfigJson {
             val logger = Logger.of("GLaDOS.Config.ConfigJson")
-            
+
             return if (GLaDOS.isDevelopmentMode) {
                 if (!Files.exists(developmentConfigJsonPath)) {
                     logger.info { "$developmentConfigJsonPath は存在しません。デフォルトの JSON をコピーします。" }
@@ -59,6 +59,7 @@ internal data class ConfigJsonImpl(override val json: JsonObject): ConfigJson {
                 }
                 
                 logger.info { "Production モードの設定をロードします。" }
+                // DO NOT REMOVE TYPE PARAMETER
                 productionConfigJsonPath.parse<ConfigJsonImpl>()
             }
         }
