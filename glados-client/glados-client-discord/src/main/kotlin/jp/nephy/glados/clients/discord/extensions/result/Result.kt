@@ -28,7 +28,7 @@ package jp.nephy.glados.clients.discord.extensions.result
 
 import jp.nephy.glados.clients.discord.command.events.DiscordCommandEvent
 import jp.nephy.glados.clients.discord.command.primaryCommandSyntax
-import jp.nephy.glados.clients.discord.extensions.messages.HexColor
+import jp.nephy.glados.clients.discord.extensions.ColorPresets
 import jp.nephy.glados.clients.discord.extensions.messages.message
 import jp.nephy.glados.clients.discord.extensions.messages.reply
 import net.dv8tion.jda.api.entities.Message
@@ -40,7 +40,7 @@ fun Message.embedResult(commandName: String, description: () -> String): Message
             title(commandName)
             description(description)
             timestamp()
-            color(HexColor.Good)
+            color(ColorPresets.Good)
         }
     }
 }

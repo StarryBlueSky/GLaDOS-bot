@@ -34,7 +34,7 @@ import jp.nephy.glados.clients.discord.command.primaryCommandSyntax
 import jp.nephy.glados.clients.discord.config.config
 import jp.nephy.glados.clients.discord.config.textChannel
 import jp.nephy.glados.clients.discord.extensions.*
-import jp.nephy.glados.clients.discord.extensions.messages.HexColor
+import jp.nephy.glados.clients.discord.extensions.ColorPresets
 import jp.nephy.glados.clients.discord.extensions.messages.reply
 import jp.nephy.glados.clients.discord.jda
 import jp.nephy.jsonkt.delegation.*
@@ -111,7 +111,7 @@ private fun DiscordCommandEvent.rejectChannelPolicy() {
         embed {
             title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
             description { "このコマンドは ${subscription.annotation.channelType.classes.joinToString(", ") { it.simpleName.orEmpty() }} チャンネルでのみ実行可能です。" }
-            color(HexColor.Bad)
+            color(ColorPresets.Bad)
             timestamp()
         }
     }.launchAndDelete(15, TimeUnit.SECONDS)
@@ -128,7 +128,7 @@ private fun DiscordCommandEvent.rejectBotChannelPolicy() {
         embed {
             title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
             description { "このコマンドは ${guild.config?.textChannel("bot")?.asMention ?: "#bot"} チャンネルでのみ実行可能です。" }
-            color(HexColor.Bad)
+            color(ColorPresets.Bad)
             timestamp()
         }
     }.launchAndDelete(15, TimeUnit.SECONDS)
@@ -145,7 +145,7 @@ private fun DiscordCommandEvent.rejectCommandAvailabilityPolicy() {
         embed {
             title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
             description { "`${guild?.name}` では ${GLaDOS.jda.selfUser.asMention} のコマンド機能は利用できません。Admin または GLaDOS 開発者にご連絡ください。" }
-            color(HexColor.Bad)
+            color(ColorPresets.Bad)
             timestamp()
         }
     }.launchAndDelete(30, TimeUnit.SECONDS)
@@ -165,7 +165,7 @@ private fun DiscordCommandEvent.rejectArgumentsSizePolicy() {
                 appendln("コマンドの引数の数が一致しません。`!help` コマンドも必要に応じてご確認ください。")
                 append("実行例: `${subscription.primaryCommandSyntax} ${subscription.arguments.joinToString(" ") { "<$it>" }}`")
             }
-            color(HexColor.Bad)
+            color(ColorPresets.Bad)
             timestamp()
         }
     }.launchAndDelete(30, TimeUnit.SECONDS)
@@ -182,7 +182,7 @@ private fun DiscordCommandEvent.rejectWhileInAnyVoiceChannelConditionPolicy() {
         embed {
             title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
             description { "このコマンドはボイスチャンネルに参加中のみ実行できます。" }
-            color(HexColor.Bad)
+            color(ColorPresets.Bad)
             timestamp()
         }
     }.launchAndDelete(30, TimeUnit.SECONDS)
@@ -199,7 +199,7 @@ private fun DiscordCommandEvent.rejectWhileInSameVoiceChannelConditionPolicy() {
         embed {
             title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
             description { "このコマンドは ${GLaDOS.jda.selfUser.asMention} と同じボイスチャンネルに参加中のみ実行できます。" }
-            color(HexColor.Bad)
+            color(ColorPresets.Bad)
             timestamp()
         }
     }.launchAndDelete(30, TimeUnit.SECONDS)
@@ -217,7 +217,7 @@ private fun DiscordCommandEvent.rejectAdminOnlyPermissionPolicy() {
             embed {
                 title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
                 description { "このコマンドは `${guild?.name}` の管理者ロールが付与されているメンバーのみが実行できます。判定に問題がある場合はサーバのオーナーにご連絡ください。" }
-                color(HexColor.Bad)
+                color(ColorPresets.Bad)
                 timestamp()
             }
         }.launchAndDelete(30, TimeUnit.SECONDS)
@@ -228,7 +228,7 @@ private fun DiscordCommandEvent.rejectAdminOnlyPermissionPolicy() {
             embed {
                 title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
                 description { "このコマンドは管理者ロールが必要であるため, DMでは実行できません。" }
-                color(HexColor.Bad)
+                color(ColorPresets.Bad)
                 timestamp()
             }
         }.launchAndDelete(30, TimeUnit.SECONDS)
@@ -247,7 +247,7 @@ private fun DiscordCommandEvent.rejectMainGuildAdminOnlyPermissionPolicy() {
             embed {
                 title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
                 description { "このコマンドはメインサーバの管理者ロールが付与されているメンバーのみが実行できます。" }
-                color(HexColor.Bad)
+                color(ColorPresets.Bad)
                 timestamp()
             }
         }.launchAndDelete(30, TimeUnit.SECONDS)
@@ -258,7 +258,7 @@ private fun DiscordCommandEvent.rejectMainGuildAdminOnlyPermissionPolicy() {
             embed {
                 title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
                 description { "このコマンドはメインサーバの管理者ロールが必要であるため, DMでは実行できません。" }
-                color(HexColor.Bad)
+                color(ColorPresets.Bad)
                 timestamp()
             }
         }.launchAndDelete(30, TimeUnit.SECONDS)
@@ -276,7 +276,7 @@ private fun DiscordCommandEvent.rejectOwnerOnlyPermissionPolicy() {
         embed {
             title("コマンドエラー: `${subscription.primaryCommandSyntax}`")
             description { "このコマンドは ${GLaDOS.jda.selfUser.asMention} のオーナーのみが実行できます。" }
-            color(HexColor.Bad)
+            color(ColorPresets.Bad)
             timestamp()
         }
     }.launchAndDelete(30, TimeUnit.SECONDS)

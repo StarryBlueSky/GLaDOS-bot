@@ -22,26 +22,19 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.command.error
+package jp.nephy.glados.clients.discord.extensions
 
-import jp.nephy.glados.clients.discord.extensions.launchAndDelete
-import jp.nephy.glados.clients.discord.extensions.ColorPresets
-import jp.nephy.glados.clients.discord.extensions.messages.reply
-import net.dv8tion.jda.api.entities.Message
-import java.util.concurrent.TimeUnit
+import java.awt.Color
 
-/**
- * DiscordEmbedCommandError.
- */
-class DiscordEmbedCommandError(override val jdaMessage: Message, commandName: String, description: String): DiscordCommandError(commandName, description) {
-    init {
-        jdaMessage.reply {
-            embed {
-                title("コマンドエラー: $commandName")
-                description { description }
-                timestamp()
-                color(ColorPresets.Bad)
-            }
-        }.launchAndDelete(30, TimeUnit.SECONDS)
-    }
+object ColorPresets {
+    val Good = Color("2dbe51")
+    val Bad = Color("1e90ff")
+    val Change = Color("10993b")
+    val Neutral = Color("ffa500")
+    val Plain = Color("d8d8d8")
+}
+
+@Suppress("FUNCTIONNAME")
+fun Color(hex: String): Color {
+    return Color(hex.toInt(16))
 }

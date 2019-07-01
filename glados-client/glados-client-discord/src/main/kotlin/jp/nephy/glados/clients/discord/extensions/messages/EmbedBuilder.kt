@@ -24,6 +24,7 @@
 
 package jp.nephy.glados.clients.discord.extensions.messages
 
+import jp.nephy.glados.clients.discord.extensions.ColorPresets
 import net.dv8tion.jda.api.entities.IMentionable
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
@@ -70,7 +71,7 @@ class EmbedBuilder {
         builder.setTimestamp(temporal ?: Instant.now())
     }
 
-    fun color(color: HexColor) = apply {
+    fun color(color: ColorPresets) = apply {
         builder.setColor(color.rgb)
     }
 

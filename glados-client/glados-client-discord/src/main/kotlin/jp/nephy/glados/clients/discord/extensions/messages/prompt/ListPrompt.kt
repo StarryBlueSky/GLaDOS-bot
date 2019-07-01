@@ -29,7 +29,7 @@ import jp.nephy.glados.api.of
 import jp.nephy.glados.clients.discord.DiscordEventWaiter
 import jp.nephy.glados.clients.discord.extensions.await
 import jp.nephy.glados.clients.discord.extensions.launchAndDelete
-import jp.nephy.glados.clients.discord.extensions.messages.HexColor
+import jp.nephy.glados.clients.discord.extensions.ColorPresets
 import jp.nephy.glados.clients.discord.extensions.messages.edit
 import jp.nephy.glados.clients.discord.extensions.messages.reply
 import net.dv8tion.jda.api.entities.MessageChannel
@@ -38,7 +38,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import java.util.concurrent.TimeUnit
 
 data class ListPrompt<T: Any>(
-    val items: List<T>, val itemTitle: (T) -> String, val itemDescription: (T) -> String?, val defaultItem: T?, val title: String?, val authorName: String?, val authorUrl: String?, val authorImageUrl: String?, val description: String?, val color: HexColor?, val timeoutSecs: Long?
+    val items: List<T>, val itemTitle: (T) -> String, val itemDescription: (T) -> String?, val defaultItem: T?, val title: String?, val authorName: String?, val authorUrl: String?, val authorImageUrl: String?, val description: String?, val color: ColorPresets?, val timeoutSecs: Long?
 ) {
     data class PromptResult<T: Any>(val item: T, val event: MessageReceivedEvent)
 
@@ -91,8 +91,8 @@ data class ListPrompt<T: Any>(
             description = value.invoke()
         }
 
-        private var color: HexColor? = null
-        fun color(hexColor: HexColor) {
+        private var color: ColorPresets? = null
+        fun color(hexColor: ColorPresets) {
             color = hexColor
         }
 
