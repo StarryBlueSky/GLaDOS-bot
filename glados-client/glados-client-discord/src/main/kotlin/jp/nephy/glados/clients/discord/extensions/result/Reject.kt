@@ -31,6 +31,7 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 @UseExperimental(ExperimentalContracts::class)
+@Suppress("IMPLICIT_NOTHING_AS_TYPE_PARAMETER")
 inline fun Plugin.reject(value: Boolean, fallback: () -> Nothing) {
     contract {
         returns() implies !value
@@ -42,6 +43,7 @@ inline fun Plugin.reject(value: Boolean, fallback: () -> Nothing) {
 }
 
 @UseExperimental(ExperimentalContracts::class)
+@Suppress("IMPLICIT_NOTHING_AS_TYPE_PARAMETER")
 inline fun <T> Plugin.rejectNull(value: T?, fallback: () -> Nothing) {
     contract {
         returns() implies (value != null)
