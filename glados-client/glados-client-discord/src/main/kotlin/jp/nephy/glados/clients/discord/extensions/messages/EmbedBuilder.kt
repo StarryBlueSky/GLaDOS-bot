@@ -24,67 +24,56 @@
 
 package jp.nephy.glados.clients.discord.extensions.messages
 
-import jp.nephy.glados.clients.discord.extensions.ColorPresets
 import net.dv8tion.jda.api.entities.IMentionable
 import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.entities.MessageEmbed
+import java.awt.Color
 import java.time.Instant
 import java.time.temporal.TemporalAccessor
 
-class EmbedBuilder {
-    private val builder = EmbedBuilder()
+fun EmbedBuilder.title(title: String? = null, url: String? = null) = apply {
+    setTitle(title, url)
+}
 
-    fun title(title: String, url: String? = null) = apply {
-        builder.setTitle(title, url)
-    }
+fun EmbedBuilder.author(name: String? = null, url: String? = null, iconUrl: String? = null) = apply {
+    setAuthor(name, url, iconUrl)
+}
 
-    fun author(name: String, url: String? = null, iconUrl: String? = null) = apply {
-        builder.setAuthor(name, url, iconUrl)
-    }
+fun EmbedBuilder.asMention(target: IMentionable) = apply {
+    descriptionBuilder.insert(0, "${target.asMention}\n")
+}
 
-    private val descriptionRaw = StringBuilder()
-    fun asMention(target: IMentionable) = apply {
-        descriptionRaw.insert(0, "${target.asMention}\n")
-    }
+fun EmbedBuilder.description(description: () -> Any?) = apply {
+    descriptionBuilder.append(description().toString())
+}
 
-    fun description(description: () -> Any?) = apply {
-        descriptionRaw.append(description().toString())
-    }
+fun EmbedBuilder.descriptionBuilder(description: StringBuilder.() -> Unit) = apply {
+    description(descriptionBuilder)
+}
 
-    fun descriptionBuilder(description: StringBuilder.() -> Unit) = apply {
-        description(descriptionRaw)
-    }
+fun EmbedBuilder.image(url: String) = apply {
+    setImage(url)
+}
 
-    fun image(url: String) = apply {
-        builder.setImage(url)
-    }
+fun EmbedBuilder.thumbnail(url: String) = apply {
+    setThumbnail(url)
+}
 
-    fun thumbnail(url: String) = apply {
-        builder.setThumbnail(url)
-    }
+fun EmbedBuilder.footer(text: String? = null, iconUrl: String? = null) = apply {
+    setFooter(text, iconUrl)
+}
 
-    fun footer(text: String, iconUrl: String? = null) = apply {
-        builder.setFooter(text, iconUrl)
-    }
+fun EmbedBuilder.timestamp(temporal: TemporalAccessor? = null) = apply {
+    setTimestamp(temporal ?: Instant.now())
+}
 
-    fun timestamp(temporal: TemporalAccessor? = null) = apply {
-        builder.setTimestamp(temporal ?: Instant.now())
-    }
+fun EmbedBuilder.color(color: Color) = apply {
+    setColor(color)
+}
 
-    fun color(color: ColorPresets) = apply {
-        builder.setColor(color.rgb)
-    }
+fun EmbedBuilder.blankField(inline: Boolean = false) = apply {
+    addBlankField(inline)
+}
 
-    fun blankField(inline: Boolean = false) = apply {
-        builder.addBlankField(inline)
-    }
-
-    fun field(name: String, inline: Boolean = false, value: () -> Any) = apply {
-        builder.addField(name, value().toString(), inline)
-    }
-
-    fun build(): MessageEmbed {
-        builder.setDescription(descriptionRaw.toString().trimEnd())
-        return builder.build()
-    }
+fun EmbedBuilder.field(name: String? = null, inline: Boolean = false, value: () -> Any?) = apply {
+    addField(name, value()?.toString(), inline)
 }

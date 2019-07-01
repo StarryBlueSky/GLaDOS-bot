@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-@file:Suppress("OVERRIDE_BY_INLINE")
-
-package jp.nephy.glados.clients.discord.extensions.messages
+package jp.nephy.glados.clients.discord.extensions.messages.wrapper
 
 import jp.nephy.glados.clients.discord.extensions.launch
+import jp.nephy.glados.clients.discord.extensions.messages.asMention
+import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.IMentionable
 import net.dv8tion.jda.api.entities.Message
@@ -34,26 +34,11 @@ import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.requests.restaction.MessageAction
 
-class SendMessageWrapper(val channel: MessageChannel, val mention: IMentionable? = null): MessageWrapper {
-    var text: Message? = null
-    override inline fun text(operation: MessageBuilder.() -> Unit) {
-        text = MessageBuilder().apply(operation).apply {
-            if (mention != null) {
-                append(mention)
-            }
-        }.build()
-    }
+class SendMessageWrapper(val channel: MessageChannel, val mention: IMentionable? = null) {
+    internal var text: Message? = null
+    internal var embed: MessageEmbed? = null
 
-    var embed: MessageEmbed? = null
-    override inline fun embed(operation: EmbedBuilder.() -> Unit) {
-        embed = EmbedBuilder().apply(operation).apply {
-            if (mention != null) {
-                asMention(mention)
-            }
-        }.build()
-    }
-
-    override fun build(): MessageAction {
+    internal fun build(): MessageAction {
         return when {
             text != null -> {
                 channel.sendTyping().launch()
@@ -68,4 +53,20 @@ class SendMessageWrapper(val channel: MessageChannel, val mention: IMentionable?
             }
         }
     }
+}
+
+fun SendMessageWrapper.text(operation: MessageBuilder.() -> Unit) {
+    text = MessageBuilder().apply(operation).apply {
+        if (mention != null) {
+            append(mention)
+        }
+    }.build()
+}
+
+fun SendMessageWrapper.embed(operation: EmbedBuilder.() -> Unit) {
+    embed = EmbedBuilder().apply(operation).apply {
+        if (mention != null) {
+            asMention(mention)
+        }
+    }.build()
 }

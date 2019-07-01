@@ -29,8 +29,9 @@ package jp.nephy.glados.clients.discord.extensions.result
 import jp.nephy.glados.clients.discord.command.events.DiscordCommandEvent
 import jp.nephy.glados.clients.discord.command.primaryCommandSyntax
 import jp.nephy.glados.clients.discord.extensions.ColorPresets
-import jp.nephy.glados.clients.discord.extensions.messages.message
-import jp.nephy.glados.clients.discord.extensions.messages.reply
+import jp.nephy.glados.clients.discord.extensions.messages.*
+import jp.nephy.glados.clients.discord.extensions.messages.wrapper.embed
+import jp.nephy.glados.clients.discord.extensions.messages.wrapper.text
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.requests.restaction.MessageAction
 
@@ -46,7 +47,7 @@ fun Message.embedResult(commandName: String, description: () -> String): Message
 }
 
 fun Message.simpleResult(description: () -> String): MessageAction {
-    return message {
+    return channel.message {
         text {
             append("${author.asMention} ${description.invoke()}")
         }

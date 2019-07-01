@@ -30,16 +30,16 @@ import jp.nephy.glados.clients.discord.DiscordEventWaiter
 import jp.nephy.glados.clients.discord.extensions.await
 import jp.nephy.glados.clients.discord.extensions.launch
 import jp.nephy.glados.clients.discord.extensions.launchAndDelete
-import jp.nephy.glados.clients.discord.extensions.ColorPresets
-import jp.nephy.glados.clients.discord.extensions.messages.edit
-import jp.nephy.glados.clients.discord.extensions.messages.reply
+import jp.nephy.glados.clients.discord.extensions.messages.*
+import jp.nephy.glados.clients.discord.extensions.messages.wrapper.embed
 import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
+import java.awt.Color
 import java.util.concurrent.TimeUnit
 
 data class EmojiPrompt<E>(
-    val emojis: List<E>, val emojiSymbol: (E) -> String, val emojiTitle: (E) -> String, val emojiDescription: (E) -> String?, val title: String?, val authorName: String?, val authorUrl: String?, val authorImageUrl: String?, val description: String?, val color: ColorPresets?, val timeoutSecs: Long?
+    val emojis: List<E>, val emojiSymbol: (E) -> String, val emojiTitle: (E) -> String, val emojiDescription: (E) -> String?, val title: String?, val authorName: String?, val authorUrl: String?, val authorImageUrl: String?, val description: String?, val color: Color?, val timeoutSecs: Long?
 ) {
     data class Emoji(val symbol: String, val name: String, val description: String?)
 
@@ -106,8 +106,8 @@ data class EmojiPrompt<E>(
             description = value.invoke()
         }
 
-        private var color: ColorPresets? = null
-        fun color(hexColor: ColorPresets) {
+        private var color: Color? = null
+        fun color(hexColor: Color) {
             color = hexColor
         }
 

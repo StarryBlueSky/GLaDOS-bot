@@ -35,7 +35,8 @@ import jp.nephy.glados.clients.discord.config.config
 import jp.nephy.glados.clients.discord.config.textChannel
 import jp.nephy.glados.clients.discord.extensions.*
 import jp.nephy.glados.clients.discord.extensions.ColorPresets
-import jp.nephy.glados.clients.discord.extensions.messages.reply
+import jp.nephy.glados.clients.discord.extensions.messages.*
+import jp.nephy.glados.clients.discord.extensions.messages.wrapper.embed
 import jp.nephy.glados.clients.discord.jda
 import jp.nephy.jsonkt.delegation.*
 import net.dv8tion.jda.api.entities.TextChannel

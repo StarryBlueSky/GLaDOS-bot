@@ -26,7 +26,8 @@ package jp.nephy.glados.clients.discord.command.error
 
 import jp.nephy.glados.clients.discord.extensions.launchAndDelete
 import jp.nephy.glados.clients.discord.extensions.ColorPresets
-import jp.nephy.glados.clients.discord.extensions.messages.reply
+import jp.nephy.glados.clients.discord.extensions.messages.*
+import jp.nephy.glados.clients.discord.extensions.messages.wrapper.embed
 import net.dv8tion.jda.api.entities.Message
 import java.util.concurrent.TimeUnit
 
