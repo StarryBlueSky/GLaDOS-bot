@@ -3,8 +3,8 @@
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.format.DateTimeFormatter
+import java.time.ZonedDateTime
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -152,7 +152,7 @@ allprojects {
             version.apply {
                 name = project.version.toString()
                 desc = "${project.name} ${project.version}"
-                released = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ").format(Date())
+                released = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZZ").format(ZonedDateTime.now())
                 vcsTag = project.version.toString()
             }
         }
