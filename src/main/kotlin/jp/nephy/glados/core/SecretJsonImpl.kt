@@ -43,7 +43,7 @@ internal class SecretJsonImpl(override val json: JsonObject): SecretJson {
             if (!Files.exists(secretJsonPath)) {
                 logger.info { "$secretJsonPath は存在しません。空の JSON を新たに作成します。" }
 
-                val defaultJson = this::class.java.classLoader.getResource(secretJsonPath.fileName.toString()).readText()
+                val defaultJson = this::class.java.classLoader.getResource(secretJsonPath.fileName.toString())!!.readText()
                 secretJsonPath.toFile().writeText(defaultJson)
             }
             

@@ -29,11 +29,10 @@ import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.of
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.util.concurrent.ConcurrentHashMap
 
 internal object AttributeMapImpl: AttributeMap {
     private val logger = Logger.of("GLaDOS.AttributeMap")
-    private val map = ConcurrentHashMap<String, Any>()
+    private val map = mutableMapOf<String, Any>()
     private val mutex = Mutex()
     
     @Suppress("UNCHECKED_CAST")
@@ -43,9 +42,9 @@ internal object AttributeMapImpl: AttributeMap {
         }
 
         return if (attribute != null) {
-            attribute as? T ?: throw IllegalArgumentException("Attribute[\"$key\"] type is ${attribute::class.qualifiedName}.")
+            attribute as? T ?: throw TypeCastException("Attribute[\"$key\"] の型は ${attribute::class.qualifiedName} です。")
         } else {
-            throw UninitializedPropertyAccessException("Attribute[\"$key\"] has not been initialized yet.")
+            throw UninitializedPropertyAccessException("Attribute[\"$key\"] は初期化されていません。")
         }
     }
 
@@ -62,7 +61,7 @@ internal object AttributeMapImpl: AttributeMap {
 
     override suspend fun has(key: String): Boolean {
         return mutex.withLock {
-            map.containsKey(key)
+            key in map
         }
     }
 
