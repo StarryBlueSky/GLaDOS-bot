@@ -30,6 +30,7 @@ import jp.nephy.glados.api.Event
 import jp.nephy.glados.api.Subscription
 import jp.nephy.glados.api.annotations.DisabledFeature
 import jp.nephy.glados.api.annotations.ExperimentalFeature
+import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KClass
 import kotlin.reflect.full.callSuspend
 import kotlin.reflect.full.findAnnotation
@@ -80,7 +81,9 @@ suspend operator fun <E: Event> Subscription<*, E>.invoke(event: E, skipLogging:
     }.onSuccess {
         onSuccess(event)
     }.onFailure {
-        onFailure(it, event)
+        val throwable = (it as? InvocationTargetException)?.targetException ?: it
+
+        onFailure(throwable, event)
     }
 }
 

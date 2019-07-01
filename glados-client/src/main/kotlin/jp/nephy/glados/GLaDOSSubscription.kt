@@ -39,10 +39,12 @@ abstract class GLaDOSSubscription<A: Annotation, E: Event>: Subscription<A, E> {
         // filename requires Plugin
         Logger.of("GLaDOS.Plugin.$fullName")
     }
+    private val errorLogger by lazy {
+        Logger.of("GLaDOS.Plugin.$fullName", slackChannel = "#glados-error")
+    }
     
     override fun onFailure(throwable: Throwable, event: E) {
-        val t = (throwable as? InvocationTargetException)?.targetException ?: throwable
-        
-        logger.error(t) { "実行中に例外が発生しました。(${event::class.simpleName})" }
+        logger.error(throwable) { "実行中に例外が発生しました。(${event::class.simpleName})" }
+        errorLogger.error(throwable) { "実行中に例外が発生しました。(${event::class.simpleName})" }
     }
 }
