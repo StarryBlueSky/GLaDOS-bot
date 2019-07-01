@@ -168,8 +168,6 @@ dependencies {
 
     implementation(kotlin("reflect"))
 
-    implementation("io.ktor:ktor-client-apache:1.2.2")
-
     implementation("io.methvin:directory-watcher:0.9.4")
 
     implementation("ch.qos.logback:logback-core:1.2.3")
