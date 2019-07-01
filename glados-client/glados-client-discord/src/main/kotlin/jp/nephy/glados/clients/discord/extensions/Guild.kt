@@ -24,8 +24,12 @@
 
 package jp.nephy.glados.clients.discord.extensions
 
+import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.GuildChannel
+import net.dv8tion.jda.api.entities.IPermissionHolder
 import net.dv8tion.jda.api.events.GenericEvent
+import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction
 
 val GenericEvent.guild: Guild?
     get() = try {
@@ -33,3 +37,7 @@ val GenericEvent.guild: Guild?
     } catch (e: NoSuchMethodException) {
         null
     }
+
+fun GuildChannel.createPermissionOverride(permissionHolder: IPermissionHolder, allow: List<Permission> = emptyList(), deny: List<Permission> = emptyList()): PermissionOverrideAction {
+    return createPermissionOverride(permissionHolder).setPermissions(allow, deny)
+}
