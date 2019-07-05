@@ -38,12 +38,12 @@ fun EmbedBuilder.author(name: String? = null, url: String? = null, iconUrl: Stri
     setAuthor(name, url, iconUrl)
 }
 
-fun EmbedBuilder.asMention(target: IMentionable) = apply {
+fun EmbedBuilder.mention(target: IMentionable) = apply {
     descriptionBuilder.insert(0, "${target.asMention}\n")
 }
 
-fun EmbedBuilder.description(description: () -> Any?) = apply {
-    descriptionBuilder.append(description().toString())
+fun EmbedBuilder.description(description: () -> String) = apply {
+    descriptionBuilder.append(description())
 }
 
 fun EmbedBuilder.descriptionBuilder(description: StringBuilder.() -> Unit) = apply {

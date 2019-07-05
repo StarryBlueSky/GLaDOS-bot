@@ -22,31 +22,27 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.extensions.messages.wrapper
+@file:Suppress("OVERRIDE_BY_INLINE")
 
-import jp.nephy.glados.clients.discord.extensions.launch
-import jp.nephy.glados.clients.discord.extensions.messages.asMention
+package jp.nephy.glados.clients.discord.extensions.messages
+
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.MessageBuilder
-import net.dv8tion.jda.api.entities.IMentionable
 import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.requests.restaction.MessageAction
 
-class SendMessageWrapper(val channel: MessageChannel, val mention: IMentionable? = null) {
-    internal var text: Message? = null
+class EditMessageWrapper(private val target: Message) {
+    internal var message: Message? = null
     internal var embed: MessageEmbed? = null
 
     internal fun build(): MessageAction {
         return when {
-            text != null -> {
-                channel.sendTyping().launch()
-                channel.sendMessage(text!!)
+            message != null -> {
+                target.editMessage(message!!)
             }
             embed != null -> {
-                channel.sendTyping().launch()
-                channel.sendMessage(embed!!)
+                target.editMessage(embed!!)
             }
             else -> {
                 throw IllegalStateException()
@@ -55,18 +51,10 @@ class SendMessageWrapper(val channel: MessageChannel, val mention: IMentionable?
     }
 }
 
-fun SendMessageWrapper.text(operation: MessageBuilder.() -> Unit) {
-    text = MessageBuilder().apply(operation).apply {
-        if (mention != null) {
-            append(mention)
-        }
-    }.build()
+fun EditMessageWrapper.text(operation: MessageBuilder.() -> Unit) {
+    message = MessageBuilder().apply(operation).build()
 }
 
-fun SendMessageWrapper.embed(operation: EmbedBuilder.() -> Unit) {
-    embed = EmbedBuilder().apply(operation).apply {
-        if (mention != null) {
-            asMention(mention)
-        }
-    }.build()
+fun EditMessageWrapper.embed(operation: EmbedBuilder.() -> Unit) {
+    embed = EmbedBuilder().apply(operation).build()
 }

@@ -1,7 +1,6 @@
 package jp.nephy.glados.clients.discord.extensions.messages
 
 import jp.nephy.glados.clients.discord.command.events.DiscordCommandEvent
-import jp.nephy.glados.clients.discord.extensions.messages.wrapper.SendMessageWrapper
 import net.dv8tion.jda.api.entities.IMentionable
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageChannel

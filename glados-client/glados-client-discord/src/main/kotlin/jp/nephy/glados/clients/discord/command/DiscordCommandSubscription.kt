@@ -34,7 +34,7 @@ import jp.nephy.glados.clients.discord.command.events.argumentString
 import jp.nephy.glados.clients.discord.extensions.launchAndDelete
 import jp.nephy.glados.clients.discord.extensions.ColorPresets
 import jp.nephy.glados.clients.discord.extensions.messages.*
-import jp.nephy.glados.clients.discord.extensions.messages.wrapper.embed
+import jp.nephy.glados.clients.discord.extensions.messages.embed
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KFunction
 

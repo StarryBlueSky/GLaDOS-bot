@@ -30,7 +30,7 @@ import jp.nephy.glados.clients.discord.DiscordEventWaiter
 import jp.nephy.glados.clients.discord.extensions.await
 import jp.nephy.glados.clients.discord.extensions.launchAndDelete
 import jp.nephy.glados.clients.discord.extensions.messages.*
-import jp.nephy.glados.clients.discord.extensions.messages.wrapper.embed
+import jp.nephy.glados.clients.discord.extensions.messages.embed
 import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent

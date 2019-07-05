@@ -36,7 +36,7 @@ import jp.nephy.glados.clients.discord.command.policy.checkAllPolicies
 import jp.nephy.glados.clients.discord.extensions.awaitAndDelete
 import jp.nephy.glados.clients.discord.extensions.ColorPresets
 import jp.nephy.glados.clients.discord.extensions.messages.*
-import jp.nephy.glados.clients.discord.extensions.messages.wrapper.embed
+import jp.nephy.glados.clients.discord.extensions.messages.embed
 import kotlinx.coroutines.launch
 import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
