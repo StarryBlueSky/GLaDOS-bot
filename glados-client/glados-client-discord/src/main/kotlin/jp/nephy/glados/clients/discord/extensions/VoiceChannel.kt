@@ -29,12 +29,15 @@ package jp.nephy.glados.clients.discord.extensions
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.VoiceChannel
 
-fun Guild.joinVoiceChannel(channel: VoiceChannel) {
-    audioManager.openAudioConnection(channel)
+fun VoiceChannel.connect() {
+    guild.audioManager.openAudioConnection(this)
 }
 
 val Guild.currentVoiceChannel: VoiceChannel?
     get() = audioManager.connectedChannel ?: audioManager.queuedAudioConnection
 
-val VoiceChannel.isNoOneExceptSelfUser: Boolean
-    get() = members.count { !it.user.isSelfUser } == 0
+val VoiceChannel.isEmpty: Boolean
+    get() = members.isEmpty()
+
+val VoiceChannel.isEmptyExceptSelfUser: Boolean
+    get() = members.none { !it.user.isSelfUser }
