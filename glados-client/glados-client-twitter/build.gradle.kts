@@ -4,7 +4,7 @@ repositories {
 }
 
 dependencies {
-    api("jp.nephy:penicillin:4.2.3-eap-20")
+    api("jp.nephy:penicillin:4.2.3-eap-24")
     
     api("io.ktor:ktor-client-apache:1.2.2")
     api("io.ktor:ktor-client-cio:1.2.2")
