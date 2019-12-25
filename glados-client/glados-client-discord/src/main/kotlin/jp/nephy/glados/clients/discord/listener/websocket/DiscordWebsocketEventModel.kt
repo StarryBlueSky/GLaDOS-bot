@@ -34,6 +34,11 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.category.update
 import jp.nephy.glados.clients.discord.listener.websocket.events.category.update.DiscordCategoryUpdatePositionEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.private.DiscordPrivateChannelCreateEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.private.DiscordPrivateChannelDeleteEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.store.DiscordStoreChannelCreateEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.store.DiscordStoreChannelDeleteEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.store.update.DiscordStoreChannelUpdateNameEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.store.update.DiscordStoreChannelUpdatePermissionsEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.store.update.DiscordStoreChannelUpdatePositionEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.DiscordTextChannelCreateEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.DiscordTextChannelDeleteEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.update.*
@@ -46,7 +51,12 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.emote.update.Di
 import jp.nephy.glados.clients.discord.listener.websocket.events.emote.update.DiscordEmoteUpdateRolesEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.general.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.guild.*
-import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.DiscordGuildMemberJoinEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.DiscordGuildMemberLeaveEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.DiscordGuildMemberRoleAddEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.DiscordGuildMemberRoleRemoveEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.update.DiscordGuildMemberUpdateBoostTimeEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.update.DiscordGuildMemberUpdateNicknameEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.guild.update.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.guild.voice.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.message.*
@@ -77,6 +87,8 @@ interface DiscordWebsocketEventModel: EventModel {
     suspend fun onDiscordStatusChange(event: DiscordStatusChangeEvent) {}
     suspend fun onDiscordException(event: DiscordExceptionEvent) {}
     suspend fun onDiscordHttpRequest(event: DiscordHttpRequestEvent) {}
+    suspend fun onDiscordRawGateway(event: DiscordRawGatewayEvent) {}
+    suspend fun onDiscordGatewayPing(event: DiscordGatewayPingEvent) {}
     
     suspend fun onDiscordUserUpdateName(event: DiscordUserUpdateNameEvent) {}
     suspend fun onDiscordUserUpdateDiscriminator(event: DiscordUserUpdateDiscriminatorEvent) {}
@@ -135,7 +147,13 @@ interface DiscordWebsocketEventModel: EventModel {
     suspend fun onDiscordVoiceChannelUpdatePermissions(event: DiscordVoiceChannelUpdatePermissionsEvent) {}
     suspend fun onDiscordVoiceChannelUpdateParent(event: DiscordVoiceChannelUpdateParentEvent) {}
     suspend fun onDiscordVoiceChannelCreate(event: DiscordVoiceChannelCreateEvent) {}
-    
+
+    suspend fun onDiscordStoreChannelDelete(event: DiscordStoreChannelDeleteEvent) {}
+    suspend fun onDiscordStoreChannelUpdateName(event: DiscordStoreChannelUpdateNameEvent) {}
+    suspend fun onDiscordStoreChannelUpdatePosition(event: DiscordStoreChannelUpdatePositionEvent) {}
+    suspend fun onDiscordStoreChannelUpdatePermissions(event: DiscordStoreChannelUpdatePermissionsEvent) {}
+    suspend fun onDiscordStoreChannelCreate(event: DiscordStoreChannelCreateEvent) {}
+
     suspend fun onDiscordCategoryDelete(event: DiscordCategoryDeleteEvent) {}
     suspend fun onDiscordCategoryUpdateName(event: DiscordCategoryUpdateNameEvent) {}
     suspend fun onDiscordCategoryUpdatePosition(event: DiscordCategoryUpdatePositionEvent) {}
@@ -166,12 +184,20 @@ interface DiscordWebsocketEventModel: EventModel {
     suspend fun onDiscordGuildUpdateSplash(event: DiscordGuildUpdateSplashEvent) {}
     suspend fun onDiscordGuildUpdateVerificationLevel(event: DiscordGuildUpdateVerificationLevelEvent) {}
     suspend fun onDiscordGuildUpdateFeatures(event: DiscordGuildUpdateFeaturesEvent) {}
+    suspend fun onDiscordGuildUpdateVanityCode(event: DiscordGuildUpdateVanityCodeEvent) {}
+    suspend fun onDiscordGuildUpdateBanner(event: DiscordGuildUpdateBannerEvent) {}
+    suspend fun onDiscordGuildUpdateDescription(event: DiscordGuildUpdateDescriptionEvent) {}
+    suspend fun onDiscordGuildUpdateBoostTier(event: DiscordGuildUpdateBoostTierEvent) {}
+    suspend fun onDiscordGuildUpdateBoostCount(event: DiscordGuildUpdateBoostCountEvent) {}
+    suspend fun onDiscordGuildUpdateMaxMembers(event: DiscordGuildUpdateMaxMembersEvent) {}
+    suspend fun onDiscordGuildUpdateMaxPresences(event: DiscordGuildUpdateMaxPresencesEvent) {}
     
     suspend fun onDiscordGuildMemberJoin(event: DiscordGuildMemberJoinEvent) {}
     suspend fun onDiscordGuildMemberLeave(event: DiscordGuildMemberLeaveEvent) {}
     suspend fun onDiscordGuildMemberRoleAdd(event: DiscordGuildMemberRoleAddEvent) {}
     suspend fun onDiscordGuildMemberRoleRemove(event: DiscordGuildMemberRoleRemoveEvent) {}
     suspend fun onDiscordGuildMemberUpdateNickname(event: DiscordGuildMemberUpdateNicknameEvent) {}
+    suspend fun onDiscordGuildMemberUpdateBoostTime(event: DiscordGuildMemberUpdateBoostTimeEvent) {}
     
     suspend fun onDiscordGuildVoiceUpdate(event: DiscordGuildVoiceUpdateEvent) {}
     suspend fun onDiscordGuildVoiceJoin(event: DiscordGuildVoiceJoinEvent) {}

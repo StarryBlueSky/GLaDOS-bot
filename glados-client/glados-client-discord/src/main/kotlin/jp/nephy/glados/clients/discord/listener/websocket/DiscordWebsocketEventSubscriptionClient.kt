@@ -38,6 +38,11 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.category.update
 import jp.nephy.glados.clients.discord.listener.websocket.events.category.update.DiscordCategoryUpdatePositionEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.private.DiscordPrivateChannelCreateEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.private.DiscordPrivateChannelDeleteEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.store.DiscordStoreChannelCreateEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.store.DiscordStoreChannelDeleteEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.store.update.DiscordStoreChannelUpdateNameEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.store.update.DiscordStoreChannelUpdatePermissionsEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.channel.store.update.DiscordStoreChannelUpdatePositionEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.DiscordTextChannelCreateEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.DiscordTextChannelDeleteEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.channel.text.update.*
@@ -50,7 +55,12 @@ import jp.nephy.glados.clients.discord.listener.websocket.events.emote.update.Di
 import jp.nephy.glados.clients.discord.listener.websocket.events.emote.update.DiscordEmoteUpdateRolesEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.general.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.guild.*
-import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.*
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.DiscordGuildMemberJoinEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.DiscordGuildMemberLeaveEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.DiscordGuildMemberRoleAddEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.DiscordGuildMemberRoleRemoveEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.update.DiscordGuildMemberUpdateBoostTimeEvent
+import jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.update.DiscordGuildMemberUpdateNicknameEvent
 import jp.nephy.glados.clients.discord.listener.websocket.events.guild.update.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.guild.voice.*
 import jp.nephy.glados.clients.discord.listener.websocket.events.message.*
@@ -82,6 +92,11 @@ import net.dv8tion.jda.api.events.channel.category.update.CategoryUpdatePermissi
 import net.dv8tion.jda.api.events.channel.category.update.CategoryUpdatePositionEvent
 import net.dv8tion.jda.api.events.channel.priv.PrivateChannelCreateEvent
 import net.dv8tion.jda.api.events.channel.priv.PrivateChannelDeleteEvent
+import net.dv8tion.jda.api.events.channel.store.StoreChannelCreateEvent
+import net.dv8tion.jda.api.events.channel.store.StoreChannelDeleteEvent
+import net.dv8tion.jda.api.events.channel.store.update.StoreChannelUpdateNameEvent
+import net.dv8tion.jda.api.events.channel.store.update.StoreChannelUpdatePermissionsEvent
+import net.dv8tion.jda.api.events.channel.store.update.StoreChannelUpdatePositionEvent
 import net.dv8tion.jda.api.events.channel.text.TextChannelCreateEvent
 import net.dv8tion.jda.api.events.channel.text.TextChannelDeleteEvent
 import net.dv8tion.jda.api.events.channel.text.update.*
@@ -97,6 +112,7 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent
+import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent
 import net.dv8tion.jda.api.events.guild.update.*
 import net.dv8tion.jda.api.events.guild.voice.*
@@ -163,6 +179,8 @@ object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<Discord
         override fun onReady(event: ReadyEvent) {
             if (!initialized) {
                 event.jda.presence.setStatus(OnlineStatus.ONLINE)
+                event.jda.presence.setStatus(null)
+
                 initialized = true
             }
 
@@ -210,6 +228,18 @@ object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<Discord
         override fun onHttpRequest(event: HttpRequestEvent) {
             runEvent {
                 DiscordHttpRequestEvent(it, event)
+            }
+        }
+
+        override fun onGatewayPing(event: GatewayPingEvent) {
+            runEvent {
+                DiscordGatewayPingEvent(it, event)
+            }
+        }
+
+        override fun onRawGateway(event: RawGatewayEvent) {
+            runEvent {
+                DiscordRawGatewayEvent(it, event)
             }
         }
 
@@ -471,6 +501,36 @@ object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<Discord
             }
         }
 
+        override fun onStoreChannelCreate(event: StoreChannelCreateEvent) {
+            runEvent {
+                DiscordStoreChannelCreateEvent(it, event)
+            }
+        }
+
+        override fun onStoreChannelDelete(event: StoreChannelDeleteEvent) {
+            runEvent {
+                DiscordStoreChannelDeleteEvent(it, event)
+            }
+        }
+
+        override fun onStoreChannelUpdateName(event: StoreChannelUpdateNameEvent) {
+            runEvent {
+                DiscordStoreChannelUpdateNameEvent(it, event)
+            }
+        }
+
+        override fun onStoreChannelUpdatePermissions(event: StoreChannelUpdatePermissionsEvent) {
+            runEvent {
+                DiscordStoreChannelUpdatePermissionsEvent(it, event)
+            }
+        }
+
+        override fun onStoreChannelUpdatePosition(event: StoreChannelUpdatePositionEvent) {
+            runEvent {
+                DiscordStoreChannelUpdatePositionEvent(it, event)
+            }
+        }
+
         override fun onVoiceChannelCreate(event: VoiceChannelCreateEvent) {
             runEvent {
                 DiscordVoiceChannelCreateEvent(it, event)
@@ -684,6 +744,54 @@ object DiscordWebsocketEventSubscriptionClient: GLaDOSSubscriptionClient<Discord
         override fun onGuildUpdateFeatures(event: GuildUpdateFeaturesEvent) {
             runEvent {
                 DiscordGuildUpdateFeaturesEvent(it, event)
+            }
+        }
+
+        override fun onGuildUpdateBanner(event: GuildUpdateBannerEvent) {
+            runEvent {
+                DiscordGuildUpdateBannerEvent(it, event)
+            }
+        }
+
+        override fun onGuildUpdateBoostCount(event: GuildUpdateBoostCountEvent) {
+            runEvent {
+                DiscordGuildUpdateBoostCountEvent(it, event)
+            }
+        }
+
+        override fun onGuildUpdateBoostTier(event: GuildUpdateBoostTierEvent) {
+            runEvent {
+                DiscordGuildUpdateBoostTierEvent(it, event)
+            }
+        }
+
+        override fun onGuildMemberUpdateBoostTime(event: GuildMemberUpdateBoostTimeEvent) {
+            runEvent {
+                DiscordGuildMemberUpdateBoostTimeEvent(it, event)
+            }
+        }
+
+        override fun onGuildUpdateDescription(event: GuildUpdateDescriptionEvent) {
+            runEvent {
+                DiscordGuildUpdateDescriptionEvent(it, event)
+            }
+        }
+
+        override fun onGuildUpdateMaxMembers(event: GuildUpdateMaxMembersEvent) {
+            runEvent {
+                DiscordGuildUpdateMaxMembersEvent(it, event)
+            }
+        }
+
+        override fun onGuildUpdateMaxPresences(event: GuildUpdateMaxPresencesEvent) {
+            runEvent {
+                DiscordGuildUpdateMaxPresencesEvent(it, event)
+            }
+        }
+
+        override fun onGuildUpdateVanityCode(event: GuildUpdateVanityCodeEvent) {
+            runEvent {
+                DiscordGuildUpdateVanityCodeEvent(it, event)
             }
         }
 

@@ -22,22 +22,11 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.message.guild
+package jp.nephy.glados.clients.discord.listener.websocket.events.channel.store
 
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.entities.Member
-import net.dv8tion.jda.api.entities.MessageReaction
-import net.dv8tion.jda.api.entities.User
-import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent
+import net.dv8tion.jda.api.entities.StoreChannel
+import net.dv8tion.jda.api.events.channel.store.GenericStoreChannelEvent
 
-val DiscordWebsocketEventBase<out GenericGuildMessageReactionEvent>.user: User?
-    get() = jdaEvent.user
-
-val DiscordWebsocketEventBase<out GenericGuildMessageReactionEvent>.member: Member?
-    get() = jdaEvent.member
-
-val DiscordWebsocketEventBase<out GenericGuildMessageReactionEvent>.reaction: MessageReaction
-    get() = jdaEvent.reaction
-
-val DiscordWebsocketEventBase<out GenericGuildMessageReactionEvent>.reactionEmote: MessageReaction.ReactionEmote
-    get() = jdaEvent.reactionEmote
+val DiscordWebsocketEventBase<out GenericStoreChannelEvent>.channel: StoreChannel
+    get() = jdaEvent.channel

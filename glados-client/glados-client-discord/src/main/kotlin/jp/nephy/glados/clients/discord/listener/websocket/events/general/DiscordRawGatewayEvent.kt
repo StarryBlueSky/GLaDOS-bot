@@ -22,22 +22,23 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.message.guild
+package jp.nephy.glados.clients.discord.listener.websocket.events.general
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.entities.Member
-import net.dv8tion.jda.api.entities.MessageReaction
-import net.dv8tion.jda.api.entities.User
-import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent
+import net.dv8tion.jda.api.events.RawGatewayEvent
+import net.dv8tion.jda.api.utils.data.DataObject
 
-val DiscordWebsocketEventBase<out GenericGuildMessageReactionEvent>.user: User?
-    get() = jdaEvent.user
+data class DiscordRawGatewayEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
+    override val jdaEvent: RawGatewayEvent
+): DiscordWebsocketEventBase<RawGatewayEvent>
 
-val DiscordWebsocketEventBase<out GenericGuildMessageReactionEvent>.member: Member?
-    get() = jdaEvent.member
+val DiscordRawGatewayEvent.`package`: DataObject
+    get() = jdaEvent.`package`
 
-val DiscordWebsocketEventBase<out GenericGuildMessageReactionEvent>.reaction: MessageReaction
-    get() = jdaEvent.reaction
+val DiscordRawGatewayEvent.type: String
+    get() = jdaEvent.type
 
-val DiscordWebsocketEventBase<out GenericGuildMessageReactionEvent>.reactionEmote: MessageReaction.ReactionEmote
-    get() = jdaEvent.reactionEmote
+val DiscordRawGatewayEvent.payload: DataObject
+    get() = jdaEvent.payload

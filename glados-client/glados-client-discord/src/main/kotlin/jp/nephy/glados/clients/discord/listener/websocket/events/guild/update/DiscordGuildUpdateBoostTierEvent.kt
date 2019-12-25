@@ -22,15 +22,13 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.api
+package jp.nephy.glados.clients.discord.listener.websocket.events.guild.update
 
-import java.nio.file.Path
-import kotlin.reflect.KClass
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
+import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
+import net.dv8tion.jda.api.events.guild.update.GuildUpdateBoostTierEvent
 
-interface ClassManager<T: Any> {
-    fun loadAll()
-
-    fun load(jarPath: Path)
-
-    fun load(kotlinClass: KClass<out T>)
-}
+data class DiscordGuildUpdateBoostTierEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
+    override val jdaEvent: GuildUpdateBoostTierEvent
+): DiscordWebsocketEventBase<GuildUpdateBoostTierEvent>

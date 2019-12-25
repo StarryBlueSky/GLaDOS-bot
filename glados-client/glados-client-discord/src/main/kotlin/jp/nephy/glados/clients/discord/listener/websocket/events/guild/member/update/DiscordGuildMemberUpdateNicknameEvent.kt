@@ -22,22 +22,19 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.message.guild
+package jp.nephy.glados.clients.discord.listener.websocket.events.guild.member.update
 
+import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.entities.Member
-import net.dv8tion.jda.api.entities.MessageReaction
-import net.dv8tion.jda.api.entities.User
-import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent
+import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent
 
-val DiscordWebsocketEventBase<out GenericGuildMessageReactionEvent>.user: User?
-    get() = jdaEvent.user
+data class DiscordGuildMemberUpdateNicknameEvent(
+    override val subscription: DiscordWebsocketEventSubscription,
+    override val jdaEvent: GuildMemberUpdateNicknameEvent
+): DiscordWebsocketEventBase<GuildMemberUpdateNicknameEvent>
 
-val DiscordWebsocketEventBase<out GenericGuildMessageReactionEvent>.member: Member?
-    get() = jdaEvent.member
+val DiscordGuildMemberUpdateNicknameEvent.new: String?
+    get() = jdaEvent.newNickname
 
-val DiscordWebsocketEventBase<out GenericGuildMessageReactionEvent>.reaction: MessageReaction
-    get() = jdaEvent.reaction
-
-val DiscordWebsocketEventBase<out GenericGuildMessageReactionEvent>.reactionEmote: MessageReaction.ReactionEmote
-    get() = jdaEvent.reactionEmote
+val DiscordGuildMemberUpdateNicknameEvent.old: String?
+    get() = jdaEvent.oldNickname

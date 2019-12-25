@@ -22,19 +22,13 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.listener.websocket.events.guild.member
+package jp.nephy.glados.clients.discord.listener.websocket.events.guild.update
 
 import jp.nephy.glados.clients.discord.listener.websocket.DiscordWebsocketEventSubscription
 import jp.nephy.glados.clients.discord.listener.websocket.events.DiscordWebsocketEventBase
-import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent
+import net.dv8tion.jda.api.events.guild.update.GuildUpdateBannerEvent
 
-data class DiscordGuildMemberUpdateNicknameEvent(
+data class DiscordGuildUpdateBannerEvent(
     override val subscription: DiscordWebsocketEventSubscription,
-    override val jdaEvent: GuildMemberUpdateNicknameEvent
-): DiscordWebsocketEventBase<GuildMemberUpdateNicknameEvent>
-
-val DiscordGuildMemberUpdateNicknameEvent.new: String?
-    get() = jdaEvent.newNickname
-
-val DiscordGuildMemberUpdateNicknameEvent.old: String?
-    get() = jdaEvent.oldNickname
+    override val jdaEvent: GuildUpdateBannerEvent
+): DiscordWebsocketEventBase<GuildUpdateBannerEvent>
