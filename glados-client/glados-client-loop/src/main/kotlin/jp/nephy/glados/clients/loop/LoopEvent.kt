@@ -33,6 +33,6 @@ data class LoopEvent(
     /**
      * Loop count.
      */
-    val count: Int,
+    val count: Long,
     override val subscription: LoopSubscription
 ): Event

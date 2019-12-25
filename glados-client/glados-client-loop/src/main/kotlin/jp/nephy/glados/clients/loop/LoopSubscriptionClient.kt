@@ -78,31 +78,31 @@ object LoopSubscriptionClient: GLaDOSSubscriptionClient<Loop, LoopEvent, LoopSub
     }
 
     private val jobs = ConcurrentHashMap<LoopSubscription, Job>()
-    
+
     private fun LoopSubscription.start() {
+        // TODO
         jobs[this] = launch {
-            var count = 0
+            var count = 0L
+            val event = LoopEvent(count, this@start)
 
             while (isActive) {
-                if (count == Int.MAX_VALUE) {
+                if (count == Long.MAX_VALUE) {
                     logger.warn { "ループ回数が上限に達したため, 終了しました。" }
                     break
                 }
 
                 try {
-                    val event = LoopEvent(++count, this@start)
-
-                    invoke(event)
+                    invoke(event.copy(count=++count))
                     delay(intervalMillis)
                 } catch (e: CancellationException) {
                     break
                 }
             }
 
-            logger.trace { "終了しました。" }
+            logger.debug { "終了しました。" }
         }
 
-        logger.trace { "開始しました。" }
+        logger.debug { "開始しました。" }
     }
     
     private fun LoopSubscription.stop() {
