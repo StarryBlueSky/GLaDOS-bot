@@ -167,7 +167,7 @@ data class EmojiPrompt<E>(
 
             return runCatching {
                 val event = DiscordEventWaiter.waitCatching<MessageReactionAddEvent>(prompt.timeoutSecs, TimeUnit.SECONDS) {
-                    it.user.idLong == target.idLong && it.messageIdLong == promptMessage.idLong && prompt.emojis.any { emoji -> prompt.emojiSymbol(emoji) == it.reactionEmote.name }
+                    it.user?.idLong == target.idLong && it.messageIdLong == promptMessage.idLong && prompt.emojis.any { emoji -> prompt.emojiSymbol(emoji) == it.reactionEmote.name }
                 }.getOrThrow()
                 val selected = prompt.emojis.find { emoji -> prompt.emojiSymbol(emoji) == event.reactionEmote.name }!!
 
