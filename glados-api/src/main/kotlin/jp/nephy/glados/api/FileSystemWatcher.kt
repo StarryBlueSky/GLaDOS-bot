@@ -24,7 +24,7 @@
 
 package jp.nephy.glados.api
 
-import kotlinx.io.core.Closeable
+import io.ktor.utils.io.core.Closeable
 
 /**
  * GLaDOS FileSystemWatcher model.
