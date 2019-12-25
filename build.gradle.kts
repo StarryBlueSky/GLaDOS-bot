@@ -17,14 +17,14 @@ val bintrayUsername by property()
 val bintrayApiKey by property()
 
 plugins { 
-    kotlin("jvm") version "1.3.40"
+    kotlin("jvm") version "1.3.61"
     
     // For publishing
     id("maven-publish")
     id("com.jfrog.bintray") version "1.8.4"
 
     // For documentation
-    id("org.jetbrains.dokka") version "0.9.17"
+    id("org.jetbrains.dokka") version "0.10.0"
 }
 
 fun Project.property(key: String? = null) = object: ReadOnlyProperty<Project, String?> {
@@ -75,6 +75,9 @@ allprojects {
         mavenCentral()
         jcenter()
 
+        maven(url = "https://jitpack.io")
+        maven(url = "https://dl.bintray.com/nephyproject/stable")
+        maven(url = "https://dl.bintray.com/nephyproject/dev")
         maven(url = "https://kotlin.bintray.com/ktor")
         maven(url = "https://kotlin.bintray.com/kotlinx")
         maven(url = "https://kotlin.bintray.com/kotlin-eap")
@@ -97,11 +100,11 @@ allprojects {
         outputFormat = "html"
         outputDirectory = "${rootProject.buildDir}/kdoc"
 
-        jdkVersion = 8
-        includeNonPublic = false
-        reportUndocumented = true
-        skipEmptyPackages = true
-        skipDeprecated = true
+//        jdkVersion = 8
+//        includeNonPublic = false
+//        reportUndocumented = true
+//        skipEmptyPackages = true
+//        skipDeprecated = true
     }
 
     /*
@@ -166,11 +169,7 @@ allprojects {
 dependencies {
     implementation(project(":glados-client"))
 
-    implementation(kotlin("reflect"))
-
-    implementation("io.ktor:ktor-client-apache:1.2.2")
-
-    implementation("io.methvin:directory-watcher:0.9.4")
+    implementation("io.methvin:directory-watcher:0.9.6")
 
     implementation("ch.qos.logback:logback-core:1.2.3")
     implementation("org.fusesource.jansi:jansi:1.17.1")

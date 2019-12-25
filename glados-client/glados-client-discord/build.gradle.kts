@@ -1,9 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 dependencies {
-    api("net.dv8tion:JDA:4.BETA.0_16")
-    api("com.sedmelluq:lavaplayer:1.3.17")
-    // implementation("com.sedmelluq:jda-nas:1.0.6")
+    api("net.dv8tion:JDA:4.1.0_81")
+    api("com.sedmelluq:lavaplayer:1.3.32")
+    implementation("com.sedmelluq:jda-nas:1.1.0")
+    // api("com.github.FredBoat:Lavalink-Client:4.0")
+    // api("club.minnced:jda-reactor:1.0.0")
 }
 
 tasks.withType<KotlinCompile> {
