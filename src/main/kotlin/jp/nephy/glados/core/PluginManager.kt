@@ -44,7 +44,7 @@ import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.jvmErasure
 import kotlin.system.measureTimeMillis
 
-internal object PluginManager: ClassManager<Plugin> {
+internal object PluginManager {
     private val logger = Logger.of("GLaDOS.PluginManager")
     
     init {
@@ -54,7 +54,7 @@ internal object PluginManager: ClassManager<Plugin> {
         }
     }
     
-    override fun loadAll() {
+    fun loadAll() {
         val loadingTimeMillis = measureTimeMillis {
             Files.walk(GLaDOS.config.paths.plugins).filter { 
                 it.extension == "jar"
@@ -66,21 +66,25 @@ internal object PluginManager: ClassManager<Plugin> {
         logger.info { "$loadingTimeMillis ms で Plugin のロードを完了しました。" }
     }
 
-    override fun load(jarPath: Path) {
-        logger.debug { "Jar: \"${jarPath.toAbsolutePath()}\" のロードを試みます。" }
+    /**
+     * Loads all the [Plugin] in jar [jar].
+     */
+    fun load(jar: Path) {
+        logger.debug { "Jar: \"${jar.toAbsolutePath()}\" のロードを試みます。" }
 
         runCatching {
-            loadClassesFromJar<Plugin>(jarPath)
+            loadClassesFromJar<Plugin>(jar)
         }.onSuccess { classes ->
             for (kotlinClass in classes) {
-                load(kotlinClass)
+                load(kotlinClass, jar)
             }
         }.onFailure { e ->
-            logger.error(e) { "Jar: \"${jarPath.toAbsolutePath()}\" のロードに失敗しました。" }
+            logger.error(e) { "Jar: \"${jar.toAbsolutePath()}\" のロードに失敗しました。" }
         }
     }
     
-    override fun load(kotlinClass: KClass<out Plugin>) {
+    private fun load(kotlinClass: KClass<out Plugin>, jar: Path) {
+        // TODO: jar
         if (GLaDOS.isDevelopmentMode && kotlinClass.findAnnotation<TestOnlyFeature>() == null && kotlinClass.findAnnotation<TestableFeature>() == null) {
             logger.info { "クラス: \"${kotlinClass.qualifiedName}\" はテスト可能ではありません。スキップします。" }
             return
@@ -89,9 +93,9 @@ internal object PluginManager: ClassManager<Plugin> {
             return
         }
         
-        val plugin = runCatching {
-            kotlinClass.objectInstance ?: kotlinClass.createInstance()
-        }.onSuccess { 
+        val plugin = kotlinClass.runCatching {
+            objectInstance ?: createInstance()
+        }.onSuccess {
             if (kotlinClass.objectInstance == null) {
                 logger.warn { "Plugin: \"${it.effectiveName}\" は object 宣言ではなく class 宣言されています。object 宣言が推奨されます。" }
             }

@@ -63,12 +63,6 @@ interface GLaDOS {
         override lateinit var coroutineContext: CoroutineContext
 
         @Deprecated("Directly accessing to this property is deprecated.")
-        override lateinit var clientManager: ClassManager<SubscriptionClient<*, *, *>>
-
-        @Deprecated("Directly accessing to this property is deprecated.")
-        override lateinit var pluginManager: ClassManager<Plugin>
-
-        @Deprecated("Directly accessing to this property is deprecated.")
         override lateinit var fileSystemWatcher: FileSystemWatcher
         
         @Deprecated("Directly accessing to this property is deprecated.")
@@ -104,16 +98,6 @@ interface GLaDOS {
      * Global coroutine context.
      */
     val coroutineContext: CoroutineContext
-
-    /**
-     * GLaDOS SubscriptionClient manager.
-     */
-    val clientManager: ClassManager<SubscriptionClient<*, *, *>>
-    
-    /**
-     * GLaDOS Plugin manager.
-     */
-    val pluginManager: ClassManager<Plugin>
     
     /**
      * GLaDOS FileSystemWatcher.
@@ -163,18 +147,6 @@ val GLaDOS.Companion.secret: SecretJson
  */
 val GLaDOS.Companion.httpClient: HttpClient
     get() = GLaDOS.Instance.httpClient
-
-/**
- * Shortcut to `GLaDOS.Instance.clientManager`.
- */
-val GLaDOS.Companion.clientManager: ClassManager<SubscriptionClient<*, *, *>>
-    get() = GLaDOS.Instance.clientManager
-
-/**
- * Shortcut to `GLaDOS.Instance.pluginManager`.
- */
-val GLaDOS.Companion.pluginManager: ClassManager<Plugin>
-    get() = GLaDOS.Instance.pluginManager
 
 /**
  * Shortcut to `GLaDOS.Instance.fileSystemWatcher`.

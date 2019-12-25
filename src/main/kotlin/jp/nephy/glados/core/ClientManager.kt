@@ -24,30 +24,28 @@
 
 package jp.nephy.glados.core
 
-import jp.nephy.glados.api.ClassManager
+import io.ktor.utils.io.core.Closeable
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.SubscriptionClient
 import jp.nephy.glados.api.of
 import jp.nephy.glados.clients.name
-import kotlinx.io.core.Closeable
-import java.nio.file.Path
 import java.util.concurrent.CopyOnWriteArraySet
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.system.measureTimeMillis
 
-internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Closeable {
+internal object ClientManager: Closeable {
     private val logger = Logger.of("GLaDOS.ClientManager")
     
     val clients = CopyOnWriteArraySet<SubscriptionClient<*, *, *>>()
     
-    override fun loadAll() {
+    fun load() {
         check(clients.isEmpty()) {
             "既に SubscriptionClient はロードされているため, 一括ロードできません。"
         }
 
         val loadingTimeMillis = measureTimeMillis {
-            loadClassesFromClassPath<SubscriptionClient<*, *, *>>().forEach { 
+            loadClassesFromClassPath<SubscriptionClient<*, *, *>>().forEach {
                 load(it)
             }
         }
@@ -55,23 +53,9 @@ internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Closea
         logger.info { "$loadingTimeMillis ms で SubscriptionClient のロードが完了しました。" }
     }
 
-    override fun load(jarPath: Path) {
-        logger.debug { "Jar: \"${jarPath.toAbsolutePath()}\" のロードを試みます。" }
-        
-        runCatching {
-            loadClassesFromJar<SubscriptionClient<*, *, *>>(jarPath)
-        }.onSuccess { classes -> 
-            for (kotlinClass in classes) {
-                load(kotlinClass)
-            }
-        }.onFailure { e ->
-            logger.error(e) { "Jar: \"${jarPath.toAbsolutePath()}\" のロードに失敗しました。" }
-        }
-    }
-
-    override fun load(kotlinClass: KClass<out SubscriptionClient<*, *, *>>) {
-        runCatching {
-            kotlinClass.objectInstance ?: kotlinClass.createInstance()
+    private fun load(kotlinClass: KClass<out SubscriptionClient<*, *, *>>) {
+        kotlinClass.runCatching {
+            objectInstance ?: createInstance()
         }.onSuccess { client ->
             clients += client
             logger.info { "SubscriptionClient: \"${client.name}\" をロードしました。" }
@@ -80,16 +64,16 @@ internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Closea
         }
     }
     
-    fun startAll() {
+    fun start() {
         clients.sortedBy { 
             it.priority
         }.forEach { client ->
-            runCatching {
-                client.start()
+            client.runCatching {
+                start()
             }.onSuccess {
-                client.logger.info { "開始しました。" }
+                logger.info { "開始しました。" }
             }.onFailure { e ->
-                client.logger.error(e) { "開始中に例外が発生しました。" }
+                logger.error(e) { "開始中に例外が発生しました。" }
             }
         }
     }
@@ -100,12 +84,12 @@ internal object ClientManager: ClassManager<SubscriptionClient<*, *, *>>, Closea
         clients.sortedBy {
             it.priority
         }.forEach { client ->
-            runCatching {
-                client.stop()
+            client.runCatching {
+                stop()
             }.onSuccess {
-                client.logger.info { "停止しました。" }
+                logger.info { "停止しました。" }
             }.onFailure { e ->
-                client.logger.error(e) { "停止中に例外が発生しました。" }
+                logger.error(e) { "停止中に例外が発生しました。" }
             }
         }
 

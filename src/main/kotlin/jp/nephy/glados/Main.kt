@@ -63,19 +63,16 @@ fun main(args: Array<String>) {
 
             installHttpClientLogger()
         }
-
-        clientManager = ClientManager
-        pluginManager = PluginManager
         
         fileSystemWatcher = FileSystemWatcherImpl
         
         attributes = AttributeMapImpl
     }
 
-    ClientManager.loadAll()
+    ClientManager.load()
     PluginManager.loadAll()
     
-    ClientManager.startAll()
+    ClientManager.start()
     
     ConfigJsonImpl.installFileSystemListener()
     
