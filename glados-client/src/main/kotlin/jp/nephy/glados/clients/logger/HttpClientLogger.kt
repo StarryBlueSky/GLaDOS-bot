@@ -27,22 +27,22 @@ package jp.nephy.glados.clients.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.features.HttpClientFeature
-import io.ktor.client.response.HttpReceivePipeline
-import io.ktor.client.response.HttpResponse
+import io.ktor.client.statement.HttpReceivePipeline
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.charset
 import io.ktor.http.content.OutgoingContent
 import io.ktor.http.contentLength
 import io.ktor.http.contentType
 import io.ktor.util.AttributeKey
+import io.ktor.utils.io.ByteChannel
+import io.ktor.utils.io.close
+import io.ktor.utils.io.core.readText
+import io.ktor.utils.io.readRemaining
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.isDevelopmentMode
 import jp.nephy.glados.api.of
-import kotlinx.coroutines.io.ByteChannel
-import kotlinx.coroutines.io.close
-import kotlinx.coroutines.io.readRemaining
 import kotlinx.coroutines.launch
-import kotlinx.io.core.readText
 
 private class HttpClientLogger(private val config: Config) {
     private inline fun log(builder: StringBuilder.() -> Unit) {
@@ -170,7 +170,7 @@ fun HttpClientConfig<*>.installHttpClientLogger() {
 
         val logger = Logger.of("GLaDOS.HttpClient", "#glados-http-client")
         onMessage {
-            logger.info { it }
+            logger.trace { it }
         }
     }
 }
