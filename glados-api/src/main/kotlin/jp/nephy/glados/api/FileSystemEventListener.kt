@@ -44,9 +44,4 @@ interface FileSystemEventListener {
      * The event called when a file or directory is deleted.
      */
     fun onDeleted(path: Path) {}
-
-    /**
-     * The event called when some events are lost.
-     */
-    fun onOverflow(path: Path) {}
 }

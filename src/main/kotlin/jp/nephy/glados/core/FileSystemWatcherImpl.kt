@@ -38,6 +38,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.concurrent.CopyOnWriteArraySet
 
+// TODO: replace with java.nio
 internal object FileSystemWatcherImpl: FileSystemWatcher {
     private val logger = Logger.of("GLaDOS.FileSystemWatcher")
 
@@ -84,17 +85,6 @@ internal object FileSystemWatcherImpl: FileSystemWatcher {
             }
         }
     }
-    
-    private fun handleOverflowEvent(path: Path) {
-        for (listener in listeners) {
-            InternalCoroutineScope.launch {
-                try {
-                    listener.onOverflow(path)
-                } catch (e: FileSystemException) {
-                }
-            }
-        }
-    }
 
     fun start() {
         watcher = DirectoryWatcher.builder().path(Paths.get("")).listener { event ->
@@ -123,11 +113,7 @@ internal object FileSystemWatcherImpl: FileSystemWatcher {
 
                     logger.trace { "ファイル削除: $path" }
                 }
-                DirectoryChangeEvent.EventType.OVERFLOW -> {
-                    handleOverflowEvent(path)
-
-                    logger.trace { "ファイルシステムイベント オーバフロー: $path" }
-                }
+                else -> {}
             }
         }.build()
         
