@@ -45,10 +45,10 @@ import jp.nephy.glados.clients.invoke
 import jp.nephy.glados.clients.subscriptions
 import jp.nephy.glados.clients.web.config.web
 import jp.nephy.glados.clients.web.effectiveHost
-import jp.nephy.glados.clients.web.url
 import jp.nephy.glados.clients.web.routing.normal.WebRoutingSubscriptionClient
 import jp.nephy.glados.clients.web.routing.pattern.WebPatternRoutingSubscriptionClient
 import jp.nephy.glados.clients.web.routing.regex.WebRegexRoutingSubscriptionClient
+import jp.nephy.glados.clients.web.url
 
 internal object DynamicResolver: ApplicationFeature<ApplicationCallPipeline, DynamicResolver.Configuration, DynamicResolver.Resolver> {
     override val key = AttributeKey<Resolver>("DynamicResolver")

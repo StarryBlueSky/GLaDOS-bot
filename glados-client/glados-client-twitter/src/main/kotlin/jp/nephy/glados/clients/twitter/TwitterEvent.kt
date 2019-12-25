@@ -24,8 +24,8 @@
 
 package jp.nephy.glados.clients.twitter
 
-import jp.nephy.glados.clients.twitter.config.TwitterAccount
 import jp.nephy.glados.api.Priority
+import jp.nephy.glados.clients.twitter.config.TwitterAccount
 
 /**
  * Indicates that its function should be executed as [TwitterSubscription].

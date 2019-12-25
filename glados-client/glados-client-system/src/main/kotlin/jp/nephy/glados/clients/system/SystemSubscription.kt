@@ -24,9 +24,9 @@
 
 package jp.nephy.glados.clients.system
 
+import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.api.Plugin
 import jp.nephy.glados.api.Priority
-import jp.nephy.glados.GLaDOSSubscription
 import jp.nephy.glados.clients.system.events.SystemEventBase
 import kotlin.reflect.KFunction
 
