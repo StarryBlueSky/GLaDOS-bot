@@ -28,6 +28,6 @@ include(":glados-client")
 
 rootProject.projectDir.resolve("glados-client").listFiles { file ->
     file.isDirectory && file.name.startsWith("glados-client-")
-}.forEach {
+}!!.forEach {
     include(":glados-client:${it.name}")
 }

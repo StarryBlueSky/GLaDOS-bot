@@ -26,68 +26,24 @@
 
 package jp.nephy.glados.clients.discord.extensions.messages
 
-import jp.nephy.glados.clients.discord.command.events.DiscordCommandEvent
 import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiEnum
 import jp.nephy.glados.clients.discord.extensions.messages.prompt.EmojiPrompt
 import jp.nephy.glados.clients.discord.extensions.messages.prompt.ListPrompt
 import jp.nephy.glados.clients.discord.extensions.messages.prompt.PromptEnum
 import net.dv8tion.jda.api.entities.*
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent
-import net.dv8tion.jda.api.events.message.MessageUpdateEvent
-import net.dv8tion.jda.api.requests.restaction.MessageAction
 
-/* Reply */
-
-inline fun DiscordCommandEvent.reply(operation: SendMessageWrapper.() -> Unit): MessageAction {
-    return SendMessageWrapper(channel, author).apply(operation).build()
-}
-
-inline fun MessageReceivedEvent.reply(operation: SendMessageWrapper.() -> Unit): MessageAction {
-    return SendMessageWrapper(channel, author).apply(operation).build()
-}
-
-inline fun MessageUpdateEvent.reply(operation: SendMessageWrapper.() -> Unit): MessageAction {
-    return SendMessageWrapper(channel, author).apply(operation).build()
-}
-
-inline fun Message.reply(operation: SendMessageWrapper.() -> Unit): MessageAction {
-    return SendMessageWrapper(channel, author).apply(operation).build()
-}
-
-// TODO
-inline fun MessageChannel.reply(to: IMentionable, operation: SendMessageWrapper.() -> Unit): MessageAction {
-    return SendMessageWrapper(this, to).apply(operation).build()
-}
-
-/* Message */
-
-inline fun Message.message(operation: SendMessageWrapper.() -> Unit): MessageAction {
-    return SendMessageWrapper(channel).apply(operation).build()
-}
-
-inline fun MessageChannel.message(operation: SendMessageWrapper.() -> Unit): MessageAction {
-    return SendMessageWrapper(this).apply(operation).build()
-}
-
-/* Edit */
-
-inline fun Message.edit(operation: EditMessageWrapper.() -> Unit): MessageAction {
-    return EditMessageWrapper(this).apply(operation).build()
-}
-
-/* Prompt */
 @Suppress("ResultIsResult")
-suspend inline fun Message.emojiPrompt(noinline operation: EmojiPrompt.Builder<EmojiPrompt.Emoji>.() -> Unit): Result<EmojiPrompt.PromptResult<EmojiPrompt.Emoji>> {
+suspend fun Message.emojiPrompt(operation: EmojiPrompt.Builder<EmojiPrompt.Emoji>.() -> Unit): Result<EmojiPrompt.PromptResult<EmojiPrompt.Emoji>> {
     return textChannel.emojiPrompt(author, operation)
 }
 
 @Suppress("ResultIsResult")
-suspend inline fun TextChannel.emojiPrompt(to: Member, noinline operation: EmojiPrompt.Builder<EmojiPrompt.Emoji>.() -> Unit): Result<EmojiPrompt.PromptResult<EmojiPrompt.Emoji>> {
+suspend fun TextChannel.emojiPrompt(to: Member, operation: EmojiPrompt.Builder<EmojiPrompt.Emoji>.() -> Unit): Result<EmojiPrompt.PromptResult<EmojiPrompt.Emoji>> {
     return emojiPrompt(to.user, operation)
 }
 
 @Suppress("ResultIsResult")
-suspend inline fun TextChannel.emojiPrompt(to: User, noinline operation: EmojiPrompt.Builder<EmojiPrompt.Emoji>.() -> Unit): Result<EmojiPrompt.PromptResult<EmojiPrompt.Emoji>> {
+suspend fun TextChannel.emojiPrompt(to: User, operation: EmojiPrompt.Builder<EmojiPrompt.Emoji>.() -> Unit): Result<EmojiPrompt.PromptResult<EmojiPrompt.Emoji>> {
     return EmojiPrompt.create(this, to, builder = operation)
 }
 
@@ -107,17 +63,17 @@ suspend inline fun <reified E: Enum<out EmojiEnum>> TextChannel.emojiEnumPrompt(
 }
 
 @Suppress("ResultIsResult")
-suspend inline fun <T: Any> Message.itemPrompt(items: List<T>, noinline operation: ListPrompt.Builder<T>.() -> Unit): Result<ListPrompt.PromptResult<T>> {
+suspend fun <T: Any> Message.itemPrompt(items: List<T>, operation: ListPrompt.Builder<T>.() -> Unit): Result<ListPrompt.PromptResult<T>> {
     return textChannel.itemPrompt(author, items, operation)
 }
 
 @Suppress("ResultIsResult")
-suspend inline fun <T: Any> TextChannel.itemPrompt(to: Member, items: List<T>, noinline operation: ListPrompt.Builder<T>.() -> Unit): Result<ListPrompt.PromptResult<T>> {
+suspend fun <T: Any> TextChannel.itemPrompt(to: Member, items: List<T>, operation: ListPrompt.Builder<T>.() -> Unit): Result<ListPrompt.PromptResult<T>> {
     return itemPrompt(to.user, items, operation)
 }
 
 @Suppress("ResultIsResult")
-suspend inline fun <T: Any> TextChannel.itemPrompt(to: User, items: List<T>, noinline operation: ListPrompt.Builder<T>.() -> Unit): Result<ListPrompt.PromptResult<T>> {
+suspend fun <T: Any> TextChannel.itemPrompt(to: User, items: List<T>, operation: ListPrompt.Builder<T>.() -> Unit): Result<ListPrompt.PromptResult<T>> {
     return ListPrompt.create(this, to, items, operation)
 }
 

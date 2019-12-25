@@ -26,10 +26,9 @@ package jp.nephy.glados.clients.discord
 
 import net.dv8tion.jda.api.audio.AudioSendHandler
 import java.nio.ByteBuffer
-import java.util.*
 
 class SilenceAudioSendHandler(private val onStop: () -> Unit): AudioSendHandler {
-    private val startTime = Date().time
+    private val startTime = System.currentTimeMillis()
     private var canProvide = true
 
     private val silenceData = arrayOf(0xF8.toByte(), 0xFF.toByte(), 0xFE.toByte()).toByteArray()
@@ -37,11 +36,10 @@ class SilenceAudioSendHandler(private val onStop: () -> Unit): AudioSendHandler 
     override fun canProvide() = canProvide
 
     override fun provide20MsAudio(): ByteBuffer {
-        if (Date().time - startTime > 3000) {
+        if (System.currentTimeMillis() - startTime > 3000) {
             canProvide = false
         }
 
-        
         return ByteBuffer.wrap(silenceData).apply {
             if (!canProvide) {
                 onStop()

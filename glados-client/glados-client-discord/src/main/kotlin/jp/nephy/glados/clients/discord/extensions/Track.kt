@@ -38,8 +38,8 @@ val AudioTrackInfo.effectiveTitle: String
     get() = if (title != MediaContainerDetection.UNKNOWN_TITLE) {
         title
     } else {
-        null
-    } ?: identifier
+        identifier
+    }
 
 val AudioTrackInfo.artist: String?
     get() = if (author != MediaContainerDetection.UNKNOWN_ARTIST) {
@@ -47,4 +47,3 @@ val AudioTrackInfo.artist: String?
     } else {
         null
     }
-

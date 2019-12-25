@@ -22,17 +22,19 @@
  * SOFTWARE.
  */
 
-package jp.nephy.glados.clients.discord.extensions.messages
+package jp.nephy.glados.clients.discord.extensions
 
-data class HexColor(private val hex: String) {
-    companion object {
-        val Good = HexColor("2dbe51")
-        val Bad = HexColor("1e90ff")
-        val Change = HexColor("10993b")
-        val Neutral = HexColor("ffa500")
-        val Plain = HexColor("d8d8d8")
-    }
+import java.awt.Color
 
-    val rgb: Int
-        get() = hex.toInt(16)
+object ColorPresets {
+    val Good = Color("2dbe51")
+    val Bad = Color("1e90ff")
+    val Change = Color("10993b")
+    val Neutral = Color("ffa500")
+    val Plain = Color("d8d8d8")
+}
+
+@Suppress("FUNCTIONNAME")
+fun Color(hex: String): Color {
+    return Color(hex.toInt(16))
 }

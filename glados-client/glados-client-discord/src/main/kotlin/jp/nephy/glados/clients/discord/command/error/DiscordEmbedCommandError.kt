@@ -25,8 +25,9 @@
 package jp.nephy.glados.clients.discord.command.error
 
 import jp.nephy.glados.clients.discord.extensions.launchAndDelete
-import jp.nephy.glados.clients.discord.extensions.messages.HexColor
-import jp.nephy.glados.clients.discord.extensions.messages.reply
+import jp.nephy.glados.clients.discord.extensions.ColorPresets
+import jp.nephy.glados.clients.discord.extensions.messages.*
+import jp.nephy.glados.clients.discord.extensions.messages.embed
 import net.dv8tion.jda.api.entities.Message
 import java.util.concurrent.TimeUnit
 
@@ -40,7 +41,7 @@ class DiscordEmbedCommandError(override val jdaMessage: Message, commandName: St
                 title("コマンドエラー: $commandName")
                 description { description }
                 timestamp()
-                color(HexColor.Bad)
+                color(ColorPresets.Bad)
             }
         }.launchAndDelete(30, TimeUnit.SECONDS)
     }

@@ -26,6 +26,7 @@ package jp.nephy.glados.clients.discord.command.error
 
 import jp.nephy.glados.clients.discord.extensions.launchAndDelete
 import jp.nephy.glados.clients.discord.extensions.messages.message
+import jp.nephy.glados.clients.discord.extensions.messages.text
 import net.dv8tion.jda.api.entities.Message
 import java.util.concurrent.TimeUnit
 
@@ -34,7 +35,7 @@ import java.util.concurrent.TimeUnit
  */
 class DiscordSimpleCommandError(override val jdaMessage: Message, commandName: String, description: String): DiscordCommandError(commandName, description) {
     init {
-        jdaMessage.message {
+        jdaMessage.channel.message {
             text {
                 append("${jdaMessage.author.asMention} $description")
             }

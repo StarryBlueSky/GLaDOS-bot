@@ -22,25 +22,21 @@
  * SOFTWARE.
  */
 
+@file:Suppress("OVERRIDE_BY_INLINE")
+
 package jp.nephy.glados.clients.discord.extensions.messages
 
+import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.requests.restaction.MessageAction
 
-class EditMessageWrapper(private val target: Message): MessageWrapper {
-    private var message: Message? = null
-    override fun text(operation: MessageBuilder.() -> Unit) {
-        message = MessageBuilder().apply(operation).build()
-    }
+class EditMessageWrapper(private val target: Message) {
+    internal var message: Message? = null
+    internal var embed: MessageEmbed? = null
 
-    private var embed: MessageEmbed? = null
-    override fun embed(operation: EmbedBuilder.() -> Unit) {
-        embed = EmbedBuilder().apply(operation).build()
-    }
-
-    override fun build(): MessageAction {
+    internal fun build(): MessageAction {
         return when {
             message != null -> {
                 target.editMessage(message!!)
@@ -53,4 +49,12 @@ class EditMessageWrapper(private val target: Message): MessageWrapper {
             }
         }
     }
+}
+
+fun EditMessageWrapper.text(operation: MessageBuilder.() -> Unit) {
+    message = MessageBuilder().apply(operation).build()
+}
+
+fun EditMessageWrapper.embed(operation: EmbedBuilder.() -> Unit) {
+    embed = EmbedBuilder().apply(operation).build()
 }

@@ -32,8 +32,9 @@ import jp.nephy.glados.clients.discord.command.error.DiscordCommandError
 import jp.nephy.glados.clients.discord.command.events.DiscordCommandEvent
 import jp.nephy.glados.clients.discord.command.events.argumentString
 import jp.nephy.glados.clients.discord.extensions.launchAndDelete
-import jp.nephy.glados.clients.discord.extensions.messages.HexColor
-import jp.nephy.glados.clients.discord.extensions.messages.reply
+import jp.nephy.glados.clients.discord.extensions.ColorPresets
+import jp.nephy.glados.clients.discord.extensions.messages.*
+import jp.nephy.glados.clients.discord.extensions.messages.embed
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KFunction
 
@@ -55,12 +56,12 @@ class DiscordCommandSubscription(
             event.reply {
                 embed {
                     title("`${event.subscription.primaryCommandSyntax}` の実行中に例外が発生しました")
-                    description { "引数: `${event.argumentString}`\nご不便をお掛けしています。この問題が何度も発生する場合は開発者にご連絡ください。" }
+                    description { "引数: `${event.argumentString}`\nご不便をおかけしています。問題は報告されましたが, 修正されない場合は開発者にご連絡ください。" }
                     field("スタックトレース") { "${throwable.stackTraceString.take(300)}..." }
-                    color(HexColor.Bad)
+                    color(ColorPresets.Bad)
                     timestamp()
                 }
-            }.launchAndDelete(30, TimeUnit.SECONDS)
+            }.launchAndDelete(1, TimeUnit.MINUTES)
 
             super.onFailure(throwable, event)
         }

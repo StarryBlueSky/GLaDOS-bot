@@ -34,10 +34,9 @@ import jp.nephy.glados.clients.discord.command.policy.CasePolicy
 import jp.nephy.glados.clients.discord.command.policy.MessageContentPolicy
 import jp.nephy.glados.clients.discord.command.policy.checkAllPolicies
 import jp.nephy.glados.clients.discord.extensions.awaitAndDelete
-import jp.nephy.glados.clients.discord.extensions.messages.HexColor
-import jp.nephy.glados.clients.discord.extensions.messages.emojiEnumPrompt
-import jp.nephy.glados.clients.discord.extensions.messages.guildOrNull
-import jp.nephy.glados.clients.discord.extensions.messages.reply
+import jp.nephy.glados.clients.discord.extensions.ColorPresets
+import jp.nephy.glados.clients.discord.extensions.messages.*
+import jp.nephy.glados.clients.discord.extensions.messages.embed
 import kotlinx.coroutines.launch
 import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
@@ -141,7 +140,7 @@ object DiscordCommandSubscriptionClient: GLaDOSSubscriptionClient<DiscordCommand
                     event.message.emojiEnumPrompt<ExperimentalConsent> {
                         title("`${event.subscription.primaryCommandSyntax}`")
                         description { "⚠ この機能は現在 試験中(Experimental) です。予期しない不具合が発生する可能性がありますが, ご理解の上ご利用ください。" }
-                        color(HexColor.Change)
+                        color(ColorPresets.Change)
                         timeout(30, TimeUnit.SECONDS)
                     }.onSuccess {
                         if (it.selected == ExperimentalConsent.Agree) {
@@ -152,7 +151,7 @@ object DiscordCommandSubscriptionClient: GLaDOSSubscriptionClient<DiscordCommand
                                 embed {
                                     title("`${event.subscription.primaryCommandSyntax}`")
                                     description { "キャンセルしました。" }
-                                    color(HexColor.Bad)
+                                    color(ColorPresets.Bad)
                                     timestamp()
                                 }
                             }.awaitAndDelete(15, TimeUnit.SECONDS)

@@ -79,7 +79,9 @@ suspend operator fun <E: Event> Subscription<*, E>.invoke(event: E) {
     }.onSuccess {
         onSuccess(event)
     }.onFailure {
-        onFailure(it, event)
+        val throwable = (it as? InvocationTargetException)?.targetException ?: it
+
+        onFailure(throwable, event)
     }
 }
 

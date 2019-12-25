@@ -28,9 +28,8 @@ package jp.nephy.glados.clients.discord.extensions.result
 
 import jp.nephy.glados.clients.discord.command.events.DiscordCommandEvent
 import jp.nephy.glados.clients.discord.command.primaryCommandSyntax
-import jp.nephy.glados.clients.discord.extensions.messages.HexColor
-import jp.nephy.glados.clients.discord.extensions.messages.message
-import jp.nephy.glados.clients.discord.extensions.messages.reply
+import jp.nephy.glados.clients.discord.extensions.ColorPresets
+import jp.nephy.glados.clients.discord.extensions.messages.*
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.requests.restaction.MessageAction
 
@@ -40,15 +39,15 @@ fun Message.embedResult(commandName: String, description: () -> String): Message
             title(commandName)
             description(description)
             timestamp()
-            color(HexColor.Good)
+            color(ColorPresets.Good)
         }
     }
 }
 
-fun Message.simpleResult(description: () -> String): MessageAction {
-    return message {
+fun Message.textResult(description: () -> String): MessageAction {
+    return channel.message {
         text {
-            append("${author.asMention} ${description.invoke()}")
+            append("${author.asMention} ${description()}")
         }
     }
 }
@@ -57,6 +56,6 @@ fun DiscordCommandEvent.embedResult(description: () -> String): MessageAction {
     return message.embedResult(subscription.primaryCommandSyntax, description)
 }
 
-fun DiscordCommandEvent.simpleResult(description: () -> String): MessageAction {
-    return message.simpleResult(description)
+fun DiscordCommandEvent.textResult(description: () -> String): MessageAction {
+    return message.textResult(description)
 }
