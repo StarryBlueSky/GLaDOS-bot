@@ -36,9 +36,9 @@ import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.cio.bufferedWriter
+import io.ktor.utils.io.ByteWriteChannel
 import jp.nephy.jsonkt.*
 import jp.nephy.jsonkt.delegation.*
-import kotlinx.coroutines.io.ByteWriteChannel
 import kotlinx.html.*
 import kotlinx.html.stream.*
 
@@ -83,12 +83,12 @@ suspend inline fun ApplicationCall.respondJsonModel(model: JsonModel, status: Ht
  * Responds with [JsonObject].
  */
 suspend inline fun ApplicationCall.respondJsonObject(status: HttpStatusCode = HttpStatusCode.OK, block: () -> Map<String, Any?>) {
-    respondText(block().toJsonObject().toJsonString(), ContentType.Application.Json, status)
+    respondText(block().toJsonObject().stringify(), ContentType.Application.Json, status)
 }
 
 /**
  * Responds with [JsonArray].
  */
 suspend inline fun ApplicationCall.respondJsonArray(status: HttpStatusCode = HttpStatusCode.OK, block: () -> Iterable<Map<String, Any?>>) {
-    respondText(block().toJsonArray().toJsonString(), ContentType.Application.Json, status)
+    respondText(block().toJsonArray().stringify(), ContentType.Application.Json, status)
 }

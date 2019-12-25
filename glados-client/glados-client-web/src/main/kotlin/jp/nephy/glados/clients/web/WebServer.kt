@@ -57,7 +57,6 @@ import jp.nephy.glados.clients.web.features.DynamicResolver
 import jp.nephy.glados.clients.web.features.robotsTxt
 import jp.nephy.glados.clients.web.features.sitemapXml
 import kotlinx.coroutines.runBlocking
-import java.util.concurrent.TimeUnit
 
 private const val webServerKey = "web"
 
@@ -119,6 +118,7 @@ internal suspend fun initializeWebApplication() {
             install(Sessions) {
                 runBlocking {
                     for (subscription in WebCookieSetupSubscriptionClient.subscriptions) {
+                        @Suppress("DEPRECATION")
                         cookie(subscription.annotation.name, subscription.annotation.sessionClass, SessionStorageMemory()) {
                             @Suppress("UNCHECKED_CAST")
                             val event = WebCookieSetupEvent(subscription, this as CookieSessionBuilder<Any>)
@@ -133,6 +133,6 @@ internal suspend fun initializeWebApplication() {
 
 internal suspend fun disposeWebApplication() {
     GLaDOS.attributes.remove<ApplicationEngine>(webServerKey)?.also {
-        it.stop(1, 5, TimeUnit.SECONDS)
+        it.stop(1000, 5000)
     }
 }

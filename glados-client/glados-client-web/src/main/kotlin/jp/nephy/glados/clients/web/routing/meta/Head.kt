@@ -27,12 +27,11 @@
 package jp.nephy.glados.clients.web.routing.meta
 
 import kotlinx.html.*
-import kotlinx.io.charsets.Charset
-import kotlinx.io.charsets.name
+import java.nio.charset.Charset
 
 @HtmlTagMarker
 fun HEAD.charset(charset: Charset) {
-    meta(charset = charset.name.toLowerCase())
+    meta(charset = charset.name().toLowerCase())
 }
 
 @HtmlTagMarker

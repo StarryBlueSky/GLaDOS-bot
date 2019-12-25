@@ -70,9 +70,7 @@ data class TwitterAccount(
      */
     val user: Account.VerifyCredentials by lazy {
         client.use {
-            it.account.verifyCredentials.complete().use { response ->
-                response.result
-            }
+            it.account.verifyCredentials.complete().result
         }
     }
 

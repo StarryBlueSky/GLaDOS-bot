@@ -27,7 +27,7 @@ package jp.nephy.glados
 import jp.nephy.glados.api.GLaDOS
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.io.core.Closeable
+import java.io.Closeable
 import kotlin.coroutines.CoroutineContext
 
 /**

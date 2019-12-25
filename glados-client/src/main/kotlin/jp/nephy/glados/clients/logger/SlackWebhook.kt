@@ -25,9 +25,11 @@
 package jp.nephy.glados.clients.logger
 
 import io.ktor.client.request.post
-import io.ktor.client.response.HttpResponse
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.content.OutgoingContent
+import io.ktor.utils.io.ByteWriteChannel
+import io.ktor.utils.io.writeStringUtf8
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.config
 import jp.nephy.glados.api.httpClient
@@ -35,8 +37,6 @@ import jp.nephy.jsonkt.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.io.ByteWriteChannel
-import kotlinx.coroutines.io.writeStringUtf8
 import kotlinx.coroutines.launch
 import mu.KotlinLogging
 
@@ -114,7 +114,7 @@ object SlackWebhook {
                 override suspend fun writeTo(channel: ByteWriteChannel) {
                     logger.debug { "Payload: $payload" }
                     
-                    channel.writeStringUtf8(payload.filterValues { it != null }.toJsonObject().toJsonString())
+                    channel.writeStringUtf8(payload.filterValues { it != null }.toJsonObject().stringify())
                 }
             }
         }

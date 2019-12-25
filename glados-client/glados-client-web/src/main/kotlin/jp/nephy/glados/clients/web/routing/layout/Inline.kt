@@ -31,7 +31,7 @@ import jp.nephy.glados.api.config
 import jp.nephy.glados.api.resourceFile
 import jp.nephy.glados.clients.web.config.web
 import kotlinx.html.*
-import kotlinx.io.charsets.Charset
+import java.nio.charset.Charset
 
 private val minifyRegex = "(?:\\s{2,}|\\n)".toRegex()
 private fun staticFile(path: String, minified: Boolean, charset: Charset): String {

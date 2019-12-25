@@ -25,7 +25,7 @@
 package jp.nephy.glados.clients.web.routing.meta
 
 import kotlinx.html.*
-import kotlinx.io.charsets.Charset
+import java.nio.charset.Charset
 
 /**
  * Convenience extension.
