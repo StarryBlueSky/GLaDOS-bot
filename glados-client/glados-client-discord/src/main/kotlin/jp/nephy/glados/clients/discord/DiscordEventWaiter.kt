@@ -24,7 +24,9 @@
 
 package jp.nephy.glados.clients.discord
 
+import jp.nephy.glados.api.GLaDOS
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -32,7 +34,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import java.io.Closeable
-import java.util.concurrent.CopyOnWriteArraySet
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
@@ -42,7 +44,7 @@ import kotlin.reflect.full.isSubclassOf
  */
 object DiscordEventWaiter {
     private val mutex = Mutex()
-    private val waitingEvents = CopyOnWriteArraySet<WaitingEvent<GenericEvent>>()
+    private val waitingEvents = CopyOnWriteArrayList<WaitingEvent<GenericEvent>>()
     
     @PublishedApi
     internal data class WaitingEvent<T: GenericEvent>(val eventClass: KClass<T>, val predicate: (T) -> Boolean): Closeable {
@@ -91,11 +93,11 @@ object DiscordEventWaiter {
         val waitingEvent = WaitingEvent(eventClass, predicate)
 
         return waitingEvent.use {
-            runCatching {
-                it.start()
+            it.runCatching {
+                start()
                 
                 withTimeoutOrNull(timeoutMillis) {
-                    it.await()
+                    await()
                 } ?: throw EventWaitingTimeoutException(eventClass, timeoutMillis)
             }
         }
@@ -108,14 +110,16 @@ object DiscordEventWaiter {
     
     internal object Listener: ListenerAdapter() {
         override fun onGenericEvent(event: GenericEvent) {
-            if (waitingEvents.isEmpty()) {
-                return
-            }
+            GLaDOS.launch {
+                if (waitingEvents.isEmpty()) {
+                    return@launch
+                }
 
-            waitingEvents.filter {
-                event::class.isSubclassOf(it.eventClass) && it.predicate(event)
-            }.forEach { waitingEvent ->
-                waitingEvent.provide(event)
+                waitingEvents.filter {
+                    event::class.isSubclassOf(it.eventClass) && it.predicate(event)
+                }.forEach { waitingEvent ->
+                    waitingEvent.provide(event)
+                }
             }
         }
     }
