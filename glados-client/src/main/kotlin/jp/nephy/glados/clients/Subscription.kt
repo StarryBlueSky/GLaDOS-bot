@@ -30,6 +30,7 @@ import jp.nephy.glados.api.Event
 import jp.nephy.glados.api.Subscription
 import jp.nephy.glados.api.annotations.DisabledFeature
 import jp.nephy.glados.api.annotations.ExperimentalFeature
+import java.lang.reflect.InvocationTargetException
 import kotlin.reflect.KClass
 import kotlin.reflect.full.callSuspend
 import kotlin.reflect.full.findAnnotation
@@ -64,7 +65,7 @@ val Subscription<*, *>.eventClass: KClass<*>
 /**
  * Subscription invoke operator.
  */
-suspend operator fun <E: Event> Subscription<*, E>.invoke(event: E, skipLogging: Boolean = false) {
+suspend operator fun <E: Event> Subscription<*, E>.invoke(event: E) {
     if (isDisabled) {
         return
     }
@@ -74,9 +75,7 @@ suspend operator fun <E: Event> Subscription<*, E>.invoke(event: E, skipLogging:
             function.callSuspend(plugin, event)
         }
 
-        if (!skipLogging) {
-            logger.trace { "$timeMillis ms で終了しました。" }
-        }
+        logger.trace { "$timeMillis ms で終了しました。" }
     }.onSuccess {
         onSuccess(event)
     }.onFailure {
@@ -89,3 +88,9 @@ suspend operator fun <E: Event> Subscription<*, E>.invoke(event: E, skipLogging:
  */
 val Subscription<*, *>.isDisabled: Boolean
     get() = plugin.isDisabled || function.findAnnotation<DisabledFeature>() != null
+
+/**
+ * Returns [InvocationTargetException.getTargetException] if available, or this.
+ */
+val Throwable.orInvocationException: Throwable
+    get() = (this as? InvocationTargetException)?.targetException ?: this

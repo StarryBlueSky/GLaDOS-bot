@@ -29,7 +29,7 @@ import jp.nephy.glados.api.Logger
 import jp.nephy.glados.api.Subscription
 import jp.nephy.glados.api.of
 import jp.nephy.glados.clients.fullName
-import java.lang.reflect.InvocationTargetException
+import jp.nephy.glados.clients.orInvocationException
 
 /**
  * GLaDOS Subscription base class.
@@ -41,8 +41,6 @@ abstract class GLaDOSSubscription<A: Annotation, E: Event>: Subscription<A, E> {
     }
     
     override fun onFailure(throwable: Throwable, event: E) {
-        val t = (throwable as? InvocationTargetException)?.targetException ?: throwable
-        
-        logger.error(t) { "実行中に例外が発生しました。(${event::class.simpleName})" }
+        logger.error(throwable.orInvocationException) { "実行中に例外が発生しました。(${event::class.simpleName})" }
     }
 }
