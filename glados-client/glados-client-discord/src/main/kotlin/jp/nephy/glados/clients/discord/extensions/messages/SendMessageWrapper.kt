@@ -25,7 +25,6 @@
 package jp.nephy.glados.clients.discord.extensions.messages
 
 import jp.nephy.glados.clients.discord.extensions.launch
-import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.IMentionable
 import net.dv8tion.jda.api.entities.Message
@@ -62,10 +61,10 @@ fun SendMessageWrapper.text(operation: MessageBuilder.() -> Unit) {
     }.build()
 }
 
-fun SendMessageWrapper.embed(operation: EmbedBuilder.() -> Unit) {
-    embed = EmbedBuilder().apply(operation).apply {
+fun SendMessageWrapper.embed(operation: EmbedBuilderWrapper.() -> Unit) {
+    embed = EmbedBuilderWrapper().apply(operation).apply {
         if (mention != null) {
-            mention(mention)
+            asMention(mention)
         }
     }.build()
 }

@@ -26,7 +26,6 @@
 
 package jp.nephy.glados.clients.discord.extensions.messages
 
-import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.MessageBuilder
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageEmbed
@@ -55,6 +54,6 @@ fun EditMessageWrapper.text(operation: MessageBuilder.() -> Unit) {
     message = MessageBuilder().apply(operation).build()
 }
 
-fun EditMessageWrapper.embed(operation: EmbedBuilder.() -> Unit) {
-    embed = EmbedBuilder().apply(operation).build()
+fun EditMessageWrapper.embed(operation: EmbedBuilderWrapper.() -> Unit) {
+    embed = EmbedBuilderWrapper().apply(operation).build()
 }

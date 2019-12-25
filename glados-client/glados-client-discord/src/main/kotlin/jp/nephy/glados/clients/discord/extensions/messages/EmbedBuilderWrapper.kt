@@ -27,10 +27,12 @@ package jp.nephy.glados.clients.discord.extensions.messages
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.IMentionable
 import net.dv8tion.jda.api.entities.MessageEmbed
+import java.awt.Color
 import java.time.Instant
 import java.time.temporal.TemporalAccessor
 
-class EmbedBuilder {
+@Deprecated("Use EmbedBuilder from JDA.")
+class EmbedBuilderWrapper {
     private val builder = EmbedBuilder()
 
     fun title(title: String, url: String? = null) = apply {
@@ -70,7 +72,7 @@ class EmbedBuilder {
         builder.setTimestamp(temporal ?: Instant.now())
     }
 
-    fun color(color: HexColor) = apply {
+    fun color(color: Color) = apply {
         builder.setColor(color.rgb)
     }
 
