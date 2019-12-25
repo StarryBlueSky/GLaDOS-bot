@@ -24,6 +24,7 @@
 
 package jp.nephy.glados.clients.discord
 
+import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory
 import jp.nephy.glados.api.GLaDOS
 import jp.nephy.glados.api.attributes
 import jp.nephy.glados.api.config
@@ -54,8 +55,8 @@ internal suspend fun initializeJDA() {
             setActivity(Activity.playing(GLaDOS.config.discord.defaultActivity))
 
             setEnableShutdownHook(GLaDOS.config.discord.enableJDAShutdownHook)
-            
-            // setAudioSendFactory(NativeAudioSendFactory(5000))
+
+            setAudioSendFactory(NativeAudioSendFactory(5000))
             
             addEventListeners(
                 DiscordWebsocketEventSubscriptionClient.Listener,
