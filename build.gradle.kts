@@ -167,10 +167,10 @@ allprojects {
 }
 
 dependencies {
-    implementation(project(":glados-client"))
+    api(project(":glados-client"))
 
-    implementation("io.methvin:directory-watcher:0.9.6")
+    api("io.methvin:directory-watcher:0.9.6")
 
-    implementation("ch.qos.logback:logback-core:1.2.3")
-    implementation("org.fusesource.jansi:jansi:1.17.1")
+    api("ch.qos.logback:logback-core:1.2.3")
+    api("org.fusesource.jansi:jansi:1.17.1")
 }
