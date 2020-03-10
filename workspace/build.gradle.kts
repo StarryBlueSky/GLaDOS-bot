@@ -51,9 +51,6 @@ project(":workspace:projects").subprojects {
     }
 }
 
-/**
- * Runtime Task
- */
 dependencies {
     project(":glados-client").dependencyProject.subprojects.forEach {
         implementation(it)
@@ -62,12 +59,36 @@ dependencies {
     implementation(rootProject)
 }
 
+/**
+ * Workspace Task
+ */
+task("buildWorkspace") {
+    dependsOn(rootProject.tasks["build"])
+
+    dependsOn(tasks["jar"])
+
+    project(":workspace:common").subprojects.forEach {
+        dependsOn(it.tasks.withType<Jar>())
+    }
+
+    project(":workspace:projects").subprojects.forEach {
+        dependsOn(it.tasks.withType<Jar>())
+    }
+}
+
+/**
+ * Runtime Task
+ */
 task<Exec>("runProduction") {
+    dependsOn(tasks["buildWorkspace"])
+
     workingDir = rootDir.resolve("workspace")
     commandLine = listOf("java", "-jar", "glados.jar")
 }
 
 task<Exec>("runDevelopment") {
+    dependsOn(tasks["buildWorkspace"])
+
     workingDir = rootDir.resolve("workspace")
     commandLine = listOf("java", "-jar", "glados.jar", "--dev")
 }
@@ -86,22 +107,5 @@ tasks.getByName<Jar>("jar") {
         }.map {
             if (it.isDirectory) it else zipTree(it)
         })
-    }
-}
-
-/**
- * Workspace Task
- */
-task("buildWorkspace") {
-    dependsOn(rootProject.tasks["build"])
-
-    dependsOn(tasks["jar"])
-
-    project(":workspace:common").subprojects.forEach {
-        dependsOn(it.tasks.withType<Jar>())
-    }
-
-    project(":workspace:projects").subprojects.forEach {
-        dependsOn(it.tasks.withType<Jar>())
     }
 }
