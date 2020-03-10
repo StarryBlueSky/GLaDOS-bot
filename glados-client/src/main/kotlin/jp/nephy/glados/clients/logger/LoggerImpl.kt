@@ -117,6 +117,7 @@ internal class LoggerImpl(private val name: String, private val slackChannel: St
             !GLaDOS.initialized -> false
             !useSlack -> false
             GLaDOS.isDevelopmentMode -> false
+            GLaDOS.config.logging.slackWebhookUrl == null -> false
             !target.isGreaterOrEqual(GLaDOS.config.logging.levelForSlack) -> false
             else -> true
         }
