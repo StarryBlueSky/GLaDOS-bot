@@ -4,5 +4,8 @@
 /out/
 
 /workspace/build/
+/workspace/libs/
+/workspace/logs/
+/workspace/plugins/
 /workspace/config.*.json
 /workspace/glados.jar
