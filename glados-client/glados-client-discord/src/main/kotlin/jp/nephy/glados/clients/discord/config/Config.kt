@@ -35,7 +35,7 @@ import jp.nephy.jsonkt.delegation.*
 import net.dv8tion.jda.api.entities.*
 
 val ConfigJson.discord: DiscordConfig
-    get() = json["discord"].parseOrNull() ?: throw IllegalStateException("Key \"discord\" is not found in config.json.")
+    get() = json["discord"].parseOrNull() ?: throw IllegalStateException("config.json 内に キー \"discord\" が存在しません。")
 
 fun DiscordConfig.guild(key: String): GuildConfig {
     return guildMap[key] ?: throw NoSuchElementException("Guild config \"$key\" is not found in config.json.")
