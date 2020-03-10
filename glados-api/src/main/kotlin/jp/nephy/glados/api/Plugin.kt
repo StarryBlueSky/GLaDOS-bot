@@ -25,6 +25,7 @@
 package jp.nephy.glados.api
 
 import kotlinx.coroutines.CoroutineScope
+import java.nio.file.Path
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -55,4 +56,10 @@ interface Plugin: CoroutineScope {
      * Coroutine context.
      */
     override val coroutineContext: CoroutineContext
+
+    /**
+     * Jar path.
+     */
+    val jar: Path
+        get() = TODO("Implement jar property.")
 }
