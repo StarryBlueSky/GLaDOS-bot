@@ -31,10 +31,10 @@ import jp.nephy.glados.api.stackTraceString
 import jp.nephy.glados.clients.discord.command.error.DiscordCommandError
 import jp.nephy.glados.clients.discord.command.events.DiscordCommandEvent
 import jp.nephy.glados.clients.discord.command.events.argumentString
-import jp.nephy.glados.clients.discord.extensions.launchAndDelete
 import jp.nephy.glados.clients.discord.extensions.ColorPresets
-import jp.nephy.glados.clients.discord.extensions.messages.*
+import jp.nephy.glados.clients.discord.extensions.launchAndDelete
 import jp.nephy.glados.clients.discord.extensions.messages.embed
+import jp.nephy.glados.clients.discord.extensions.messages.reply
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KFunction
 
