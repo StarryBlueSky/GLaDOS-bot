@@ -71,9 +71,9 @@ internal object ClientManager: Closeable {
             client.runCatching {
                 start()
             }.onSuccess {
-                logger.info { "開始しました。" }
+                client.logger.info { "開始しました。" }
             }.onFailure { e ->
-                logger.error(e) { "開始中に例外が発生しました。" }
+                client.logger.error(e) { "開始中に例外が発生しました。" }
             }
         }
     }
@@ -87,9 +87,9 @@ internal object ClientManager: Closeable {
             client.runCatching {
                 stop()
             }.onSuccess {
-                logger.info { "停止しました。" }
+                client.logger.info { "停止しました。" }
             }.onFailure { e ->
-                logger.error(e) { "停止中に例外が発生しました。" }
+                client.logger.error(e) { "停止中に例外が発生しました。" }
             }
         }
 
