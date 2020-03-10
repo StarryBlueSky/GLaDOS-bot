@@ -31,3 +31,19 @@ rootProject.projectDir.resolve("glados-client").listFiles { file ->
 }!!.forEach {
     include(":glados-client:${it.name}")
 }
+
+include(":workspace")
+
+include(":workspace:common")
+rootProject.projectDir.resolve("workspace/common").listFiles { file ->
+    file.isDirectory && file.name != "src" && file.name != "build"
+}.forEach {
+    include(":workspace:common:${it.name}")
+}
+
+include(":workspace:projects")
+rootProject.projectDir.resolve("workspace/projects").listFiles { file ->
+    file.isDirectory && file.name != "src" && file.name != "build"
+}.forEach {
+    include(":workspace:projects:${it.name}")
+}

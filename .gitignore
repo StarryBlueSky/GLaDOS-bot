@@ -2,3 +2,7 @@
 /.gradle/
 /build/
 /out/
+
+/workspace/build/
+/workspace/config.*.json
+/workspace/glados.jar
