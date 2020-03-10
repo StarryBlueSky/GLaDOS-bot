@@ -17,7 +17,7 @@ val bintrayUsername by property()
 val bintrayApiKey by property()
 
 plugins { 
-    kotlin("jvm") version "1.3.61"
+    kotlin("jvm") version "1.3.70"
     
     // For publishing
     id("maven-publish")
@@ -74,13 +74,15 @@ allprojects {
     repositories {
         mavenCentral()
         jcenter()
-
         maven(url = "https://jitpack.io")
-        maven(url = "https://dl.bintray.com/nephyproject/stable")
-        maven(url = "https://dl.bintray.com/nephyproject/dev")
+
         maven(url = "https://kotlin.bintray.com/ktor")
         maven(url = "https://kotlin.bintray.com/kotlinx")
         maven(url = "https://kotlin.bintray.com/kotlin-eap")
+
+        maven(url = "https://dl.bintray.com/nephyproject/stable")
+        maven(url = "https://dl.bintray.com/nephyproject/dev")
+        maven(url = "https://dl.bintray.com/nephyproject/glados-bot")
     }
     
     tasks.withType<KotlinCompile> {
